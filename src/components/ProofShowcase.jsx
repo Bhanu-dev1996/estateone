@@ -92,7 +92,7 @@ export default function ProofShowcase({
   };
 
   return (
-    <section id="properties" className="py-20 px-4 max-w-7xl mx-auto">
+    <section id="properties" className="py-20 px-4 max-w-7xl mx-auto scroll-mt-24">
       
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6 text-left">
@@ -360,66 +360,6 @@ export default function ProofShowcase({
           </Button>
         </Card>
       )}
-
-      {/* Verification Architecture Glass Console */}
-      <Card id="verification" className="p-8 md:p-12 mb-16 bg-white/75 backdrop-blur-2xl border-0 shadow-[0_20px_50px_rgba(0,0,0,0.06)] text-left">
-        <div className="max-w-[680px] mx-auto text-center mb-12">
-          <Badge variant="default" className="mb-3">
-            Trust architecture
-          </Badge>
-          <h3 className="heading-3 text-brand-navy mb-4 tracking-tight">
-            Our three tier property verification protocol
-          </h3>
-          <p className="body-4 text-brand-muted">
-            Every property undergoes physical and legal checks before earning the EstateOne verified badge.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-2xl bg-white/60 backdrop-blur-md border-0 shadow-xs">
-            <div className="w-10 h-10 rounded-xl bg-blue-100/80 text-brand-blue flex items-center justify-center font-bold mb-4 shadow-xs">
-              1
-            </div>
-            <h4 className="title-2 text-brand-navy font-semibold mb-2">
-              Legal and RERA registry check
-            </h4>
-            <p className="body-5 text-brand-muted leading-relaxed">
-              We validate state RERA certificates, sanctioned building layout plans, and title deed records against official land portals.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-2xl bg-white/60 backdrop-blur-md border-0 shadow-xs">
-            <div className="w-10 h-10 rounded-xl bg-blue-100/80 text-brand-blue flex items-center justify-center font-bold mb-4 shadow-xs">
-              2
-            </div>
-            <h4 className="title-2 text-brand-navy font-semibold mb-2">
-              Geotagged physical inspection
-            </h4>
-            <p className="body-5 text-brand-muted leading-relaxed">
-              Field coordinators inspect the physical property, confirm actual carpet measurements, and record high resolution photographs on site.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-2xl bg-white/60 backdrop-blur-md border-0 shadow-xs">
-            <div className="w-10 h-10 rounded-xl bg-blue-100/80 text-brand-blue flex items-center justify-center font-bold mb-4 shadow-xs">
-              3
-            </div>
-            <h4 className="title-2 text-brand-navy font-semibold mb-2">
-              Direct owner authorization
-            </h4>
-            <p className="body-5 text-brand-muted leading-relaxed">
-              We obtain written consent from verified title holders or licensed developer representatives, preventing unverified broker reposts.
-            </p>
-          </div>
-        </div>
-
-        <Separator className="my-8 bg-black/5" />
-
-        <div className="flex flex-wrap items-center justify-between text-xs text-brand-muted gap-3">
-          <span>Official RERA registries covered: MahaRERA, Karnataka RERA, Telengana RERA, HRERA</span>
-          <span className="font-semibold text-brand-navy">Sample verification methodology</span>
-        </div>
-      </Card>
 
     </section>
   );

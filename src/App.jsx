@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TaglineReveal from './components/TaglineReveal';
 import Benefits from './components/Benefits';
 import HowItWorks from './components/HowItWorks';
+import Verification from './components/Verification';
 import ProofShowcase from './components/ProofShowcase';
 import FAQ from './components/FAQ';
 import FinalCTA from './components/FinalCTA';
@@ -29,6 +30,20 @@ export default function App() {
   const [activePropertyDetail, setActivePropertyDetail] = useState(null);
   const [activeScheduleProperty, setActiveScheduleProperty] = useState(null);
   const [legalModalConfig, setLegalModalConfig] = useState(null);
+
+  // Graceful preloader fade out when application hydrates
+  useEffect(() => {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+      const timer = setTimeout(() => {
+        preloader.classList.add('preloader-hidden');
+        setTimeout(() => {
+          preloader.remove();
+        }, 650);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Toggle favorite
   const handleToggleFavorite = (propId) => {
@@ -83,16 +98,7 @@ export default function App() {
           onSearchSubmit={handleExploreProperties}
         />
 
-        {/* Section 2: Benefits (Outcome-driven, problem-to-solution, borderless cards) */}
-        <Benefits />
-
-        {/* Mandatory Tagline Reveal Section per B11 */}
-        <TaglineReveal />
-
-        {/* Section 3: How it Works (3 Clear Steps) */}
-        <HowItWorks onExploreClick={handleExploreProperties} />
-
-        {/* Section 4: Proof Showcase (Listings, Trust Architecture, Borderless Cards) */}
+        {/* Section 2: Properties / Proof Showcase (#properties - matches Nav Item 1) */}
         <ProofShowcase
           selectedCity={selectedCity}
           setSelectedCity={setSelectedCity}
@@ -110,10 +116,22 @@ export default function App() {
           onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
         />
 
-        {/* Section 5: Frequently Asked Questions (FAQ Accordion with AEO Alignment) */}
+        {/* Section 3: Why EstateOne / Benefits (#why-us - matches Nav Item 2) */}
+        <Benefits />
+
+        {/* Mandatory Tagline Reveal Section per B11 */}
+        <TaglineReveal />
+
+        {/* Section 4: How it Works (#how-it-works - matches Nav Item 3) */}
+        <HowItWorks onExploreClick={handleExploreProperties} />
+
+        {/* Section 5: Verification Protocol (#verification - matches Nav Item 4) */}
+        <Verification />
+
+        {/* Section 6: Frequently Asked Questions (#faq - matches Nav Item 5) */}
         <FAQ onContactClick={() => setActiveScheduleProperty({ title: 'EstateOne Support Consultation' })} />
 
-        {/* Section 6: Final CTA (Identical to top, Risk Reversals) */}
+        {/* Section 7: Final CTA (Identical to top, Risk Reversals) */}
         <FinalCTA onExploreClick={handleExploreProperties} />
 
       </main>

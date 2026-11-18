@@ -16,34 +16,33 @@ export default function Navbar({ onExploreClick, onContactClick }) {
     { label: 'FAQ', href: '#faq' },
   ];
 
-  // Scroll spy using IntersectionObserver to update active nav link as user scrolls
+  // Robust scroll spy to update active nav link as user scrolls
   useEffect(() => {
     const sectionIds = ['properties', 'why-us', 'how-it-works', 'verification', 'faq'];
-    const elements = sectionIds
-      .map((id) => document.getElementById(id))
-      .filter(Boolean);
 
-    if (elements.length === 0) return;
+    const handleScroll = () => {
+      // Offset for fixed top floating navigation bar
+      const scrollPosition = window.scrollY + 220;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(`#${entry.target.id}`);
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const id = sectionIds[i];
+        const el = document.getElementById(id);
+        if (el) {
+          const top = el.offsetTop;
+          if (scrollPosition >= top) {
+            setActiveSection(`#${id}`);
+            return;
           }
-        });
-      },
-      {
-        root: null,
-        rootMargin: '-20% 0px -55% 0px',
-        threshold: 0.1,
+        }
       }
-    );
+      setActiveSection('#properties');
+    };
 
-    elements.forEach((el) => observer.observe(el));
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
 
     return () => {
-      elements.forEach((el) => observer.unobserve(el));
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 

@@ -32,7 +32,7 @@ export default function Benefits() {
   ];
 
   return (
-    <section id="why-us" className="py-20 px-4 max-w-7xl mx-auto">
+    <section id="why-us" className="py-20 px-4 max-w-7xl mx-auto scroll-mt-24">
       
       {/* Section Header */}
       <div className="text-center max-w-[680px] mx-auto mb-16">

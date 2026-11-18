@@ -16,6 +16,88 @@
     <meta name="twitter:title" content="EstateOne | Verified Properties in India" />
     <meta name="twitter:description" content="Verified residential apartments, luxury villas, and commercial spaces with zero hidden brokerage." />
 
+    <!-- Critical Inline Styles to Prevent FOUC and Power the Luxury Preloader -->
+    <style>
+      .sr-only {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        padding: 0 !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        white-space: nowrap !important;
+        border-width: 0 !important;
+      }
+
+      /* EstateOne Luxury Preloader */
+      #preloader {
+        position: fixed;
+        inset: 0;
+        z-index: 999999;
+        background-color: #142B4A;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        opacity: 1;
+        visibility: visible;
+      }
+      #preloader.preloader-hidden {
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(1.02);
+        pointer-events: none;
+      }
+      .preloader-emblem {
+        width: 68px;
+        height: 68px;
+        animation: preloader-pulse 2s ease-in-out infinite;
+      }
+      .preloader-title {
+        font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: #FFFFFF;
+        letter-spacing: -0.02em;
+        margin-top: 18px;
+      }
+      .preloader-subtitle {
+        font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 11px;
+        font-weight: 600;
+        color: #C5A46D;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        margin-top: 4px;
+      }
+      .preloader-track {
+        width: 140px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        margin-top: 24px;
+        overflow: hidden;
+        position: relative;
+      }
+      .preloader-progress {
+        height: 100%;
+        width: 45%;
+        background: linear-gradient(90deg, #C5A46D, #E8D3B0, #C5A46D);
+        border-radius: 999px;
+        animation: preloader-slide 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+      @keyframes preloader-pulse {
+        0%, 100% { transform: scale(1); opacity: 0.95; }
+        50% { transform: scale(1.06); opacity: 1; filter: drop-shadow(0 0 16px rgba(197, 164, 109, 0.45)); }
+      }
+      @keyframes preloader-slide {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(350%); }
+      }
+    </style>
+
     <!-- Google Fonts: Manrope and Geist -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -73,8 +155,31 @@
     </script>
   </head>
   <body class="bg-brand-bg text-brand-text font-body antialiased selection:bg-brand-blue selection:text-white min-h-screen">
+    <!-- EstateOne Critical Preloader Overlay -->
+    <div id="preloader" aria-label="Loading EstateOne verified real estate marketplace">
+      <svg class="preloader-emblem" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+        <rect width="48" height="48" rx="12" fill="#142B4A" stroke="#C5A46D" stroke-width="1.5"/>
+        <path d="M24 8.5L12 18.5H17L24 12.8L31 18.5H36L24 8.5Z" fill="#C5A46D"/>
+        <rect x="15" y="21" width="4" height="17" rx="1.5" fill="#C5A46D"/>
+        <rect x="15" y="21" width="13" height="3.5" rx="1.5" fill="#C5A46D"/>
+        <rect x="15" y="27.5" width="9" height="3.5" rx="1.5" fill="#C5A46D"/>
+        <rect x="15" y="34.5" width="13" height="3.5" rx="1.5" fill="#C5A46D"/>
+        <rect x="25" y="16.5" width="4" height="21.5" rx="1.5" fill="#C5A46D"/>
+        <path d="M25 18.5L21.5 21V19L25 16.5H26.5V18.5H25Z" fill="#C5A46D"/>
+      </svg>
+      <div class="preloader-title">EstateOne</div>
+      <div class="preloader-subtitle">Verified Real Estate</div>
+      <div class="preloader-track">
+        <div class="preloader-progress"></div>
+      </div>
+    </div>
+
     <!-- Skip to Content Accessibility Link -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-navy focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-gold">
+    <a 
+      href="#main-content" 
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-navy focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-gold"
+      style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;"
+    >
       Skip to main content
     </a>
     <div id="root"></div>

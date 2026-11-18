@@ -50,7 +50,7 @@ export default function FAQ({ onContactClick }) {
   ];
 
   return (
-    <section id="faq" className="py-20 px-4 max-w-4xl mx-auto">
+    <section id="faq" className="py-20 px-4 max-w-4xl mx-auto scroll-mt-24">
       
       {/* Section Header */}
       <div className="text-center max-w-[680px] mx-auto mb-16">
