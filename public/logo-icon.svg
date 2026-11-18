@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="12" fill="#142B4A"/>
+  <!-- Architectural Roofline -->
+  <path d="M24 8.5L12 18.5H17L24 12.8L31 18.5H36L24 8.5Z" fill="#C5A46D"/>
+  <!-- The 'E' and '1' Interlocking Monogram -->
+  <!-- Left Vertical Spine of E -->
+  <rect x="15" y="21" width="4" height="17" rx="1.5" fill="#C5A46D"/>
+  <!-- Top Bar of E -->
+  <rect x="15" y="21" width="13" height="3.5" rx="1.5" fill="#C5A46D"/>
+  <!-- Middle Bar of E -->
+  <rect x="15" y="27.5" width="9" height="3.5" rx="1.5" fill="#C5A46D"/>
+  <!-- Bottom Bar of E -->
+  <rect x="15" y="34.5" width="13" height="3.5" rx="1.5" fill="#C5A46D"/>
+  <!-- Prominent '1' Pillar -->
+  <rect x="25" y="16.5" width="4" height="21.5" rx="1.5" fill="#C5A46D"/>
+  <path d="M25 18.5L21.5 21V19L25 16.5H26.5V18.5H25Z" fill="#C5A46D"/>
+</svg>

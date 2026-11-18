@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" fill="none">
+  <!-- Emblem Mark with subtle border on dark backgrounds -->
+  <g transform="translate(0, 4)">
+    <rect width="40" height="40" rx="10" fill="#142B4A" stroke="#C5A46D" stroke-width="1" stroke-opacity="0.4"/>
+    <!-- Roofline -->
+    <path d="M20 7L10 15.5H14L20 10.5L26 15.5H30L20 7Z" fill="#C5A46D"/>
+    <!-- E Monogram -->
+    <rect x="12.5" y="17.5" width="3.5" height="14.5" rx="1.2" fill="#C5A46D"/>
+    <rect x="12.5" y="17.5" width="11" height="3" rx="1.2" fill="#C5A46D"/>
+    <rect x="12.5" y="23" width="7.5" height="3" rx="1.2" fill="#C5A46D"/>
+    <rect x="12.5" y="29" width="11" height="3" rx="1.2" fill="#C5A46D"/>
+    <!-- 1 Pillar -->
+    <rect x="21" y="13.5" width="3.5" height="18.5" rx="1.2" fill="#C5A46D"/>
+    <path d="M21 15.5L18 17.5V16L21 13.5H22V15.5H21Z" fill="#C5A46D"/>
+  </g>
+
+  <!-- Typography Wordmark for dark surfaces -->
+  <text x="52" y="26" font-family="'Manrope', -apple-system, sans-serif" font-size="21" font-weight="700" fill="#FFFFFF" letter-spacing="-0.5">Estate<tspan font-weight="800" fill="#C5A46D">One</tspan></text>
+  <!-- Verified Realty Sub-tag -->
+  <text x="52.5" y="38" font-family="'Manrope', -apple-system, sans-serif" font-size="8.5" font-weight="600" fill="#94A3B8" letter-spacing="2.2">VERIFIED REALTY</text>
+</svg>

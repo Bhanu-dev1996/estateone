@@ -1,0 +1,253 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-navy: #142B4A;
+  --color-brand-blue: #2563EB;
+  --color-brand-gold: #C5A46D;
+  --color-brand-bg: #F7F8FA;
+  --color-brand-surface: #FFFFFF;
+  --color-brand-text: #182230;
+  --color-brand-muted: #667085;
+  --color-brand-border: #E4E7EC;
+  --color-brand-borderDark: #D0D5DD;
+
+  --font-heading: 'Manrope', sans-serif;
+  --font-body: 'Geist', 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+
+  --ease-brand-base: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+  border-color: #E4E7EC;
+}
+
+body {
+  background-color: #F7F8FA;
+  color: #182230;
+  font-family: 'Geist', 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Rule B1: Never use italic fonts anywhere in the interface */
+* {
+  font-style: normal !important;
+}
+
+/* Rule B1: No orphaned words */
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+  font-family: 'Manrope', sans-serif;
+}
+
+p, span, li, label {
+  text-wrap: pretty;
+}
+
+/* ==========================================================================
+   B1. Text Styles (Named semantic classes snapped to Tailwind scale)
+   ========================================================================== */
+
+/* Headings (Manrope Semibold) */
+.heading-1 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 3.75rem; /* 60px */
+  line-height: 3.75rem; /* 60px */
+  font-weight: 600;
+}
+
+.heading-2 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 3rem; /* 48px */
+  line-height: 3rem; /* 48px */
+  font-weight: 600;
+}
+
+.heading-3 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 2.25rem; /* 36px */
+  line-height: 2.5rem; /* 40px */
+  font-weight: 600;
+}
+
+.heading-4 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.875rem; /* 30px */
+  line-height: 2.25rem; /* 36px */
+  font-weight: 600;
+}
+
+.heading-5 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.5rem; /* 24px */
+  line-height: 2rem; /* 32px */
+  font-weight: 600;
+}
+
+.heading-6 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.75rem; /* 28px */
+  font-weight: 600;
+}
+
+/* Titles (Manrope / Geist Medium) */
+.title-1 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.75rem; /* 28px */
+  font-weight: 500;
+}
+
+.title-2 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.75rem; /* 28px */
+  font-weight: 500;
+}
+
+.title-3 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1rem; /* 16px */
+  line-height: 1.5rem; /* 24px */
+  font-weight: 500;
+}
+
+.title-4 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem; /* 20px */
+  font-weight: 500;
+}
+
+.title-5 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1rem; /* 16px */
+  font-weight: 500;
+}
+
+/* Body (Geist) */
+.body-1 {
+  font-family: 'Geist', sans-serif;
+  font-size: 1rem; /* 16px */
+  line-height: 1.5rem; /* 24px */
+  font-weight: 600;
+}
+
+.body-2 {
+  font-family: 'Geist', sans-serif;
+  font-size: 1rem; /* 16px */
+  line-height: 1.5rem; /* 24px */
+  font-weight: 500;
+}
+
+.body-3 {
+  font-family: 'Geist', sans-serif;
+  font-size: 1rem; /* 16px */
+  line-height: 1.5rem; /* 24px */
+  font-weight: 400;
+}
+
+.body-4 {
+  font-family: 'Geist', sans-serif;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem; /* 20px */
+  font-weight: 600;
+}
+
+.body-5 {
+  font-family: 'Geist', sans-serif;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem; /* 20px */
+  font-weight: 500;
+}
+
+.body-6 {
+  font-family: 'Geist', sans-serif;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem; /* 20px */
+  font-weight: 400;
+}
+
+/* Buttons (Manrope Semibold) */
+.button-lg {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.75rem; /* 28px */
+  font-weight: 600;
+}
+
+.button-md {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1rem; /* 16px */
+  line-height: 1.5rem; /* 24px */
+  font-weight: 600;
+}
+
+.button-sm {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem; /* 20px */
+  font-weight: 600;
+}
+
+.button-xsm {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1rem; /* 16px */
+  font-weight: 600;
+}
+
+/* Captions */
+.caption-1 {
+  font-family: 'Geist', sans-serif;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem; /* 20px */
+  font-weight: 500;
+}
+
+.caption-2 {
+  font-family: 'Geist', sans-serif;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem; /* 20px */
+  font-weight: 400;
+}
+
+.caption-3 {
+  font-family: 'Geist', sans-serif;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1rem; /* 16px */
+  font-weight: 600;
+}
+
+.caption-4 {
+  font-family: 'Geist', sans-serif;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1rem; /* 16px */
+  font-weight: 500;
+}
+
+.caption-5 {
+  font-family: 'Geist', sans-serif;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1rem; /* 16px */
+  font-weight: 400;
+}
+
+/* B5. Hero Section Heading Gradient (Only place gradients are allowed) */
+.hero-heading-gradient {
+  background: linear-gradient(90deg, #142B4A 0%, #475467 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* B7. Base Transition Curve */
+.transition-brand {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-duration: 500ms;
+}
+
+.transition-brand-fast {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-duration: 300ms;
+}
