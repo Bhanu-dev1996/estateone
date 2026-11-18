@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import PropertyDetailModal from './components/PropertyDetailModal';
-import EnquiryModal from './components/EnquiryModal';
-import LegalModal from './components/LegalModal';
+
+// Layouts
+import MainLayout from './layouts/MainLayout';
+import AuthLayout from './layouts/AuthLayout';
 
 // Shared Context Providers (PRD Section 4)
 import { ToastProvider } from './context/ToastContext';
 import { PropertyProvider } from './context/PropertyContext';
 import { AuthProvider } from './context/AuthContext';
 
-// Shared Global Modals (PRD Section 4.1)
-import SiteVisitModal from './components/shared/SiteVisitModal';
-import ConfirmationModal from './components/shared/ConfirmationModal';
+// Global Modals
+import PropertyDetailModal from './components/PropertyDetailModal';
+import EnquiryModal from './components/EnquiryModal';
+import LegalModal from './components/LegalModal';
 
-// Pages
+// Route Guards (PRD Acceptance Rule 5)
+import ProtectedRoute from './components/shared/ProtectedRoute';
+
+// Public & Portal Pages
 import HomePage from './pages/HomePage';
 import BuyPage from './pages/BuyPage';
 import RentPage from './pages/RentPage';
@@ -33,14 +36,17 @@ import ContactPage from './pages/ContactPage';
 import BlogPage from './pages/BlogPage';
 import BlogDetailPage from './pages/BlogDetailPage';
 import FAQPage from './pages/FAQPage';
+import AccountPage from './pages/AccountPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsPage from './pages/TermsPage';
+import NotFoundPage from './pages/NotFoundPage';
+
+// Focused Authentication Pages
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import VerifyOtpPage from './pages/VerifyOtpPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
-import TermsPage from './pages/TermsPage';
-import NotFoundPage from './pages/NotFoundPage';
 
 // Automatic scroll-to-top on route change
 function ScrollToTop() {
@@ -105,188 +111,191 @@ export default function App() {
   return (
     <BrowserRouter>
       <ToastProvider>
-        <PropertyProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <PropertyProvider>
             <ScrollToTop />
-            <div className="min-h-screen flex flex-col bg-[#F7F8FA] text-brand-text relative overflow-x-hidden selection:bg-brand-blue selection:text-white">
-        
-        {/* Soft Apple Ambient Glow Orbs for Glass Diffusion */}
-        <div className="fixed top-1/4 left-[-10%] w-[500px] h-[500px] bg-blue-100/40 rounded-full blur-[140px] pointer-events-none z-0"></div>
-        <div className="fixed top-3/4 right-[-10%] w-[600px] h-[600px] bg-amber-50/60 rounded-full blur-[160px] pointer-events-none z-0"></div>
 
-        {/* Floating Centered Apple-inspired Glass Navigation */}
-        <Navbar 
-          onExploreClick={handleExploreProperties}
-          onContactClick={() => setActiveScheduleProperty({ title: 'EstateOne Priority Consultation' })}
-        />
+            <Routes>
+              {/* =========================================================================
+                  1. DEDICATED FOCUSED AUTH LAYOUT (Login, Register, OTP, Password Reset)
+                  Completely removes complete website header and footer to keep users focused
+                 ========================================================================= */}
+              <Route element={<AuthLayout />}>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/verify-otp" element={<VerifyOtpPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
+              </Route>
 
-        {/* Main Content Landmark per B10 Accessibility */}
-        <main id="main-content" className="flex-1 relative z-10" tabIndex={-1}>
-          <Routes>
-            {/* Primary Discovery Routes */}
-            <Route 
-              path="/" 
-              element={
-                <HomePage
-                  selectedCity={selectedCity}
-                  setSelectedCity={setSelectedCity}
-                  selectedType={selectedType}
-                  setSelectedType={setSelectedType}
-                  intent={intent}
-                  setIntent={setIntent}
-                  budgetRange={budgetRange}
-                  setBudgetRange={setBudgetRange}
-                  selectedBedrooms={selectedBedrooms}
-                  setSelectedBedrooms={setSelectedBedrooms}
-                  searchQuery={searchQuery}
-                  setSearchQuery={setSearchQuery}
-                  onExploreProperties={handleExploreProperties}
-                  onSelectProperty={(prop) => setActivePropertyDetail(prop)}
-                  onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+              {/* =========================================================================
+                  2. STANDARD PUBLIC & PORTAL LAYOUT (Complete Website Navigation & Footer)
+                 ========================================================================= */}
+              <Route
+                element={
+                  <MainLayout
+                    onExploreClick={handleExploreProperties}
+                    onContactClick={() => setActiveScheduleProperty({ title: 'EstateOne Priority Consultation' })}
+                    onOpenLegal={(type) => setLegalModalConfig(type)}
+                    onCitySelect={handleCitySelectFromFooter}
+                  />
+                }
+              >
+                {/* Primary Discovery Routes */}
+                <Route 
+                  path="/" 
+                  element={
+                    <HomePage
+                      selectedCity={selectedCity}
+                      setSelectedCity={setSelectedCity}
+                      selectedType={selectedType}
+                      setSelectedType={setSelectedType}
+                      intent={intent}
+                      setIntent={setIntent}
+                      budgetRange={budgetRange}
+                      setBudgetRange={setBudgetRange}
+                      selectedBedrooms={selectedBedrooms}
+                      setSelectedBedrooms={setSelectedBedrooms}
+                      searchQuery={searchQuery}
+                      setSearchQuery={setSearchQuery}
+                      onExploreProperties={handleExploreProperties}
+                      onSelectProperty={(prop) => setActivePropertyDetail(prop)}
+                      onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                    />
+                  } 
                 />
-              } 
-            />
-            <Route 
-              path="/buy" 
-              element={
-                <BuyPage 
-                  onSelectProperty={(prop) => setActivePropertyDetail(prop)}
-                  onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                <Route 
+                  path="/buy" 
+                  element={
+                    <BuyPage 
+                      onSelectProperty={(prop) => setActivePropertyDetail(prop)}
+                      onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                    />
+                  } 
                 />
-              } 
-            />
-            <Route 
-              path="/rent" 
-              element={
-                <RentPage 
-                  onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                <Route 
+                  path="/rent" 
+                  element={
+                    <RentPage 
+                      onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                    />
+                  } 
                 />
-              } 
-            />
-            <Route 
-              path="/commercial" 
-              element={
-                <CommercialPage 
-                  onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                <Route 
+                  path="/commercial" 
+                  element={
+                    <CommercialPage 
+                      onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                    />
+                  } 
                 />
-              } 
-            />
-            <Route 
-              path="/property/:slug" 
-              element={
-                <PropertyDetailPage 
-                  onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
-                  onEnquire={(prop) => setActiveScheduleProperty(prop)}
+                <Route 
+                  path="/property/:slug" 
+                  element={
+                    <PropertyDetailPage 
+                      onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                      onEnquire={(prop) => setActiveScheduleProperty(prop)}
+                    />
+                  } 
                 />
-              } 
-            />
 
-            {/* Decision Support & User Engagement */}
-            <Route 
-              path="/compare" 
-              element={
-                <ComparePage 
-                  onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                {/* Decision Support & User Engagement */}
+                <Route 
+                  path="/compare" 
+                  element={
+                    <ComparePage 
+                      onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                    />
+                  } 
                 />
-              } 
-            />
-            <Route 
-              path="/saved-properties" 
-              element={
-                <SavedPropertiesPage 
-                  favorites={favorites}
-                  onToggleFavorite={handleToggleFavorite}
-                  onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                <Route 
+                  path="/saved-properties" 
+                  element={
+                    <SavedPropertiesPage 
+                      favorites={favorites}
+                      onToggleFavorite={handleToggleFavorite}
+                      onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                    />
+                  } 
                 />
-              } 
-            />
 
-            {/* Professional Directory & Profiles */}
-            <Route path="/agents" element={<AgentsPage />} />
-            <Route 
-              path="/agents/:slug" 
-              element={
-                <AgentDetailPage 
-                  onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                {/* Professional Directory & Profiles */}
+                <Route path="/agents" element={<AgentsPage />} />
+                <Route 
+                  path="/agents/:slug" 
+                  element={
+                    <AgentDetailPage 
+                      onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
+                    />
+                  } 
                 />
-              } 
-            />
-            <Route path="/builders" element={<BuildersPage />} />
-            <Route path="/builders/:slug" element={<BuilderDetailPage />} />
+                <Route path="/builders" element={<BuildersPage />} />
+                <Route path="/builders/:slug" element={<BuilderDetailPage />} />
 
-            {/* Acquisition Wizard */}
-            <Route path="/list-property" element={<ListPropertyPage />} />
+                {/* Acquisition Wizard */}
+                <Route path="/list-property" element={<ListPropertyPage />} />
 
-            {/* Authority, Content & Support */}
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog/:slug" element={<BlogDetailPage />} />
-            <Route path="/faq" element={<FAQPage />} />
+                {/* Authority, Content & Support */}
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/blog/:slug" element={<BlogDetailPage />} />
+                <Route path="/faq" element={<FAQPage />} />
 
-            {/* Authentication Lifecycle */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/verify-otp" element={<VerifyOtpPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
+                {/* Member Protected Area */}
+                <Route 
+                  path="/account" 
+                  element={
+                    <ProtectedRoute>
+                      <AccountPage />
+                    </ProtectedRoute>
+                  } 
+                />
 
-            {/* Legal Disclosures */}
-            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-            <Route path="/terms-and-conditions" element={<TermsPage />} />
+                {/* Legal Disclosures */}
+                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                <Route path="/terms-and-conditions" element={<TermsPage />} />
 
-            {/* Branded 404 Catch-All */}
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </main>
+                {/* Branded 404 Catch-All */}
+                <Route path="*" element={<NotFoundPage />} />
+              </Route>
+            </Routes>
 
-        {/* Semantic Footer with Legal Compliance & Disclaimers */}
-        <Footer 
-          onOpenLegal={(type) => setLegalModalConfig(type)}
-          onCitySelect={handleCitySelectFromFooter}
-        />
+            {/* Global Modals */}
+            {activePropertyDetail && (
+              <PropertyDetailModal
+                property={activePropertyDetail}
+                onClose={() => setActivePropertyDetail(null)}
+                onScheduleVisit={(prop) => {
+                  setActivePropertyDetail(null);
+                  setActiveScheduleProperty(prop);
+                }}
+              />
+            )}
 
-        {/* Global Modals Available Across Entire App */}
-        {activePropertyDetail && (
-          <PropertyDetailModal
-            property={activePropertyDetail}
-            onClose={() => setActivePropertyDetail(null)}
-            onScheduleVisit={(prop) => {
-              setActivePropertyDetail(null);
-              setActiveScheduleProperty(prop);
-            }}
-          />
-        )}
+            {activeScheduleProperty && (
+              <EnquiryModal
+                property={activeScheduleProperty}
+                onClose={() => setActiveScheduleProperty(null)}
+              />
+            )}
 
-        {activeScheduleProperty && (
-          <EnquiryModal
-            property={activeScheduleProperty}
-            onClose={() => setActiveScheduleProperty(null)}
-          />
-        )}
+            {legalModalConfig && (
+              <LegalModal
+                type={legalModalConfig}
+                title={
+                  legalModalConfig === 'privacy' 
+                    ? 'Privacy Policy' 
+                    : legalModalConfig === 'rera' 
+                      ? 'RERA Compliance Disclaimer' 
+                      : 'Terms and Conditions'
+                }
+                onClose={() => setLegalModalConfig(null)}
+              />
+            )}
 
-        {legalModalConfig && (
-          <LegalModal
-            type={legalModalConfig}
-            title={
-              legalModalConfig === 'privacy' 
-                ? 'Privacy Policy' 
-                : legalModalConfig === 'rera' 
-                  ? 'RERA Compliance Disclaimer' 
-                  : 'Terms and Conditions'
-            }
-            onClose={() => setLegalModalConfig(null)}
-          />
-        )}
-
-        {/* Section 4 Global Modals */}
-        <SiteVisitModal />
-        <ConfirmationModal />
-        <EnquiryModal />
-
-      </div>
-          </AuthProvider>
-        </PropertyProvider>
+          </PropertyProvider>
+        </AuthProvider>
       </ToastProvider>
     </BrowserRouter>
   );

@@ -292,16 +292,26 @@ export default function PropertyDetailPage() {
           </p>
         </div>
 
-        {/* Overview Actions: Share, Compare, Save, Report */}
+        {/* Overview Decision Suite: Save, Compare, Enquire, Visit per PRD 6.1 */}
         <div className="flex items-center gap-2 shrink-0 flex-wrap">
           <button
             type="button"
-            onClick={handleShare}
-            className="px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 shadow-xs text-xs font-semibold text-brand-navy flex items-center gap-1.5 hover:bg-slate-50 transition-all cursor-pointer"
-            title="Share property"
+            onClick={() => openSiteVisit(property)}
+            className="px-4 py-2.5 rounded-2xl bg-brand-navy hover:bg-slate-900 text-white shadow-xs text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+            title="Request property inspection visit"
           >
-            <ShareNetwork size={16} />
-            <span>Share</span>
+            <CalendarCheck size={16} weight="bold" className="text-brand-gold" />
+            <span>Request visit</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => openEnquiry(property)}
+            className="px-4 py-2.5 rounded-2xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/80 shadow-xs text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+            title="Submit direct enquiry"
+          >
+            <ChatCircleText size={16} weight="bold" className="text-amber-700" />
+            <span>Enquire</span>
           </button>
 
           <button
@@ -330,6 +340,16 @@ export default function PropertyDetailPage() {
           >
             <Heart size={16} weight={saved ? 'fill' : 'bold'} className={saved ? 'text-rose-600' : ''} />
             <span>{saved ? 'Saved' : 'Save'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleShare}
+            className="px-3 py-2.5 rounded-2xl bg-white border border-slate-200 shadow-xs text-xs font-semibold text-brand-navy flex items-center gap-1.5 hover:bg-slate-50 transition-all cursor-pointer"
+            title="Share property"
+          >
+            <ShareNetwork size={16} />
+            <span className="hidden sm:inline">Share</span>
           </button>
 
           <button

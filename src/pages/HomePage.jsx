@@ -76,7 +76,6 @@ export default function HomePage({
         setBudgetRange={setBudgetRange}
         selectedBedrooms={selectedBedrooms}
         setSelectedBedrooms={setSelectedBedrooms}
-        onSearchSubmit={onExploreProperties}
       />
 
       {/* 3. Popular Locations (PRD 5.1 Section 3) */}

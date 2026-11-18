@@ -10,8 +10,13 @@ import {
   X,
   MapPin,
   Buildings,
-  HouseLine
+  HouseLine,
+  Scales,
+  Heart,
+  SignOut
 } from '@phosphor-icons/react';
+import { useProperty } from '../context/PropertyContext';
+import { useAuth } from '../context/AuthContext';
 import { Button } from './ui/button';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from './ui/sheet';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
@@ -33,6 +38,8 @@ export default function Navbar({ onExploreClick }) {
   const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
+  const { comparePropertyIds, savedPropertyIds } = useProperty();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const isHome = location.pathname === '/';
   const isBuyActive = location.pathname === '/buy';
@@ -204,15 +211,101 @@ export default function Navbar({ onExploreClick }) {
               <MagnifyingGlass size={18} weight="bold" />
             </button>
 
-            {/* 8. Login / Sign Up per PRD 3.2 (Interaction 7: opens login page / auth modal) */}
+            {/* Compare Shortcut with Badge Counter (PRD 5.6) */}
             <Link
-              to="/login"
-              className="text-xs font-semibold text-brand-navy hover:text-brand-blue px-3 py-1.5 rounded-full hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-1.5"
+              to="/compare"
+              aria-label="View comparison table"
+              title="Compare properties"
+              className="relative p-2 rounded-full text-brand-navy hover:bg-slate-100 transition-all cursor-pointer flex items-center justify-center"
             >
-              <User size={15} />
-              <span className="hidden sm:inline">Login / Sign Up</span>
-              <span className="sm:hidden">Login</span>
+              <Scales size={18} weight="bold" />
+              {comparePropertyIds.length > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-brand-gold text-brand-navy text-[10px] font-bold rounded-full flex items-center justify-center shadow-xs">
+                  {comparePropertyIds.length}
+                </span>
+              )}
             </Link>
+
+            {/* Saved Properties Shortcut with Badge Counter (PRD 5.7) */}
+            <Link
+              to="/saved-properties"
+              aria-label="View saved collection"
+              title="Saved properties"
+              className="relative p-2 rounded-full text-brand-navy hover:bg-slate-100 transition-all cursor-pointer flex items-center justify-center"
+            >
+              <Heart size={18} weight="bold" />
+              {savedPropertyIds.length > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-xs">
+                  {savedPropertyIds.length}
+                </span>
+              )}
+            </Link>
+
+            {/* 8. User Session Dropdown or Login / Sign Up per PRD 3.2 */}
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label="User account menu"
+                    className="text-xs font-semibold text-brand-navy hover:text-brand-blue pl-1.5 pr-2.5 py-1 rounded-full hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-1.5"
+                  >
+                    <img 
+                      src={user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'} 
+                      alt={user?.name || 'User'} 
+                      className="w-6 h-6 rounded-full object-cover ring-1 ring-brand-blue/30"
+                    />
+                    <span className="hidden sm:inline max-w-[90px] truncate">{user?.name?.split(' ')[0] || 'Account'}</span>
+                    <CaretDown size={11} weight="bold" className="text-slate-400" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl bg-white shadow-xl border border-slate-100 text-left">
+                  <div className="px-2 py-1.5">
+                    <p className="text-xs font-bold text-brand-navy truncate">{user?.name}</p>
+                    <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
+                    <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-blue-50 text-brand-blue text-[10px] font-semibold capitalize">
+                      {user?.role || 'Member'}
+                    </span>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/account" className="text-xs font-medium text-slate-700 hover:text-brand-navy cursor-pointer flex items-center gap-2 py-2 rounded-xl">
+                      <User size={15} />
+                      <span>Account and session</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/list-property" className="text-xs font-medium text-slate-700 hover:text-brand-navy cursor-pointer flex items-center gap-2 py-2 rounded-xl">
+                      <PlusCircle size={15} />
+                      <span>List your property</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/saved-properties" className="text-xs font-medium text-slate-700 hover:text-brand-navy cursor-pointer flex items-center gap-2 py-2 rounded-xl">
+                      <Heart size={15} />
+                      <span>Saved shortlists</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={logout}
+                    className="text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 cursor-pointer flex items-center gap-2 py-2 rounded-xl"
+                  >
+                    <SignOut size={15} />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                to="/login"
+                className="text-xs font-semibold text-brand-navy hover:text-brand-blue px-3 py-1.5 rounded-full hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <User size={15} />
+                <span className="hidden sm:inline">Login / Sign Up</span>
+                <span className="sm:hidden">Login</span>
+              </Link>
+            )}
 
             {/* 9. Primary CTA: Explore Properties per PRD 3.2 (Interaction 8: navigates to discovery) */}
             <Button
@@ -250,18 +343,21 @@ export default function Navbar({ onExploreClick }) {
                   <div className="flex flex-col gap-1 py-1">
                     {[
                       { label: 'Home', href: '/' },
-                      { label: 'Buy Properties', href: '/buy' },
-                      { label: 'Rent Properties', href: '/rent' },
-                      { label: 'Commercial Properties', href: '/commercial' },
+                      { label: 'Buy properties', href: '/buy' },
+                      { label: 'Rent properties', href: '/rent' },
+                      { label: 'Commercial properties', href: '/commercial' },
                       { label: 'Agents', href: '/agents' },
                       { label: 'Builders', href: '/builders' },
-                      { label: 'Compare Properties', href: '/compare' },
-                      { label: 'Saved Properties', href: '/saved-properties' },
-                      { label: 'About Us', href: '/about' },
-                      { label: 'Blog & Property Guides', href: '/blog' },
-                      { label: 'Help & FAQ', href: '/faq' },
-                      { label: 'Contact Us', href: '/contact' },
-                      { label: 'Login / Sign Up', href: '/login' },
+                      { label: 'Compare properties', href: '/compare' },
+                      { label: 'Saved properties', href: '/saved-properties' },
+                      { label: 'About us', href: '/about' },
+                      { label: 'Blog and guides', href: '/blog' },
+                      { label: 'Help and FAQ', href: '/faq' },
+                      { label: 'Contact us', href: '/contact' },
+                      ...(isAuthenticated 
+                        ? [{ label: 'Account & session', href: '/account' }]
+                        : [{ label: 'Login or register', href: '/login' }]
+                      ),
                     ].map((item) => {
                       const isActive = location.pathname === item.href;
                       return (

@@ -14,6 +14,7 @@ export { default as SiteVisitModal } from './SiteVisitModal';
 export { default as ConfirmationModal } from './ConfirmationModal';
 export { default as EmptyState } from './EmptyState';
 export { default as ErrorState } from './ErrorState';
+export { default as ProtectedRoute } from './ProtectedRoute';
 export { 
   PropertyCardSkeleton, 
   PropertyGridSkeleton, 

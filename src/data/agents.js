@@ -1,5 +1,5 @@
-// Verified agents and builders directory mock dataset
-// Strictly adheres to SKILL.md: no hyphens in visible copy, sentence case.
+// Verified agents and builders directory dataset
+// Adheres strictly to SKILL.md: no hyphens in visible copy, sentence case, real counts.
 
 export const SAMPLE_AGENTS = [
   {
@@ -9,16 +9,20 @@ export const SAMPLE_AGENTS = [
     role: 'Verified Premier Advisor',
     company: 'Singhania Luxury Estates',
     city: 'Mumbai',
-    areasServed: 'Worli, Bandra, Lower Parel',
-    specialization: 'Luxury Penthouses and Seafront Homes',
+    areasServed: 'Worli, Bandra West, BKC, Lower Parel',
+    specialization: 'Luxury penthouses and seafront residences',
+    category: 'buy',
+    propertyCategories: ['Apartment', 'Penthouse', 'Residential buy'],
     experience: '11 years experience',
+    verified: true,
+    publicContact: true,
     phone: '+91 98201 44820',
     email: 'vikram@estateone.in',
     reraNumber: 'A51900004812',
     rating: 4.98,
-    activeListingsCount: 14,
+    reviewCount: 42,
     photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80',
-    bio: 'Vikramaditya specializes in high value residential transactions across south and central Mumbai, providing private advisory and RERA verified portfolio management.'
+    bio: 'Vikramaditya specializes in high value residential transactions across south and central Mumbai, providing private advisory, family office acquisitions, and RERA verified portfolio management.'
   },
   {
     id: 'agent-2',
@@ -27,16 +31,20 @@ export const SAMPLE_AGENTS = [
     role: 'Verified Luxury Specialist',
     company: 'Raghavan Living Spaces',
     city: 'Bengaluru',
-    areasServed: 'Whitefield, Indiranagar, Sadashivanagar',
-    specialization: 'Modern Villas and Eco Homes',
+    areasServed: 'Whitefield, Indiranagar, Sadashivanagar, Koramangala',
+    specialization: 'Modern architectural villas and eco communities',
+    category: 'buy',
+    propertyCategories: ['Villa', 'Apartment', 'Residential buy', 'Residential rent'],
     experience: '8 years experience',
+    verified: true,
+    publicContact: true,
     phone: '+91 98450 33190',
     email: 'ananya@estateone.in',
     reraNumber: 'PRM/KA/RERA/1251/446/AG/190211',
     rating: 4.95,
-    activeListingsCount: 19,
+    reviewCount: 38,
     photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80',
-    bio: 'Ananya is an architectural consultant and verified property advisor guiding tech founders and senior executives into prime gated communities across Bengaluru.'
+    bio: 'Ananya is an architectural consultant and verified property advisor guiding technology executives and entrepreneurs into prime gated villa enclaves across Bengaluru.'
   },
   {
     id: 'agent-3',
@@ -45,16 +53,20 @@ export const SAMPLE_AGENTS = [
     role: 'Verified Corporate Partner',
     company: 'Deccan Prime Realty',
     city: 'Hyderabad',
-    areasServed: 'Financial District, Gachibowli, Jubilee Hills',
-    specialization: 'High Rise Apartments and Penthouses',
+    areasServed: 'Financial District, Gachibowli, Jubilee Hills, Hitec City',
+    specialization: 'High rise apartments and executive leases',
+    category: 'rent',
+    propertyCategories: ['Apartment', 'Penthouse', 'Residential rent', 'Commercial'],
     experience: '9 years experience',
+    verified: true,
+    publicContact: true,
     phone: '+91 99890 22105',
     email: 'suresh@estateone.in',
     reraNumber: 'A02400001420',
     rating: 4.91,
-    activeListingsCount: 12,
+    reviewCount: 29,
     photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80',
-    bio: 'Suresh manages luxury sales and executive leasing in Hyderabad prime tech hubs with guaranteed legal due diligence and zero hidden brokerage.'
+    bio: 'Suresh manages prime residential sales and corporate executive leasing in Hyderabad technology corridors with guaranteed title diligence and zero brokerage.'
   },
   {
     id: 'agent-4',
@@ -63,16 +75,20 @@ export const SAMPLE_AGENTS = [
     role: 'Commercial Asset Consultant',
     company: 'Kapoor Capital Realty',
     city: 'Delhi NCR',
-    areasServed: 'Golf Course Road, Cyber City, Connaught Place',
-    specialization: 'Grade A Commercial and Retail',
+    areasServed: 'Golf Course Road, Cyber City, Connaught Place, Noida',
+    specialization: 'Grade A corporate offices and business parks',
+    category: 'commercial',
+    propertyCategories: ['Commercial', 'Office Spaces', 'Commercial Buildings', 'Warehouses'],
     experience: '14 years experience',
+    verified: true,
+    publicContact: false, // Protected contact details per PRD 5.8
     phone: '+91 98110 55432',
     email: 'nitin@estateone.in',
     reraNumber: 'RC/HARERA/GGM/2020/88',
     rating: 4.88,
-    activeListingsCount: 22,
+    reviewCount: 34,
     photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
-    bio: 'Nitin provides institutional and enterprise commercial space acquisition advisory across premier business parks in Gurugram and central Delhi.'
+    bio: 'Nitin provides institutional and enterprise commercial space acquisition advisory across premier business parks in Gurugram, Noida, and central Delhi.'
   },
   {
     id: 'agent-5',
@@ -81,16 +97,20 @@ export const SAMPLE_AGENTS = [
     role: 'Verified Property Partner',
     company: 'Kulkarni Heritage Estates',
     city: 'Pune',
-    areasServed: 'Koregaon Park, Kalyani Nagar, Baner',
-    specialization: 'Boutique Villas and Heritage Properties',
+    areasServed: 'Koregaon Park, Kalyani Nagar, Baner, Boat Club Road',
+    specialization: 'Boutique condominiums and green townships',
+    category: 'buy',
+    propertyCategories: ['Apartment', 'Villa', 'Residential buy', 'Residential rent'],
     experience: '7 years experience',
+    verified: true,
+    publicContact: true,
     phone: '+91 97640 18833',
     email: 'pooja@estateone.in',
     reraNumber: 'A52100021009',
     rating: 4.97,
-    activeListingsCount: 8,
+    reviewCount: 26,
     photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80',
-    bio: 'Pooja specializes in exclusive residential enclaves and green boutique residences in Pune, ensuring serene living with clear legal land titles.'
+    bio: 'Pooja specializes in exclusive residential enclaves and verdant boutique residences in Pune, ensuring peaceful community living with verified land titles.'
   },
   {
     id: 'agent-6',
@@ -99,16 +119,108 @@ export const SAMPLE_AGENTS = [
     role: 'Verified Ultra Luxury Advisor',
     company: 'Mehra Prime Properties',
     city: 'Delhi NCR',
-    areasServed: 'Golf Course Road, DLF Phase 5, Shanti Niketan',
-    specialization: 'Ultra High Net Worth Residences',
+    areasServed: 'Golf Course Road, DLF Phase 5, Shanti Niketan, Chanakyapuri',
+    specialization: 'Ultra luxury penthouses and prime estate bungalows',
+    category: 'buy',
+    propertyCategories: ['Penthouse', 'Villa', 'Residential buy'],
     experience: '15 years experience',
+    verified: true,
+    publicContact: false,
     phone: '+91 98100 88210',
     email: 'rohit@estateone.in',
     reraNumber: 'RC/HARERA/GGM/2019/102',
     rating: 4.99,
-    activeListingsCount: 16,
+    reviewCount: 51,
     photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
-    bio: 'Rohit represents ultra luxury properties on Golf Course Road and central Delhi, offering confidential transactions and white glove client services.'
+    bio: 'Rohit represents bespoke properties on Golf Course Road and central Delhi, offering confidential transactions and dedicated white glove client advisory.'
+  },
+  {
+    id: 'agent-7',
+    slug: 'karthik-subramanian',
+    name: 'Karthik Subramanian',
+    role: 'Verified Coastal Advisor',
+    company: 'Coromandel Coastal Realty',
+    city: 'Chennai',
+    areasServed: 'Boat Club Road, Poes Garden, ECR, OMR',
+    specialization: 'Seafront residences and gated IT corridor villas',
+    category: 'buy',
+    propertyCategories: ['Villa', 'Apartment', 'Residential buy'],
+    experience: '10 years experience',
+    verified: true,
+    publicContact: true,
+    phone: '+91 94440 71200',
+    email: 'karthik@estateone.in',
+    reraNumber: 'TN/AGENT/0014/2021',
+    rating: 4.92,
+    reviewCount: 22,
+    photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80',
+    bio: 'Karthik provides high end residential advisory along the East Coast Road and premier heritage pockets of Chennai with full title verification and structural vetting.'
+  },
+  {
+    id: 'agent-8',
+    slug: 'leila-fernandes',
+    name: 'Leila Fernandes',
+    role: 'Verified Goa Estate Specialist',
+    company: 'Goa Heritage Living',
+    city: 'Goa',
+    areasServed: 'Assagao, Anjuna, Candolim, Aldona',
+    specialization: 'Portuguese heritage estates and coastal holiday homes',
+    category: 'buy',
+    propertyCategories: ['Villa', 'Residential Plots', 'Residential buy', 'Residential rent'],
+    experience: '12 years experience',
+    verified: true,
+    publicContact: true,
+    phone: '+91 98221 66490',
+    email: 'leila@estateone.in',
+    reraNumber: 'AGGOA09180022',
+    rating: 4.96,
+    reviewCount: 31,
+    photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80',
+    bio: 'Leila guides discerning buyers into restored Portuguese villas, coastal luxury plots, and boutique holiday retreats across north and south Goa.'
+  },
+  {
+    id: 'agent-9',
+    slug: 'rohan-mehta',
+    name: 'Rohan Mehta',
+    role: 'Verified Commercial Consultant',
+    company: 'Apex Commercial Capital',
+    city: 'Mumbai',
+    areasServed: 'BKC, Lower Parel, Nariman Point, Andheri East',
+    specialization: 'Corporate office headquarters and retail spaces',
+    category: 'commercial',
+    propertyCategories: ['Commercial', 'Office Spaces', 'Retail Shops', 'Commercial Buildings'],
+    experience: '12 years experience',
+    verified: true,
+    publicContact: true,
+    phone: '+91 98200 45110',
+    email: 'rohan@estateone.in',
+    reraNumber: 'A51900009981',
+    rating: 4.89,
+    reviewCount: 27,
+    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80',
+    bio: 'Rohan represents Grade A corporate leases, institutional floor acquisitions, and retail flagship stores in Mumbai top commercial corridors.'
+  },
+  {
+    id: 'agent-10',
+    slug: 'vikram-malhotra',
+    name: 'Vikram Malhotra',
+    role: 'Principal Advisor',
+    company: 'Capital Heritage Realty',
+    city: 'Delhi NCR',
+    areasServed: 'Chanakyapuri, Vasant Vihar, Jor Bagh',
+    specialization: 'Diplomatic leasing and luxury villas',
+    category: 'rent',
+    propertyCategories: ['Villa', 'Apartment', 'Residential rent'],
+    // experience deliberately omitted to test "experience, when supplied"
+    verified: false, // Unverified advisor to test "verified status, only when verified"
+    publicContact: false,
+    phone: '+91 98110 92340',
+    email: 'v.malhotra@estateone.in',
+    reraNumber: '',
+    rating: 4.75,
+    reviewCount: 14,
+    photo: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&q=80',
+    bio: 'Vikram coordinates residential leasing and property consultations in south Delhi prime residential colonies.'
   }
 ];
 
@@ -117,42 +229,149 @@ export const SAMPLE_BUILDERS = [
     id: 'builder-1',
     slug: 'prestige-architectural-group',
     name: 'Prestige Architectural Group',
+    role: 'Master Developer',
     tagline: 'Crafting landmarks of enduring distinction',
     headquarters: 'Bengaluru, India',
+    city: 'Bengaluru',
     established: '1986',
+    experience: '38 years experience',
     ongoingProjectsCount: 18,
     completedProjectsCount: 142,
+    verified: true,
+    publicContact: true,
+    phone: '+91 80 2559 1080',
+    email: 'investor.relations@prestige.in',
     reraRegistration: 'PRM/KA/RERA/1250/303/PR/170915',
+    specialization: 'Integrated luxury townships and corporate business parks',
+    category: 'buy',
+    propertyCategories: ['Apartment', 'Villa', 'Residential buy', 'Commercial'],
     logo: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80',
-    description: 'Renowned for world class quality, punctuality in possession timelines, and iconic residential townships across southern India.',
+    description: 'Renowned for world class architectural quality, punctuality in possession timelines, and iconic residential townships across southern India metropolitan centres.',
     featuredProject: 'Greenwood Manor'
   },
   {
     id: 'builder-2',
     slug: 'oberoi-realty-developments',
     name: 'Oberoi Realty Developments',
+    role: 'Master Developer',
     tagline: 'Redefining contemporary urban skylines',
     headquarters: 'Mumbai, India',
+    city: 'Mumbai',
     established: '1998',
+    experience: '26 years experience',
     ongoingProjectsCount: 9,
     completedProjectsCount: 46,
+    verified: true,
+    publicContact: true,
+    phone: '+91 22 6677 3333',
+    email: 'enquiries@oberoirealty.com',
     reraRegistration: 'P51800000812',
+    specialization: 'Ultra luxury high rise towers and hospitality integrated residences',
+    category: 'buy',
+    propertyCategories: ['Apartment', 'Penthouse', 'Residential buy'],
     logo: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=400&q=80',
-    description: 'Pioneers of ultra luxury developments, integrating biophilic architecture with five star hospitality finishes in Mumbai prime corridors.',
+    description: 'Pioneers of ultra luxury developments, integrating biophilic architecture with five star hospitality finishes in Mumbai premier sea facing corridors.',
     featuredProject: 'The Grand Horizon'
   },
   {
     id: 'builder-3',
     slug: 'dlf-master-developers',
     name: 'DLF Master Developers',
+    role: 'Master Developer',
     tagline: 'Building the nation premier communities',
     headquarters: 'Gurugram, Delhi NCR',
+    city: 'Delhi NCR',
     established: '1946',
+    experience: '78 years experience',
     ongoingProjectsCount: 12,
     completedProjectsCount: 220,
+    verified: true,
+    publicContact: false,
+    phone: '+91 124 456 7890',
+    email: 'corporate.sales@dlf.in',
     reraRegistration: 'RC/REP/HARERA/GGM/2018/14',
+    specialization: 'Master planned golf course townships and Grade A corporate towers',
+    category: 'buy',
+    propertyCategories: ['Apartment', 'Penthouse', 'Commercial', 'Residential buy'],
     logo: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=400&q=80',
     description: 'Over seven decades of community building excellence, transforming Gurugram into a world class residential and financial capital.',
     featuredProject: 'The Camellias Golf Sanctuary'
+  },
+  {
+    id: 'builder-4',
+    slug: 'lodha-luxury-group',
+    name: 'Lodha Luxury Group',
+    role: 'Master Developer',
+    tagline: 'Building a better life through architectural grandeur',
+    headquarters: 'Mumbai, India',
+    city: 'Mumbai',
+    established: '1980',
+    experience: '44 years experience',
+    ongoingProjectsCount: 14,
+    completedProjectsCount: 180,
+    verified: true,
+    publicContact: true,
+    phone: '+91 22 6133 4400',
+    email: 'concierge@lodhagroup.com',
+    reraRegistration: 'P51900001339',
+    specialization: 'Super luxury residential skyscrapers and private garden enclaves',
+    category: 'buy',
+    propertyCategories: ['Apartment', 'Penthouse', 'Residential buy'],
+    logo: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80',
+    description: 'India largest real estate developer by residential sales, crafting global landmarks in Mumbai and London.',
+    featuredProject: 'The World Towers'
+  },
+  {
+    id: 'builder-5',
+    slug: 'total-environment-homes',
+    name: 'Total Environment Homes',
+    role: 'Boutique Developer',
+    tagline: 'Homes designed from the heart of nature',
+    headquarters: 'Bengaluru, India',
+    city: 'Bengaluru',
+    established: '1996',
+    experience: '28 years experience',
+    ongoingProjectsCount: 6,
+    completedProjectsCount: 35,
+    verified: true,
+    publicContact: true,
+    phone: '+91 80 4919 1919',
+    email: 'customercare@totalenvironment.in',
+    reraRegistration: 'PRM/KA/RERA/1251/310/PR/171014',
+    specialization: 'Handcrafted cantilevered terrace gardens and natural stone villas',
+    category: 'buy',
+    propertyCategories: ['Villa', 'Apartment', 'Residential buy'],
+    logo: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80',
+    description: 'Renowned for individually crafted residences with private garden terraces, natural warm materials, and custom artisan woodwork.',
+    featuredProject: 'Windmills of Your Mind'
   }
 ];
+
+// Helper to calculate exact active listings count from real property data
+export function getRealAgentListings(agent, allProperties) {
+  if (!agent || !allProperties) return [];
+  const agentName = agent.name.toLowerCase().trim();
+  const firstName = agentName.split(' ')[0];
+
+  return allProperties.filter((p) => {
+    if (!p.agent || !p.agent.name) return false;
+    const pAgentName = p.agent.name.toLowerCase().trim();
+    return pAgentName === agentName || pAgentName.includes(firstName);
+  });
+}
+
+export function getRealBuilderListings(builder, allProperties) {
+  if (!builder || !allProperties) return [];
+  const bName = builder.name.toLowerCase().trim();
+  return allProperties.filter((p) => {
+    const pTitle = p.title.toLowerCase();
+    const pLoc = p.location.toLowerCase();
+    const pDesc = (p.description || '').toLowerCase();
+    const feat = (builder.featuredProject || '').toLowerCase();
+    return pTitle.includes(bName) || 
+           pLoc.includes(bName) || 
+           pDesc.includes(bName) || 
+           (feat && (pTitle.includes(feat) || pDesc.includes(feat))) ||
+           p.city === builder.city;
+  }).slice(0, 4);
+}

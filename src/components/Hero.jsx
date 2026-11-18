@@ -113,6 +113,7 @@ export default function Hero({
     if (selectedType && selectedType !== 'All types' && selectedType !== 'All commercial') params.set('type', selectedType);
     if (budgetRange && budgetRange !== 'all') params.set('budget', budgetRange);
     if (selectedBedrooms && selectedBedrooms !== 'Any rooms') params.set('bhk', selectedBedrooms);
+    if (searchQuery && searchQuery.trim()) params.set('q', searchQuery.trim());
     const q = params.toString();
     navigate(q ? `${targetRoute}?${q}` : targetRoute);
   };
