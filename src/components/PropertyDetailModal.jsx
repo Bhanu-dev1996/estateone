@@ -13,6 +13,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
+import { ScrollArea } from './ui/scroll-area';
 
 export default function PropertyDetailModal({ property, onClose, onScheduleVisit }) {
   if (!property) return null;
@@ -50,7 +51,8 @@ export default function PropertyDetailModal({ property, onClose, onScheduleVisit
         </div>
 
         {/* Scrollable Body (Only This Area Scrolls) */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 text-left">
+        <ScrollArea className="flex-1 min-h-0">
+          <div className="p-6 space-y-6 text-left">
           
           {/* Main Photo & Thumbnail Gallery */}
           <div>
@@ -220,6 +222,7 @@ export default function PropertyDetailModal({ property, onClose, onScheduleVisit
           </div>
 
         </div>
+        </ScrollArea>
 
         {/* Fixed Pinned Bottom Action Bar (Does Not Scroll) */}
         <div className="shrink-0 px-6 py-3.5 border-t border-slate-100 bg-white/95 backdrop-blur-md flex items-center justify-between gap-4 text-left z-10">

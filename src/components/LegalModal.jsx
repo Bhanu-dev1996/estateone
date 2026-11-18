@@ -2,12 +2,13 @@ import React from 'react';
 import { ShieldCheck } from '@phosphor-icons/react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
+import { ScrollArea } from './ui/scroll-area';
 
 export default function LegalModal({ title, type, onClose }) {
   return (
     <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-white border-0 shadow-2xl p-6">
-        <DialogHeader className="text-left pb-2">
+      <DialogContent className="max-w-2xl max-h-[85vh] rounded-3xl bg-white border-0 shadow-2xl p-6 flex flex-col">
+        <DialogHeader className="text-left pb-2 shrink-0">
           <div className="flex items-center gap-2">
             <ShieldCheck size={20} className="text-brand-blue" />
             <DialogTitle className="heading-5 text-brand-navy font-bold">
@@ -19,7 +20,8 @@ export default function LegalModal({ title, type, onClose }) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 text-sm text-brand-text leading-relaxed text-left py-2">
+        <ScrollArea className="flex-1 pr-3 -mr-3">
+          <div className="space-y-4 text-sm text-brand-text leading-relaxed text-left py-2">
           {type === 'privacy' && (
             <>
               <p>
@@ -80,8 +82,9 @@ export default function LegalModal({ title, type, onClose }) {
             </>
           )}
         </div>
+        </ScrollArea>
 
-        <div className="mt-6 pt-4 border-t border-slate-200 flex justify-end">
+        <div className="mt-4 pt-4 border-t border-slate-200 flex justify-end shrink-0">
           <Button type="button" onClick={onClose} size="sm" className="rounded-full px-6 cursor-pointer">
             Close
           </Button>

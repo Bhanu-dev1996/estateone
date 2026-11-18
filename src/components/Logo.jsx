@@ -29,15 +29,15 @@ export default function Logo({
         xmlns="http://www.w3.org/2000/svg"
         className="w-full h-full drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
       >
-        {/* Deep Navy Rounded Squircle */}
+        {/* Rounded Squircle Container */}
         <rect 
           width="48" 
           height="48" 
           rx="12" 
-          fill="#142B4A" 
+          fill={isDark ? 'rgba(255, 255, 255, 0.08)' : '#142B4A'} 
           stroke={isDark ? '#C5A46D' : 'transparent'} 
           strokeWidth={isDark ? '1' : '0'} 
-          strokeOpacity="0.4"
+          strokeOpacity={isDark ? '0.4' : '0'}
         />
         
         {/* Architectural Roofline Apex */}
@@ -74,7 +74,7 @@ export default function Logo({
         </span>
         <span 
           className={`font-heading font-semibold uppercase tracking-[0.2em] leading-none mt-0.5 ${currentSize.textSecondary} ${
-            isDark ? 'text-slate-400' : 'text-brand-muted'
+            isDark ? 'text-slate-300' : 'text-brand-muted'
           }`}
         >
           Verified Realty

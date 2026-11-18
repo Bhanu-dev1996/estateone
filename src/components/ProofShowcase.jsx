@@ -15,6 +15,8 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
 import { Separator } from './ui/separator';
+import PropertyCard from './shared/PropertyCard';
+import EmptyState from './shared/EmptyState';
 
 export default function ProofShowcase({
   selectedCity,
@@ -240,125 +242,22 @@ export default function ProofShowcase({
 
       </div>
 
-      {/* Property Cards Grid using Previous Design (Borderless Cards) */}
+      {/* Property Cards Grid using Shared Component (PRD 4.1, 4.2.3, 4.2.4, 4.2.12, 4.2.13) */}
       {filteredProperties.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20 text-left">
-          {filteredProperties.map((prop) => {
-            const displayImage = prop.image || (prop.images && prop.images[0]) || '';
-            return (
-              <Card 
-                key={prop.id}
-                className="overflow-hidden flex flex-col justify-between group hover:scale-[1.01] hover:shadow-[0_24px_50px_rgba(0,0,0,0.1)] p-0 border-0"
-              >
-                <div>
-                  {/* Image & Floating Glass Badges */}
-                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
-                    <img 
-                      src={displayImage} 
-                      alt={prop.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
-                    />
-                    
-                    {/* Floating Glass Verification Pill */}
-                    <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
-                      <Badge variant="verified">
-                        <ShieldCheck size={14} weight="fill" className="text-brand-blue" />
-                        <span>RERA verified</span>
-                      </Badge>
-                      <Badge variant="accent">
-                        {prop.status}
-                      </Badge>
-                    </div>
-
-                    {/* Floating Glass Price Tag */}
-                    <div className="absolute bottom-3 left-3 bg-brand-navy/90 backdrop-blur-md text-white px-3.5 py-1.5 rounded-xl border-0 shadow-md">
-                      <span className="title-2 font-bold text-white block">
-                        {prop.priceDisplay}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Card Content */}
-                  <CardHeader className="p-5 pb-3">
-                    <div className="flex items-center justify-between text-xs text-brand-muted mb-1">
-                      <span className="flex items-center gap-1 font-medium">
-                        <MapPin size={14} className="text-brand-blue" />
-                        {prop.location}
-                      </span>
-                      <span className="text-slate-400 font-mono text-[11px]">{prop.reraId}</span>
-                    </div>
-
-                    <CardTitle className="group-hover:text-brand-blue transition-brand-fast">
-                      {prop.title}
-                    </CardTitle>
-
-                    <CardDescription className="line-clamp-2 pt-1">
-                      {prop.description}
-                    </CardDescription>
-                  </CardHeader>
-
-                  {/* Floating Glass Specs Capsule */}
-                  <CardContent className="p-5 pt-0 pb-4">
-                    <div className="grid grid-cols-3 gap-2 py-3 px-2 rounded-2xl bg-white/70 backdrop-blur-md border-0 text-center shadow-xs">
-                      <div>
-                        <span className="caption-4 font-semibold text-brand-navy block">{prop.bedrooms}</span>
-                        <span className="caption-5 text-brand-muted text-[10px]">Bedrooms</span>
-                      </div>
-                      <div className="border-x border-slate-200/50">
-                        <span className="caption-4 font-semibold text-brand-navy block">{prop.bathrooms}</span>
-                        <span className="caption-5 text-brand-muted text-[10px]">Restrooms</span>
-                      </div>
-                      <div>
-                        <span className="caption-4 font-semibold text-brand-navy block">{prop.area}</span>
-                        <span className="caption-5 text-brand-muted text-[10px]">Carpet area</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </div>
-
-                {/* Card Footer Actions using shadcn Buttons */}
-                <CardFooter className="p-5 pt-0 flex gap-2">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => onSelectProperty(prop)}
-                    className="flex-1 bg-white/75 hover:bg-white border-0 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <Eye size={16} />
-                    <span>View details</span>
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="primary"
-                    size="sm"
-                    onClick={() => onScheduleVisit(prop)}
-                    className="flex-1 shadow-[0_4px_12px_rgba(20,43,74,0.2)] flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <CalendarCheck size={16} className="text-brand-gold" />
-                    <span>Schedule visit</span>
-                  </Button>
-                </CardFooter>
-              </Card>
-            );
-          })}
+          {filteredProperties.map((prop) => (
+            <PropertyCard key={prop.id} property={prop} />
+          ))}
         </div>
       ) : (
-        /* Empty State with Working Reset Action */
-        <Card className="p-12 text-center my-8 border-0 shadow-sm bg-white/80 max-w-lg mx-auto">
-          <Buildings size={40} className="text-brand-muted mx-auto mb-3" />
-          <h4 className="title-1 text-brand-navy mb-2">No matching properties found</h4>
-          <p className="body-4 text-brand-muted max-w-md mx-auto mb-6">
-            We could not find listings matching your search criteria. Try resetting city, budget, or bedroom filters to view available inventory.
-          </p>
-          <Button
-            type="button"
-            onClick={handleResetFilters}
-            className="cursor-pointer"
-          >
-            Reset all filters
-          </Button>
-        </Card>
+        /* Empty State with Working Reset Action (PRD 4.1 & 4.3) */
+        <EmptyState
+          title="No matching verified properties found"
+          description="We could not find listings matching your search criteria. Try resetting city, budget, or bedroom filters to view available inventory."
+          actionLabel="Reset all filters"
+          onAction={handleResetFilters}
+          className="mb-20"
+        />
       )}
 
     </section>
