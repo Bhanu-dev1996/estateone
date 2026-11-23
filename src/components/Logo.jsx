@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 export default function Logo({ 
   variant = 'full', 
@@ -10,7 +10,7 @@ export default function Logo({
 
   // Dimension presets
   const sizeConfig = {
-    sm: { icon: 32, textPrimary: 'text-base', textSecondary: 'text-[8px]', gap: 'gap-2' },
+    sm: { icon: 32, textPrimary: 'text-base', textSecondary: 'text-caption', gap: 'gap-2' },
     md: { icon: 40, textPrimary: 'text-lg', textSecondary: 'text-[9.5px]', gap: 'gap-2.5' },
     lg: { icon: 52, textPrimary: 'text-2xl', textSecondary: 'text-xs', gap: 'gap-3' },
   };

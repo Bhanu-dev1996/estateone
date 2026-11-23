@@ -1,45 +1,56 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { CaretRight, House } from '@phosphor-icons/react';
+import { cn } from '../../lib/utils';
+
+/** Pages sometimes pass `{ label: 'Home', href: '/' }`; root Home is always rendered below. */
+function stripRedundantHomeCrumb(items) {
+  if (!Array.isArray(items) || items.length === 0) return items;
+  const trail = [...items];
+  while (
+    trail.length > 0 &&
+    typeof trail[0].label === 'string' &&
+    trail[0].label.trim().toLowerCase() === 'home' &&
+    (trail[0].href == null || trail[0].href === '' || trail[0].href === '/')
+  ) {
+    trail.shift();
+  }
+  return trail;
+}
 
 export default function Breadcrumbs({ items = [], className = '' }) {
-  if (!items || items.length === 0) return null;
+  const trail = stripRedundantHomeCrumb(items);
+  if (!trail || trail.length === 0) return null;
 
   return (
-    <nav aria-label="Breadcrumb" className={`flex items-center text-left py-3 ${className}`}>
-      <ol className="flex items-center gap-1.5 text-xs text-slate-500 flex-wrap">
-        <li>
-          <Link 
-            to="/" 
-            className="flex items-center gap-1 hover:text-brand-navy transition-colors"
-            title="Return to homepage"
-          >
-            <House size={14} className="text-[#C5A46D]" />
+    <nav aria-label="Breadcrumb" className={cn('site-breadcrumbs', className)}>
+      <ol className="site-breadcrumbs__list">
+        <li className="site-breadcrumbs__segment">
+          <Link to="/" className="site-breadcrumbs__link" title="Return to homepage">
+            <House size={11} weight="duotone" className="site-breadcrumbs__home-icon" aria-hidden />
             <span>Home</span>
           </Link>
         </li>
 
-        {items.map((item, index) => {
-          const isLast = index === items.length - 1;
+        {trail.map((item, index) => {
+          const isLast = index === trail.length - 1;
 
           return (
             <React.Fragment key={`${item.label}-${index}`}>
-              <li aria-hidden="true" className="text-slate-300">
-                <CaretRight size={11} weight="bold" />
+              <li aria-hidden="true" className="site-breadcrumbs__separator">
+                <CaretRight size={9} weight="bold" aria-hidden />
               </li>
-              <li>
+              <li
+                className={cn(
+                  isLast ? 'flex min-w-0 max-w-full items-center' : 'site-breadcrumbs__segment'
+                )}
+              >
                 {isLast || !item.href ? (
-                  <span 
-                    aria-current="page" 
-                    className="font-semibold text-brand-navy truncate max-w-[220px] sm:max-w-xs inline-block"
-                  >
+                  <span aria-current="page" className="site-breadcrumbs__current">
                     {item.label}
                   </span>
                 ) : (
-                  <Link 
-                    to={item.href} 
-                    className="hover:text-brand-navy transition-colors truncate max-w-[180px] inline-block"
-                  >
+                  <Link to={item.href} className="site-breadcrumbs__link">
                     {item.label}
                   </Link>
                 )}

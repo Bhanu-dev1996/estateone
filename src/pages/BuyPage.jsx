@@ -1,19 +1,7 @@
-import React, { useState, useMemo, useEffect } from 'react';
+﻿import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { 
-  ShieldCheck, 
-  MagnifyingGlass, 
-  SlidersHorizontal, 
-  Buildings, 
-  SortAscending,
-  SquaresFour,
-  Rows,
-  X,
-  MapPin,
-  Clock,
-  ArrowClockwise
-} from '@phosphor-icons/react';
-import { SAMPLE_PROPERTIES, CITIES } from '../data/properties';
+import { ShieldCheck } from '@phosphor-icons/react';
+import { SAMPLE_PROPERTIES } from '../data/properties';
 import { useProperty } from '../context/PropertyContext';
 import Breadcrumbs from '../components/shared/Breadcrumbs';
 import FilterSidebar from '../components/shared/FilterSidebar';
@@ -22,10 +10,12 @@ import PropertyCard from '../components/shared/PropertyCard';
 import EmptyState from '../components/shared/EmptyState';
 import ErrorState from '../components/shared/ErrorState';
 import Pagination from '../components/shared/Pagination';
+import PropertyListingToolbar from '../components/shared/PropertyListingToolbar';
 import { PropertyCardSkeleton } from '../components/shared/LoadingSkeleton';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
+import ListPropertyCTA from '../components/home/ListPropertyCTA';
+import { BUY_LISTING_SORT_OPTIONS } from '../lib/listingSortOptions';
+import { getPropertyResultsLayoutClass } from '../lib/listingResultsLayout';
 
 export default function BuyPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -318,136 +308,38 @@ export default function BuyPage() {
   const endIndex = Math.min(currentPage * itemsPerPage, filteredProperties.length);
 
   return (
-    <div className="pt-28 pb-20 px-4 max-w-7xl mx-auto text-left">
+    <>
+    <div className="pt-28 pb-12 px-4 max-w-7xl mx-auto text-left">
       
       {/* 1. Breadcrumb Component (PRD 5.2) */}
       <Breadcrumbs items={[{ label: 'Buy properties' }]} className="mb-4" />
 
       {/* 2. Heading Section per PRD 5.2 */}
       <div className="mb-8">
-        <Badge variant="default" className="mb-3 px-3 py-1 text-xs gap-1.5 font-semibold">
-          <ShieldCheck size={15} weight="fill" className="text-brand-blue" />
+        <Badge variant="default" className="mb-3">
+          <ShieldCheck size={16} weight="fill" className="text-brand-blue" aria-hidden />
           <span>Verified purchase inventory</span>
         </Badge>
-        <h1 className="heading-1 text-brand-navy tracking-tight">
+        <h1 className="text-h1 text-brand-navy tracking-tight text-balance">
           Properties for sale.
         </h1>
-        <p className="body-4 text-slate-500 mt-2 max-w-2xl leading-relaxed">
+        <p className="mkt-section-desc text-slate-500 mt-2">
           Discover verified residences, luxury apartments, standalone villas, and residential plots with comprehensive title disclosures and verified owner pricing.
         </p>
       </div>
 
-      {/* 3. Search Bar, Quick City Selector, Layout and Sort Bar (PRD 5.2) */}
-      <div className="mb-6 p-4 rounded-3xl bg-white shadow-xs border-0 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-        
-        {/* Search Input with Instant Clear */}
-        <div className="relative flex-1 max-w-lg">
-          <MagnifyingGlass size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search by locality, project name, or property type..."
-            value={searchQuery}
-            onChange={(e) => handleQueryChange(e.target.value)}
-            className="w-full pl-9 pr-9 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue focus:bg-white transition-all font-medium"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => handleQueryChange('')}
-              aria-label="Clear search query"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-navy cursor-pointer transition-colors"
-            >
-              <X size={13} weight="bold" />
-            </button>
-          )}
-        </div>
-
-        {/* Controls Cluster: City Quick Selector, View Mode, and Sort Dropdown */}
-        <div className="flex items-center justify-between sm:justify-end gap-3 flex-wrap">
-          
-          {/* Quick City Dropdown using Shadcn Select */}
-          <div className="flex items-center gap-1.5">
-            <MapPin size={15} className="text-[#C5A46D] shrink-0" />
-            <Select
-              value={cityParam}
-              onValueChange={(val) => handleFilterUpdate({ city: val })}
-            >
-              <SelectTrigger className="h-9 px-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-semibold text-brand-navy min-w-[130px] cursor-pointer">
-                <SelectValue placeholder="All cities" />
-              </SelectTrigger>
-              <SelectContent className="rounded-2xl border-slate-100 shadow-xl bg-white p-1">
-                {CITIES.map((c) => (
-                  <SelectItem key={c} value={c} className="rounded-xl text-xs font-medium cursor-pointer">
-                    {c}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Grid / List Layout Toggle per PRD 5.2 */}
-          <div className="flex items-center p-1 rounded-2xl bg-slate-100 border border-slate-200/80">
-            <button
-              type="button"
-              onClick={() => handleLayoutChange('grid')}
-              aria-label="Grid view layout"
-              className={`p-1.5 rounded-xl transition-all cursor-pointer ${
-                layout === 'grid'
-                  ? 'bg-white text-brand-navy shadow-xs font-bold'
-                  : 'text-slate-500 hover:text-brand-navy'
-              }`}
-              title="Grid view"
-            >
-              <SquaresFour size={16} weight={layout === 'grid' ? 'bold' : 'regular'} />
-            </button>
-            <button
-              type="button"
-              onClick={() => handleLayoutChange('list')}
-              aria-label="List view layout"
-              className={`p-1.5 rounded-xl transition-all cursor-pointer ${
-                layout === 'list'
-                  ? 'bg-white text-brand-navy shadow-xs font-bold'
-                  : 'text-slate-500 hover:text-brand-navy'
-              }`}
-              title="List view"
-            >
-              <Rows size={16} weight={layout === 'list' ? 'bold' : 'regular'} />
-            </button>
-          </div>
-
-          {/* Sort Dropdown using Shadcn Select */}
-          <div className="flex items-center gap-1.5">
-            <SortAscending size={15} className="text-slate-500 shrink-0" />
-            <Select
-              value={sortBy}
-              onValueChange={(val) => handleSortChange(val)}
-            >
-              <SelectTrigger className="h-9 px-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-semibold text-brand-navy min-w-[150px] cursor-pointer">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent className="rounded-2xl border-slate-100 shadow-xl bg-white p-1">
-                <SelectItem value="relevance" className="rounded-xl text-xs font-medium cursor-pointer">
-                  Relevance
-                </SelectItem>
-                <SelectItem value="newest" className="rounded-xl text-xs font-medium cursor-pointer">
-                  Newest first
-                </SelectItem>
-                <SelectItem value="price-low" className="rounded-xl text-xs font-medium cursor-pointer">
-                  Price: Low to high
-                </SelectItem>
-                <SelectItem value="price-high" className="rounded-xl text-xs font-medium cursor-pointer">
-                  Price: High to low
-                </SelectItem>
-                <SelectItem value="area-largest" className="rounded-xl text-xs font-medium cursor-pointer">
-                  Area: Largest first
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-        </div>
-
-      </div>
+      <PropertyListingToolbar
+        searchQuery={searchQuery}
+        onSearchChange={handleQueryChange}
+        onSearchClear={() => handleQueryChange('')}
+        city={cityParam}
+        onCityChange={(val) => handleFilterUpdate({ city: val })}
+        layout={layout}
+        onLayoutChange={handleLayoutChange}
+        sortBy={sortBy}
+        sortOptions={BUY_LISTING_SORT_OPTIONS}
+        onSortChange={handleSortChange}
+      />
 
       {/* 4. Active Filter Chips per PRD 5.2 */}
       <ActiveFilterChips 
@@ -498,7 +390,7 @@ export default function BuyPage() {
               }}
             />
           ) : isLoading ? (
-            <div className={`grid ${layout === 'grid' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'} gap-6 mb-8`}>
+            <div className={getPropertyResultsLayoutClass(layout, 'catalogue')}>
               {Array.from({ length: 4 }).map((_, idx) => (
                 <PropertyCardSkeleton key={idx} />
               ))}
@@ -506,13 +398,7 @@ export default function BuyPage() {
           ) : paginatedProperties.length > 0 ? (
             <>
               {/* 8. Property Grid or List View (PRD 5.2) */}
-              <div 
-                className={`grid ${
-                  layout === 'grid' 
-                    ? 'grid-cols-1 md:grid-cols-2' 
-                    : 'grid-cols-1'
-                } gap-6 mb-8`}
-              >
+              <div className={getPropertyResultsLayoutClass(layout, 'catalogue')}>
                 {paginatedProperties.map((property) => (
                   <PropertyCard 
                     key={property.id} 
@@ -553,16 +439,14 @@ export default function BuyPage() {
 
       {/* 11. Optional Recently Viewed Properties (PRD 5.2) */}
       {recentlyViewedProperties.length > 0 && (
-        <section className="mt-20 pt-12 border-t border-slate-200">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <span className="caption-2 font-bold tracking-wider uppercase text-[#C5A46D] block mb-1">
-                Browsing history
-              </span>
-              <h2 className="heading-3 text-brand-navy font-bold tracking-tight">
-                Recently viewed properties
-              </h2>
-            </div>
+        <section className="listing-recent-section">
+          <div className="listing-recent-section__header">
+            <span className="listing-recent-section__eyebrow mkt-section-eyebrow">
+              Browsing history
+            </span>
+            <h2 className="listing-recent-section__title">
+              Recently viewed properties
+            </h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -574,5 +458,8 @@ export default function BuyPage() {
       )}
 
     </div>
+
+    <ListPropertyCTA />
+    </>
   );
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -141,7 +141,7 @@ export default function AboutPage() {
 
         <div className="flex items-center gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-semibold">
-            <ShieldCheck size={15} weight="fill" />
+            <ShieldCheck size={16} weight="fill" />
             <span>EstateOne verified real estate standard</span>
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-semibold">
@@ -161,7 +161,7 @@ export default function AboutPage() {
 
         {/* Content Integrity Disclosure Callout */}
         <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs text-slate-600 flex items-start gap-3 max-w-3xl">
-          <Info size={18} weight="fill" className="text-brand-blue shrink-0 mt-0.5" />
+          <Info size={20} weight="fill" className="text-brand-blue shrink-0 mt-0.5" />
           <div className="space-y-0.5">
             <span className="font-bold text-brand-navy block">Demonstration brand disclosure</span>
             <p className="text-slate-500 leading-relaxed">
@@ -194,7 +194,7 @@ export default function AboutPage() {
           </div>
 
           <div className="pt-4 border-t border-slate-100 flex items-center gap-2 text-xs font-semibold text-brand-navy">
-            <CheckCircle size={15} weight="fill" className="text-emerald-600" />
+            <CheckCircle size={16} weight="fill" className="text-emerald-600" />
             <span>Dedicated to authenticity and zero ghost listings</span>
           </div>
         </Card>
@@ -217,7 +217,7 @@ export default function AboutPage() {
           </div>
 
           <div className="pt-4 border-t border-slate-100 flex items-center gap-2 text-xs font-semibold text-brand-navy">
-            <CheckCircle size={15} weight="fill" className="text-emerald-600" />
+            <CheckCircle size={16} weight="fill" className="text-emerald-600" />
             <span>Institutional clarity across India premier cities</span>
           </div>
         </Card>
@@ -299,13 +299,13 @@ export default function AboutPage() {
                     </td>
                     <td className="py-4 px-6 text-slate-500">
                       <div className="flex items-start gap-2">
-                        <XCircle size={15} weight="fill" className="text-rose-500 shrink-0 mt-0.5" />
+                        <XCircle size={16} weight="fill" className="text-rose-500 shrink-0 mt-0.5" />
                         <span>{row.traditional}</span>
                       </div>
                     </td>
                     <td className="py-4 px-6 text-brand-navy font-medium">
                       <div className="flex items-start gap-2">
-                        <CheckCircle size={15} weight="fill" className="text-emerald-600 shrink-0 mt-0.5" />
+                        <CheckCircle size={16} weight="fill" className="text-emerald-600 shrink-0 mt-0.5" />
                         <span>{row.estateone}</span>
                       </div>
                     </td>
@@ -413,7 +413,7 @@ export default function AboutPage() {
 
         <div className="relative z-10 max-w-3xl space-y-6">
           <span className="caption-2 font-bold tracking-wider uppercase text-[#C5A46D] block flex items-center gap-2">
-            <HouseLine size={18} weight="fill" />
+            <HouseLine size={20} weight="fill" />
             <span>Begin your verified property journey</span>
           </span>
 

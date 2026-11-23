@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+﻿import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { 
   Scales, 
@@ -146,7 +146,7 @@ export default function ComparePage() {
         <div>
           <div className="flex items-center gap-2 flex-wrap mb-3">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-semibold">
-              <Scales size={15} weight="fill" />
+              <Scales size={16} weight="fill" />
               <span>Decision support</span>
             </span>
             <Badge variant="neutral" className="px-3 py-1 text-xs font-semibold text-slate-700">
@@ -168,11 +168,7 @@ export default function ComparePage() {
             <button
               type="button"
               onClick={() => setHighlightDifferences((prev) => !prev)}
-              className={`px-3.5 py-2 rounded-2xl text-xs font-semibold border transition-all cursor-pointer flex items-center gap-2 ${
-                highlightDifferences
-                  ? 'bg-brand-navy text-white border-brand-navy shadow-xs'
-                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 shadow-xs'
-              }`}
+              className={`min-h-10 button-sm px-3.5 py-2 rounded-2xl border transition-all cursor-pointer flex items-center gap-2 ${ highlightDifferences ? 'bg-brand-navy text-white border-brand-navy shadow-xs' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 shadow-xs' }`}
               title="Highlight differing values across compared properties"
             >
               <SlidersHorizontal size={14} weight={highlightDifferences ? 'bold' : 'regular'} />
@@ -183,10 +179,10 @@ export default function ComparePage() {
             <button
               type="button"
               onClick={handleShare}
-              className="px-3.5 py-2 rounded-2xl bg-white hover:bg-slate-50 text-brand-navy text-xs font-semibold border border-slate-200 shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="min-h-10 button-sm px-3.5 py-2 rounded-2xl bg-white hover:bg-slate-50 text-brand-navy border border-slate-200 shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
               title="Share comparison link"
             >
-              <ShareNetwork size={15} />
+              <ShareNetwork size={16} />
               <span>Share</span>
             </button>
 
@@ -194,7 +190,7 @@ export default function ComparePage() {
             <button
               type="button"
               onClick={handleClear}
-              className="py-2 px-3.5 rounded-2xl bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs font-semibold border border-slate-200 shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="min-h-10 button-sm py-2 px-3.5 rounded-2xl bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
               title="Clear all properties from comparison"
             >
               <Trash size={14} />
@@ -225,7 +221,7 @@ export default function ComparePage() {
                           <button
                             type="button"
                             onClick={() => handleOpenReplaceModal(p.id)}
-                            className="px-2.5 py-1 rounded-full bg-white hover:bg-brand-navy hover:text-white text-slate-600 text-[11px] font-semibold border border-slate-200 shadow-xs transition-colors flex items-center gap-1 cursor-pointer"
+                            className="px-2.5 py-1 rounded-full bg-white hover:bg-brand-navy hover:text-white text-slate-600 text-small font-semibold border border-slate-200 shadow-xs transition-colors flex items-center gap-1 cursor-pointer"
                             title="Replace this property with another"
                           >
                             <ArrowClockwise size={12} weight="bold" />
@@ -252,12 +248,12 @@ export default function ComparePage() {
                           />
                           <div className="absolute top-2 left-2 flex items-center gap-1 flex-wrap pointer-events-none">
                             {p.verified && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-semibold shadow-xs">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-600 text-white text-caption font-semibold shadow-xs">
                                 <ShieldCheck size={12} weight="fill" />
                                 <span>Verified</span>
                               </span>
                             )}
-                            <span className="inline-flex px-2 py-0.5 rounded-full bg-brand-navy/90 text-brand-gold text-[10px] font-bold uppercase tracking-wider shadow-xs">
+                            <span className="inline-flex px-2 py-0.5 rounded-full bg-brand-navy/90 text-brand-gold text-label font-bold shadow-xs">
                               {p.intent === 'rent' ? 'Rent' : p.transactionType || 'Sale'}
                             </span>
                           </div>
@@ -275,7 +271,7 @@ export default function ComparePage() {
                             </Link>
                           </h3>
                           <p className="caption-2 text-slate-500 line-clamp-1 flex items-center gap-1">
-                            <MapPin size={13} className="text-brand-gold shrink-0" />
+                            <MapPin size={14} className="text-brand-gold shrink-0" />
                             <span>{p.location}</span>
                           </p>
                         </div>
@@ -294,17 +290,17 @@ export default function ComparePage() {
                             <button
                               type="button"
                               onClick={() => openSiteVisit(p)}
-                              className="py-1.5 px-2.5 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                              className="py-1.5 px-2.5 rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white text-small font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"
                             >
-                              <CalendarCheck size={13} weight="bold" />
+                              <CalendarCheck size={14} weight="bold" />
                               <span>Visit</span>
                             </button>
                             <button
                               type="button"
                               onClick={() => openEnquiry(p)}
-                              className="py-1.5 px-2.5 rounded-xl bg-brand-gold hover:bg-[#b0915d] text-brand-navy text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                              className="py-1.5 px-2.5 rounded-xl bg-brand-gold hover:bg-[#b0915d] text-brand-navy text-small font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"
                             >
-                              <ChatCircleText size={13} weight="bold" />
+                              <ChatCircleText size={14} weight="bold" />
                               <span>Enquire</span>
                             </button>
                           </div>
@@ -319,7 +315,7 @@ export default function ComparePage() {
                     <th key={`empty-col-${idx}`} className="p-4 w-64 sm:w-72 align-top bg-white">
                       <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 flex flex-col items-center justify-center text-center h-[340px] hover:border-brand-blue hover:bg-blue-50/20 transition-all">
                         <div className="w-12 h-12 rounded-full bg-white shadow-xs flex items-center justify-center text-brand-blue mb-3">
-                          <Plus size={22} weight="bold" />
+                          <Plus size={20} weight="bold" />
                         </div>
                         <h4 className="title-3 font-bold text-brand-navy mb-1">
                           Add listing {comparedProperties.length + idx + 1}
@@ -327,13 +323,8 @@ export default function ComparePage() {
                         <p className="caption-2 text-slate-500 mb-5 max-w-[180px]">
                           Evaluate another residence or commercial space side by side.
                         </p>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={handleOpenAddModal}
-                          className="px-4 py-2 h-auto text-xs font-semibold rounded-xl border-slate-300 hover:bg-brand-navy hover:text-white transition-colors cursor-pointer flex items-center gap-1.5"
-                        >
-                          <Plus size={13} weight="bold" />
+                        <Button size="sm" type="button" variant="outline" onClick={handleOpenAddModal} className="min-h-10 px-4 py-2 h-auto rounded-xl border-slate-300 hover:bg-brand-navy hover:text-white transition-colors cursor-pointer flex items-center gap-1.5" >
+                          <Plus size={14} weight="bold" />
                           <span>Add property</span>
                         </Button>
                       </div>
@@ -348,7 +339,7 @@ export default function ComparePage() {
                 {/* SECTION 1: FINANCIALS & PRICING */}
                 {/* ----------------------------------------------------------------- */}
                 <tr className="bg-slate-50/80">
-                  <td colSpan={totalSlots + 1} className="py-2.5 px-4 font-bold text-slate-500 uppercase tracking-wider text-[11px]">
+                  <td colSpan={totalSlots + 1} className="py-2.5 px-4 font-bold text-slate-500 uppercase tracking-wider text-small">
                     Financial breakdown and transaction model
                   </td>
                 </tr>
@@ -428,7 +419,7 @@ export default function ComparePage() {
                 {/* SECTION 2: ARCHITECTURAL SPECIFICATIONS */}
                 {/* ----------------------------------------------------------------- */}
                 <tr className="bg-slate-50/80">
-                  <td colSpan={totalSlots + 1} className="py-2.5 px-4 font-bold text-slate-500 uppercase tracking-wider text-[11px]">
+                  <td colSpan={totalSlots + 1} className="py-2.5 px-4 font-bold text-slate-500 uppercase tracking-wider text-small">
                     Space and architectural specifications
                   </td>
                 </tr>
@@ -563,7 +554,7 @@ export default function ComparePage() {
                 {/* SECTION 3: LOCATION & CONNECTIVITY */}
                 {/* ----------------------------------------------------------------- */}
                 <tr className="bg-slate-50/80">
-                  <td colSpan={totalSlots + 1} className="py-2.5 px-4 font-bold text-slate-500 uppercase tracking-wider text-[11px]">
+                  <td colSpan={totalSlots + 1} className="py-2.5 px-4 font-bold text-slate-500 uppercase tracking-wider text-small">
                     Location and regional connectivity
                   </td>
                 </tr>
@@ -603,7 +594,7 @@ export default function ComparePage() {
                 {/* SECTION 4: AVAILABILITY & VERIFICATION */}
                 {/* ----------------------------------------------------------------- */}
                 <tr className="bg-slate-50/80">
-                  <td colSpan={totalSlots + 1} className="py-2.5 px-4 font-bold text-slate-500 uppercase tracking-wider text-[11px]">
+                  <td colSpan={totalSlots + 1} className="py-2.5 px-4 font-bold text-slate-500 uppercase tracking-wider text-small">
                     Availability status and legal verification
                   </td>
                 </tr>
@@ -652,7 +643,7 @@ export default function ComparePage() {
                     RERA registration
                   </td>
                   {comparedProperties.map((p) => (
-                    <td key={p.id} className="p-4 font-mono text-[11px] font-semibold text-emerald-800">
+                    <td key={p.id} className="p-4 font-mono text-small font-semibold text-emerald-800">
                       {p.reraId ? `RERA: ${p.reraId}` : 'Document verified'}
                     </td>
                   ))}
@@ -665,7 +656,7 @@ export default function ComparePage() {
                 {/* SECTION 5: AMENITIES MATRIX */}
                 {/* ----------------------------------------------------------------- */}
                 <tr className="bg-slate-50/80">
-                  <td colSpan={totalSlots + 1} className="py-2.5 px-4 font-bold text-slate-500 uppercase tracking-wider text-[11px]">
+                  <td colSpan={totalSlots + 1} className="py-2.5 px-4 font-bold text-slate-500 uppercase tracking-wider text-small">
                     Lifestyle and infrastructure amenities matrix
                   </td>
                 </tr>
@@ -686,7 +677,7 @@ export default function ComparePage() {
                           <td key={p.id} className="p-4">
                             {includesAmenity ? (
                               <span className="inline-flex items-center gap-1.5 text-emerald-700 font-semibold">
-                                <Check size={15} weight="bold" className="text-emerald-600 shrink-0" />
+                                <Check size={16} weight="bold" className="text-emerald-600 shrink-0" />
                                 <span>Included</span>
                               </span>
                             ) : (
@@ -708,7 +699,7 @@ export default function ComparePage() {
                 {/* SECTION 6: AGENT & CONTACT ADVISORY */}
                 {/* ----------------------------------------------------------------- */}
                 <tr className="bg-slate-50/80">
-                  <td colSpan={totalSlots + 1} className="py-2.5 px-4 font-bold text-slate-500 uppercase tracking-wider text-[11px]">
+                  <td colSpan={totalSlots + 1} className="py-2.5 px-4 font-bold text-slate-500 uppercase tracking-wider text-small">
                     Verified agent and owner contact
                   </td>
                 </tr>
@@ -740,7 +731,7 @@ export default function ComparePage() {
                         <button
                           type="button"
                           onClick={() => openSiteVisit(p)}
-                          className="w-full py-2 px-3 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                          className="min-h-10 button-sm w-full py-2 px-3 rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                         >
                           <CalendarCheck size={14} weight="bold" />
                           <span>Schedule visit</span>
@@ -748,7 +739,7 @@ export default function ComparePage() {
                         <button
                           type="button"
                           onClick={() => openEnquiry(p)}
-                          className="w-full py-2 px-3 rounded-xl bg-brand-gold hover:bg-[#b0915d] text-brand-navy text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                          className="min-h-10 button-sm w-full py-2 px-3 rounded-xl bg-brand-gold hover:bg-[#b0915d] text-brand-navy flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                         >
                           <ChatCircleText size={14} weight="bold" />
                           <span>Send enquiry</span>
@@ -758,12 +749,7 @@ export default function ComparePage() {
                   ))}
                   {Array.from({ length: emptySlotsCount }).map((_, idx) => (
                     <td key={`empty-actions-${idx}`} className="p-4 text-center">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={handleOpenAddModal}
-                        className="text-xs font-semibold rounded-xl border-slate-300 cursor-pointer"
-                      >
+                      <Button size="sm" type="button" variant="outline" onClick={handleOpenAddModal} className="min-h-10 px-3 py-2 rounded-xl border-slate-300 cursor-pointer" >
                         Add to slot
                       </Button>
                     </td>
@@ -814,10 +800,10 @@ export default function ComparePage() {
                     <p className="caption-3 text-slate-500 truncate">{prop.location}</p>
                     <p className="caption-3 font-bold text-brand-navy mt-0.5">{prop.priceDisplay}</p>
                   </div>
-                  <Button
+                  <Button size="sm"
                     type="button"
                     onClick={() => addCompare(prop)}
-                    className="shrink-0 px-3 py-1.5 h-auto text-xs font-semibold rounded-xl bg-brand-navy hover:bg-brand-blue text-white cursor-pointer transition-colors"
+                    className="shrink-0 px-3 py-1.5 h-auto rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white cursor-pointer transition-colors"
                   >
                     Add
                   </Button>

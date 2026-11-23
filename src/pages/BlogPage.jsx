@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   BookOpen, 
@@ -89,7 +89,7 @@ export default function BlogPage() {
 
         <div className="flex items-center gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-semibold">
-            <BookOpen size={15} weight="fill" />
+            <BookOpen size={16} weight="fill" />
             <span>EstateOne editorial and market intelligence</span>
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold">
@@ -125,8 +125,8 @@ export default function BlogPage() {
                   loading="lazy"
                 />
                 <div className="absolute top-4 left-4 flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-full bg-brand-navy/90 text-brand-gold text-[11px] font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
-                    <Sparkle size={13} weight="fill" />
+                  <span className="px-3 py-1 rounded-full bg-brand-navy/90 text-brand-gold text-small font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5">
+                    <Sparkle size={14} weight="fill" />
                     <span>Featured spotlight</span>
                   </span>
                 </div>
@@ -136,7 +136,7 @@ export default function BlogPage() {
               <div className="lg:col-span-6 p-6 sm:p-10 flex flex-col justify-between space-y-6">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 text-xs text-slate-500 flex-wrap">
-                    <Badge variant="outline" className="text-brand-blue border-brand-blue/30 text-[11px] font-semibold">
+                    <Badge variant="outline" className="text-brand-blue border-brand-blue/30 text-small font-semibold">
                       {featuredArticle.category}
                     </Badge>
                     <span className="flex items-center gap-1">
@@ -176,10 +176,7 @@ export default function BlogPage() {
                   </div>
 
                   <Link to={`/blog/${featuredArticle.slug}`}>
-                    <Button
-                      type="button"
-                      className="px-5 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold flex items-center gap-2 cursor-pointer shadow-xs"
-                    >
+                    <Button size="sm" type="button" className="min-h-10 px-5 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white flex items-center gap-2 cursor-pointer shadow-xs" >
                       <span>Read guide</span>
                       <ArrowRight size={14} weight="bold" />
                     </Button>
@@ -216,7 +213,7 @@ export default function BlogPage() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-navy cursor-pointer"
                 title="Clear search"
               >
-                <X size={13} weight="bold" />
+                <X size={14} weight="bold" />
               </button>
             )}
           </div>
@@ -244,11 +241,7 @@ export default function BlogPage() {
                 key={cat}
                 type="button"
                 onClick={() => handleCategoryChange(cat)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-brand-navy text-white shadow-xs'
-                    : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-200'
-                }`}
+                className={`min-h-10 button-sm px-4 py-2 rounded-full whitespace-nowrap transition-all cursor-pointer ${ isSelected ? 'bg-brand-navy text-white shadow-xs' : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-200' }`}
               >
                 {cat}
               </button>
@@ -278,7 +271,7 @@ export default function BlogPage() {
                       loading="lazy"
                     />
                     <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-1 rounded-full bg-brand-navy/90 text-white text-[10px] font-bold tracking-wide shadow-xs">
+                      <span className="px-2.5 py-1 rounded-full bg-brand-navy/90 text-white text-caption font-bold tracking-wide shadow-xs">
                         {article.category}
                       </span>
                     </div>
@@ -287,7 +280,7 @@ export default function BlogPage() {
                   <div className="p-6 space-y-3">
                     <div className="flex items-center gap-2 text-xs text-slate-400">
                       <span className="flex items-center gap-1">
-                        <Clock size={13} />
+                        <Clock size={14} />
                         <span>{article.readTime}</span>
                       </span>
                       <span>•</span>
@@ -323,7 +316,7 @@ export default function BlogPage() {
                     className="caption-2 font-semibold text-brand-blue hover:text-brand-navy flex items-center gap-1 transition-colors"
                   >
                     <span>Read guide</span>
-                    <ArrowRight size={13} weight="bold" />
+                    <ArrowRight size={14} weight="bold" />
                   </Link>
                 </div>
               </article>
@@ -338,11 +331,7 @@ export default function BlogPage() {
             <p className="caption-1 text-slate-500 max-w-md mx-auto">
               No property guides matched your search or category selection. Try searching with different keywords or clearing your active filters.
             </p>
-            <Button
-              type="button"
-              onClick={handleResetFilters}
-              className="mt-2 px-6 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold cursor-pointer"
-            >
+            <Button size="sm" type="button" onClick={handleResetFilters} className="min-h-10 mt-2 px-6 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white cursor-pointer" >
               Reset all filters
             </Button>
           </div>
@@ -351,12 +340,12 @@ export default function BlogPage() {
         {/* Pagination Navigation */}
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 pt-6">
-            <Button
+            <Button size="sm"
               type="button"
               variant="outline"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="rounded-xl px-3 h-9 text-xs font-semibold cursor-pointer"
+              className="rounded-xl px-3 h-9 min-h-10 cursor-pointer"
             >
               <CaretLeft size={14} weight="bold" />
               <span className="ml-1 hidden sm:inline">Previous</span>
@@ -369,7 +358,7 @@ export default function BlogPage() {
                   key={page}
                   type="button"
                   onClick={() => setCurrentPage(page)}
-                  className={`w-9 h-9 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  className={`w-9 h-9 rounded-xl text-small font-semibold transition-all cursor-pointer ${
                     currentPage === page
                       ? 'bg-brand-navy text-white shadow-xs'
                       : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
@@ -380,12 +369,12 @@ export default function BlogPage() {
               );
             })}
 
-            <Button
+            <Button size="sm"
               type="button"
               variant="outline"
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              className="rounded-xl px-3 h-9 text-xs font-semibold cursor-pointer"
+              className="rounded-xl px-3 h-9 min-h-10 cursor-pointer"
             >
               <span className="mr-1 hidden sm:inline">Next</span>
               <CaretRight size={14} weight="bold" />
@@ -413,7 +402,7 @@ export default function BlogPage() {
               key={cat}
               type="button"
               onClick={() => handleCategoryChange(cat)}
-              className="px-4 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-brand-navy transition-colors cursor-pointer"
+              className="min-h-10 button-sm px-4 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-brand-navy transition-colors cursor-pointer"
             >
               {cat}
             </button>

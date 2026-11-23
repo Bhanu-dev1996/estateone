@@ -276,7 +276,7 @@ export default function ActiveFilterChips({ className = '', onFilterChange, onRe
       <button
         type="button"
         onClick={applyReset}
-        className="text-xs font-semibold text-brand-blue hover:underline cursor-pointer ml-1"
+        className="button-sm  text-brand-blue hover:underline cursor-pointer ml-1"
       >
         Clear all
       </button>

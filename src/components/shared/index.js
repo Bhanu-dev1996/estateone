@@ -6,6 +6,7 @@ export { default as LocationAutocomplete } from './LocationAutocomplete';
 export { default as PropertyTypeSelector } from './PropertyTypeSelector';
 export { default as PriceRangeSelector } from './PriceRangeSelector';
 export { default as FilterSidebar } from './FilterSidebar';
+export { default as PropertyListingToolbar } from './PropertyListingToolbar';
 export { default as ActiveFilterChips } from './ActiveFilterChips';
 export { default as Breadcrumbs } from './Breadcrumbs';
 export { default as Pagination } from './Pagination';

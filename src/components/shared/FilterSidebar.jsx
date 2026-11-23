@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { 
   Funnel, 
   X, 
@@ -126,11 +126,7 @@ export default function FilterSidebar({
                   key={t.id}
                   type="button"
                   onClick={() => applyFilter({ transactionType: t.id })}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                    (filters.transactionType || 'all') === t.id
-                      ? 'bg-brand-navy text-white shadow-xs'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
+                  className={`button-sm px-3.5 py-1.5 rounded-full transition-all cursor-pointer ${ (filters.transactionType || 'all') === t.id ? 'bg-brand-navy text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }`}
                 >
                   {t.label}
                 </button>
@@ -322,21 +318,21 @@ export default function FilterSidebar({
                 checked={!!filters.verifiedOnly}
                 onCheckedChange={(checked) => applyFilter({ verifiedOnly: !!checked })}
               />
-              <ShieldCheck size={18} weight="fill" className="text-emerald-600 shrink-0" />
+              <ShieldCheck size={20} weight="fill" className="text-emerald-600 shrink-0" />
               <span>Show RERA verified listings only</span>
             </label>
           </div>
 
           {/* Reset CTA */}
           <div className="pt-4 border-t border-slate-100">
-            <Button
+            <Button size="sm"
               type="button"
               variant="outline"
               onClick={() => {
                 applyReset();
                 setMobileOpen(false);
               }}
-              className="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer border-0 shadow-none"
+              className="min-h-10 w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center gap-2 transition-colors cursor-pointer border-0 shadow-none"
             >
               <ArrowClockwise size={14} weight="bold" />
               <span>Reset all filters</span>
@@ -689,21 +685,21 @@ export default function FilterSidebar({
             checked={!!filters.verifiedOnly}
             onCheckedChange={(checked) => applyFilter({ verifiedOnly: !!checked })}
           />
-          <ShieldCheck size={18} weight="fill" className="text-emerald-600 shrink-0" />
+          <ShieldCheck size={20} weight="fill" className="text-emerald-600 shrink-0" />
           <span>Show RERA verified listings only</span>
         </label>
       </div>
 
       {/* Reset CTA using Shadcn Button */}
       <div className="pt-4 border-t border-slate-100">
-        <Button
+        <Button size="sm"
           type="button"
           variant="outline"
           onClick={() => {
             applyReset();
             setMobileOpen(false);
           }}
-          className="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer border-0 shadow-none"
+          className="min-h-10 w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center gap-2 transition-colors cursor-pointer border-0 shadow-none"
         >
           <ArrowClockwise size={14} weight="bold" />
           <span>Reset all filters</span>
@@ -720,10 +716,10 @@ export default function FilterSidebar({
       <aside className={`hidden lg:block w-72 bg-white rounded-3xl p-6 shadow-xs border-0 shrink-0 self-start sticky top-24 ${className}`}>
         <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
           <div className="flex items-center gap-2 text-brand-navy">
-            <SlidersHorizontal size={18} weight="bold" />
-            <span className="heading-4 font-bold">Filters</span>
+            <SlidersHorizontal size={20} weight="bold" />
+            <span className="text-small font-bold text-brand-navy">Filters</span>
           </div>
-          <Badge variant="neutral" className="text-slate-500 font-semibold text-[11px]">
+          <Badge variant="neutral" className="text-slate-500 font-semibold text-small">
             {totalResults} results
           </Badge>
         </div>
@@ -737,23 +733,25 @@ export default function FilterSidebar({
       <div className="lg:hidden w-full mb-4">
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger asChild>
-            <button
+            <Button
               type="button"
-              className="w-full py-3 px-4 rounded-2xl bg-white shadow-xs border-0 text-brand-navy text-xs font-semibold flex items-center justify-between cursor-pointer"
+              variant="secondary"
+              size="sm"
+              className="w-full justify-between rounded-2xl shadow-xs border-0"
             >
               <div className="flex items-center gap-2">
                 <SlidersHorizontal size={16} weight="bold" />
                 <span>Filter properties</span>
               </div>
-              <Badge variant="neutral" className="text-slate-600 text-[11px] font-bold">
+              <Badge variant="neutral" className="text-slate-600 text-small font-bold">
                 {totalResults} results
               </Badge>
-            </button>
+            </Button>
           </SheetTrigger>
 
           <SheetContent side="bottom" className="max-h-[90vh] rounded-t-3xl p-6 bg-white border-0 flex flex-col">
             <SheetHeader className="mb-4 flex flex-row items-center justify-between shrink-0">
-              <SheetTitle className="heading-3 text-brand-navy font-bold">
+              <SheetTitle className="text-small font-bold text-brand-navy">
                 Filter properties
               </SheetTitle>
               <span className="caption-1 font-semibold text-slate-500">
@@ -766,8 +764,9 @@ export default function FilterSidebar({
             <div className="mt-4 pt-4 border-t border-slate-100 shrink-0">
               <Button
                 type="button"
+                size="sm"
                 onClick={() => setMobileOpen(false)}
-                className="w-full py-3 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold text-center cursor-pointer transition-colors"
+                className="w-full rounded-2xl shadow-xs"
               >
                 Apply filters
               </Button>

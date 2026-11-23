@@ -1,5 +1,6 @@
 import React from 'react';
-import { MagnifyingGlass, House, ArrowClockwise, Sparkle } from '@phosphor-icons/react';
+import { MagnifyingGlass, ArrowClockwise } from '@phosphor-icons/react';
+import { Button } from '../ui/button';
 
 export default function EmptyState({
   title = 'No verified properties found',
@@ -26,14 +27,10 @@ export default function EmptyState({
       </p>
 
       {onAction && (
-        <button
-          type="button"
-          onClick={onAction}
-          className="py-2.5 px-5 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
-        >
-          <ArrowClockwise size={15} weight="bold" />
-          <span>{actionLabel}</span>
-        </button>
+        <Button type="button" size="sm" onClick={onAction} className="rounded-2xl shadow-xs">
+          <ArrowClockwise size={16} weight="bold" />
+          {actionLabel}
+        </Button>
       )}
     </div>
   );

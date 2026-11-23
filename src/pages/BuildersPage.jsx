@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { Buildings, MagnifyingGlass, X, ShieldCheck } from '@phosphor-icons/react';
 import { SAMPLE_BUILDERS } from '../data/agents';
 import { CITIES } from '../data/properties';
@@ -37,17 +37,14 @@ export default function BuildersPage() {
   return (
     <div className="pt-28 pb-24 px-4 max-w-7xl mx-auto text-left">
       <Breadcrumbs 
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'Builders and developers' }
-        ]} 
+        items={[{ label: 'Builders and developers' }]} 
         className="mb-4" 
       />
 
       {/* Header Banner */}
       <div className="mb-8">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-semibold mb-3">
-          <Buildings size={15} weight="fill" />
+          <Buildings size={16} weight="fill" />
           <span>RERA registered developers</span>
         </span>
         <h1 className="heading-1 text-brand-navy tracking-tight">
@@ -76,7 +73,7 @@ export default function BuildersPage() {
               aria-label="Clear search input"
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-navy cursor-pointer transition-colors"
             >
-              <X size={13} weight="bold" />
+              <X size={14} weight="bold" />
             </button>
           )}
         </div>
@@ -89,8 +86,10 @@ export default function BuildersPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="All cities">All territories</SelectItem>
-                {CITIES.map((c) => (
-                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                {CITIES.filter((c) => c !== 'All cities').map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>

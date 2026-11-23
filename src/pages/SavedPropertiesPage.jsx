@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+﻿import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Heart, 
@@ -33,6 +33,8 @@ import Breadcrumbs from '../components/shared/Breadcrumbs';
 import EmptyState from '../components/shared/EmptyState';
 import ErrorState from '../components/shared/ErrorState';
 import { PropertyCardSkeleton } from '../components/shared/LoadingSkeleton';
+import PropertyCard from '../components/shared/PropertyCard';
+import { getPropertyResultsLayoutClass } from '../lib/listingResultsLayout';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select';
@@ -189,7 +191,7 @@ export default function SavedPropertiesPage() {
         <div className="mb-6 p-4 rounded-3xl bg-amber-50/80 border border-amber-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left">
           <div className="flex items-center gap-3">
             <span className="w-8 h-8 rounded-full bg-amber-200/70 text-amber-900 flex items-center justify-center shrink-0">
-              <Info size={18} weight="bold" />
+              <Info size={20} weight="bold" />
             </span>
             <div>
               <p className="caption-1 font-semibold text-amber-900">
@@ -201,10 +203,7 @@ export default function SavedPropertiesPage() {
             </div>
           </div>
           <Link to="/login" className="shrink-0 self-start sm:self-auto">
-            <Button
-              type="button"
-              className="px-4 py-2 text-xs font-semibold rounded-xl bg-amber-900 hover:bg-amber-950 text-white shadow-xs cursor-pointer flex items-center gap-1.5"
-            >
+            <Button size="sm" type="button" className="min-h-10 px-4 py-2 rounded-xl bg-amber-900 hover:bg-amber-950 text-white shadow-xs cursor-pointer flex items-center gap-1.5" >
               <User size={14} weight="bold" />
               <span>Sign in to sync</span>
             </Button>
@@ -213,12 +212,12 @@ export default function SavedPropertiesPage() {
       ) : (
         <div className="mb-6 p-3.5 px-4 rounded-3xl bg-white border border-slate-200 shadow-xs flex items-center justify-between gap-3 text-left">
           <div className="flex items-center gap-2.5">
-            <ShieldCheck size={18} weight="fill" className="text-emerald-600" />
+            <ShieldCheck size={20} weight="fill" className="text-emerald-600" />
             <span className="caption-1 font-semibold text-brand-navy">
               Signed in as {user.name} • Cloud synchronized wishlist
             </span>
           </div>
-          <Badge variant="neutral" className="text-[11px] font-semibold text-slate-500">
+          <Badge variant="neutral" className="text-small font-semibold text-slate-500">
             Account ID: {user.id}
           </Badge>
         </div>
@@ -249,13 +248,8 @@ export default function SavedPropertiesPage() {
           <div className="flex items-center gap-2.5 flex-wrap self-start lg:self-auto">
             {/* Compare All Button */}
             {filteredProperties.length >= 2 && (
-              <Button
-                type="button"
-                onClick={handleCompareAll}
-                className="px-4 py-2.5 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
-                title="Compare up to 4 saved listings side by side"
-              >
-                <Scales size={15} weight="bold" />
+              <Button size="sm" type="button" onClick={handleCompareAll} className="min-h-10 px-4 py-2.5 rounded-2xl bg-brand-navy hover:bg-brand-navy-hover text-white shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors" title="Compare up to 4 saved listings side by side" >
+                <Scales size={16} weight="bold" />
                 <span>Compare saved ({Math.min(4, filteredProperties.length)})</span>
               </Button>
             )}
@@ -264,10 +258,10 @@ export default function SavedPropertiesPage() {
             <button
               type="button"
               onClick={handleClearAll}
-              className="py-2.5 px-4 rounded-2xl bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs font-semibold border border-slate-200 shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="min-h-10 button-sm py-2.5 px-4 rounded-2xl bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
               title="Clear all properties from saved collection"
             >
-              <Trash size={15} />
+              <Trash size={16} />
               <span>Clear collection</span>
             </button>
           </div>
@@ -277,7 +271,7 @@ export default function SavedPropertiesPage() {
       {/* Main Content Area */}
       {isLoading ? (
         /* Loading Skeleton State */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className={getPropertyResultsLayoutClass(layout, 'three', '')}>
           {Array.from({ length: 3 }).map((_, idx) => (
             <PropertyCardSkeleton key={idx} />
           ))}
@@ -357,14 +351,10 @@ export default function SavedPropertiesPage() {
                     key={tab.id}
                     type="button"
                     onClick={() => setSegment(tab.id)}
-                    className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                      segment === tab.id
-                        ? 'bg-brand-navy text-white shadow-xs'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-brand-navy'
-                    }`}
+                    className={`button-sm px-3.5 py-1.5 rounded-full transition-all cursor-pointer flex items-center gap-1.5 ${ segment === tab.id ? 'bg-brand-navy text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-brand-navy' }`}
                   >
                     <span>{tab.label}</span>
-                    <span className={`text-[11px] px-1.5 py-0.2 rounded-full ${
+                    <span className={`text-small px-1.5 py-0.2 rounded-full ${
                       segment === tab.id ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
                     }`}>
                       {tab.count}
@@ -390,7 +380,7 @@ export default function SavedPropertiesPage() {
                     aria-label="Clear search input"
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-navy cursor-pointer transition-colors"
                   >
-                    <X size={13} weight="bold" />
+                    <X size={14} weight="bold" />
                   </button>
                 )}
               </div>
@@ -409,9 +399,10 @@ export default function SavedPropertiesPage() {
                       <SelectValue placeholder="All cities" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="All cities">All cities</SelectItem>
                       {CITIES.map((c) => (
-                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                        <SelectItem key={c} value={c}>
+                          {c}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -497,179 +488,14 @@ export default function SavedPropertiesPage() {
 
           {/* Properties Grid or List View */}
           {filteredProperties.length > 0 ? (
-            <div className={layout === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
-              {filteredProperties.map((property) => {
-                const compared = isCompared(property.id);
-                const isOffMarket = property.availabilityStatus === 'leased' || property.status === 'Sold out';
-
-                return (
-                  <article
-                    key={property.id}
-                    className={`group bg-white rounded-3xl overflow-hidden border-0 shadow-xs hover:shadow-lg transition-all duration-300 flex ${
-                      layout === 'list' ? 'flex-col md:flex-row' : 'flex-col'
-                    }`}
-                  >
-                    {/* Media Container with Badges */}
-                    <div className={`relative ${
-                      layout === 'list' ? 'aspect-[16/10] md:aspect-auto md:w-80 shrink-0 min-h-[220px]' : 'aspect-[16/10] w-full'
-                    } overflow-hidden bg-slate-100`}>
-                      <img
-                        src={property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'}
-                        alt={property.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                      />
-
-                      {/* Top Badges */}
-                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          {isOffMarket ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-700/95 backdrop-blur-md text-white text-[11px] font-semibold shadow-xs pointer-events-auto">
-                              <WarningCircle size={13} weight="fill" />
-                              <span>Off market / Leased</span>
-                            </span>
-                          ) : (
-                            property.verified && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-600/90 backdrop-blur-md text-white text-[11px] font-semibold shadow-xs pointer-events-auto">
-                                <ShieldCheck size={13} weight="fill" />
-                                <span>Verified</span>
-                              </span>
-                            )
-                          )}
-                          <span className="inline-flex px-2.5 py-0.5 rounded-full bg-brand-navy/90 backdrop-blur-md text-brand-gold text-[10px] font-bold uppercase tracking-wider shadow-xs pointer-events-auto">
-                            {property.intent === 'rent' ? 'Rent' : property.transactionType || 'Buy'}
-                          </span>
-                        </div>
-
-                        {/* Remove from Wishlist Action Button */}
-                        <button
-                          type="button"
-                          onClick={() => toggleSave(property)}
-                          aria-label={`Remove ${property.title} from saved`}
-                          className="w-8 h-8 rounded-full bg-white/90 hover:bg-rose-50 text-rose-600 shadow-xs flex items-center justify-center transition-all cursor-pointer pointer-events-auto"
-                          title="Remove from saved collection"
-                        >
-                          <Heart size={16} weight="fill" />
-                        </button>
-                      </div>
-
-                      {/* Unavailable Notice Overlay if Off Market */}
-                      {isOffMarket && (
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 text-white text-left">
-                          <p className="caption-3 font-semibold text-amber-300">
-                            Listing currently unavailable
-                          </p>
-                          <p className="text-[11px] text-slate-200">
-                            This property has been leased or removed by the owner.
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Content Details Container */}
-                    <div className="p-5 flex flex-col justify-between flex-1 text-left">
-                      <div>
-                        {/* Pricing */}
-                        <div className="flex items-baseline justify-between mb-1">
-                          <span className="heading-3 text-brand-navy font-bold tracking-tight">
-                            {property.intent === 'rent'
-                              ? (property.monthlyRentDisplay || property.priceDisplay)
-                              : property.priceDisplay}
-                          </span>
-                          {property.intent === 'rent' && (
-                            <span className="caption-3 text-slate-500 font-medium">Monthly rent</span>
-                          )}
-                        </div>
-
-                        {/* Title */}
-                        <h4 className="title-2 font-bold text-brand-navy mb-1 line-clamp-1">
-                          <Link to={`/property/${property.slug}`} className="hover:text-brand-blue transition-colors">
-                            {property.title}
-                          </Link>
-                        </h4>
-
-                        {/* Locality */}
-                        <p className="caption-2 text-slate-500 flex items-center gap-1.5 mb-3">
-                          <MapPin size={15} className="text-brand-gold shrink-0" />
-                          <span className="truncate">{property.location}</span>
-                        </p>
-
-                        {/* Specifications Pill Bar */}
-                        <div className="flex items-center gap-3 text-slate-600 py-2 border-y border-slate-100 mb-4 text-xs">
-                          {property.bedrooms && (
-                            <div className="flex items-center gap-1">
-                              <Bed size={15} className="text-slate-400" />
-                              <span className="font-semibold">{property.bedrooms}</span>
-                            </div>
-                          )}
-                          {property.bathrooms && (
-                            <div className="flex items-center gap-1">
-                              <Bathtub size={15} className="text-slate-400" />
-                              <span className="font-semibold">{property.bathrooms}</span>
-                            </div>
-                          )}
-                          <div className="flex items-center gap-1">
-                            <ArrowsOut size={15} className="text-slate-400" />
-                            <span className="font-semibold">{property.area}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Action Suite: View Details, Compare, Visit, Enquire */}
-                      <div className="pt-2 flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                          {/* View Details Link */}
-                          <Link
-                            to={`/property/${property.slug}`}
-                            className="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-brand-navy text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
-                          >
-                            <Eye size={14} />
-                            <span>View details</span>
-                          </Link>
-
-                          {/* Compare Toggle Button */}
-                          <button
-                            type="button"
-                            onClick={() => addCompare(property)}
-                            className={`px-3 py-2 rounded-xl text-xs font-semibold border flex items-center gap-1 transition-colors cursor-pointer ${
-                              compared
-                                ? 'bg-brand-navy text-brand-gold border-brand-navy'
-                                : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
-                            }`}
-                            title="Add to comparison tray"
-                          >
-                            <Scales size={15} weight={compared ? 'fill' : 'regular'} />
-                            <span className="hidden sm:inline">{compared ? 'In compare' : 'Compare'}</span>
-                          </button>
-                        </div>
-
-                        {/* Visit and Enquire Buttons */}
-                        {!isOffMarket && (
-                          <div className="grid grid-cols-2 gap-2">
-                            <button
-                              type="button"
-                              onClick={() => openSiteVisit(property)}
-                              className="py-1.5 px-3 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"
-                            >
-                              <CalendarCheck size={14} weight="bold" />
-                              <span>Site visit</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => openEnquiry(property)}
-                              className="py-1.5 px-3 rounded-xl bg-brand-gold hover:bg-[#b0915d] text-brand-navy text-xs font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"
-                            >
-                              <ChatCircleText size={14} weight="bold" />
-                              <span>Enquire</span>
-                            </button>
-                          </div>
-                        )}
-                      </div>
-
-                    </div>
-                  </article>
-                );
-              })}
+            <div className={getPropertyResultsLayoutClass(layout, 'three', '')}>
+              {filteredProperties.map((property) => (
+                <PropertyCard
+                  key={property.id}
+                  property={property}
+                  layout={layout === 'list' ? 'list' : 'grid'}
+                />
+              ))}
             </div>
           ) : (
             /* No Results for Current Filter */
@@ -680,11 +506,7 @@ export default function SavedPropertiesPage() {
               <p className="caption-2 text-slate-500 max-w-md mx-auto">
                 Try clearing your search query or selecting another category to view your shortlisted listings.
               </p>
-              <Button
-                type="button"
-                onClick={resetAllFilters}
-                className="mt-2 text-xs font-semibold rounded-xl bg-brand-navy hover:bg-brand-blue text-white cursor-pointer"
-              >
+              <Button size="sm" type="button" onClick={resetAllFilters} className="mt-2 rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white cursor-pointer" >
                 Reset active filters
               </Button>
             </div>

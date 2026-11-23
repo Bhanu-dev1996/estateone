@@ -82,7 +82,7 @@ export default function HomePage({
       <PopularLocations />
 
       {/* 4. Featured Properties (PRD 5.1 Section 4) */}
-      <div id="properties">
+      <div id="properties" className="scroll-mt-28 sm:scroll-mt-32">
         <FeaturedProperties />
       </div>
 
@@ -96,7 +96,7 @@ export default function HomePage({
       <PremiumProperties />
 
       {/* 8. Why Choose EstateOne (PRD 5.1 Section 8) */}
-      <div id="why-us">
+      <div id="why-us" className="scroll-mt-28 sm:scroll-mt-32">
         <Benefits />
       </div>
 
@@ -104,12 +104,12 @@ export default function HomePage({
       <TaglineReveal />
 
       {/* 9. How EstateOne Works (PRD 5.1 Section 9) */}
-      <div id="how-it-works">
+      <div id="how-it-works" className="scroll-mt-28 sm:scroll-mt-32">
         <HowItWorks onExploreClick={onExploreProperties} />
       </div>
 
       {/* Verification Protocol */}
-      <div id="verification">
+      <div id="verification" className="scroll-mt-28 sm:scroll-mt-32">
         <Verification />
       </div>
 

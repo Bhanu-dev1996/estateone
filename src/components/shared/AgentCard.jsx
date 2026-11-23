@@ -1,21 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Phone, Envelope, Star, Buildings, MapPin, ArrowRight, ChatCircleText } from '@phosphor-icons/react';
+import { ShieldCheck, Phone, Star, Buildings, MapPin, ArrowRight, ChatCircleText } from '@phosphor-icons/react';
 import { SAMPLE_PROPERTIES } from '../../data/properties';
 import { getRealAgentListings } from '../../data/agents';
+import { MKT_ICON } from '../../lib/iconScale';
 
 export default function AgentCard({ agent, onContact, className = '' }) {
   if (!agent) return null;
 
-  // Real data listing count per PRD 5.8
   const realListings = getRealAgentListings(agent, SAMPLE_PROPERTIES);
   const listingsCount = realListings.length;
 
   return (
-    <article 
-      className={`group flex flex-col bg-white rounded-3xl p-6 border-0 shadow-xs hover:shadow-lg transition-all duration-300 text-left ${className}`}
-    >
-      {/* Top Header: Avatar, Name, Verified Badge, Rating */}
+    <article className={`directory-card agent-card group ${className}`.trim()}>
       <div className="flex items-start gap-4 mb-4">
         <div className="relative shrink-0">
           <img
@@ -24,100 +21,91 @@ export default function AgentCard({ agent, onContact, className = '' }) {
             className="w-16 h-16 rounded-2xl object-cover"
             loading="lazy"
           />
-          {/* Verified status, only when verified per PRD 5.8 */}
           {agent.verified && (
-            <span 
-              className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-xs" 
+            <span
+              className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-xs"
               title="Verified RERA Certified Advisor"
             >
-              <ShieldCheck size={12} weight="fill" />
+              <ShieldCheck size={MKT_ICON.xs} weight="fill" />
             </span>
           )}
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <h3 className="heading-4 text-brand-navy font-bold hover:text-brand-blue transition-colors truncate">
-              <Link to={`/agents/${agent.slug || agent.id}`}>
-                {agent.name}
-              </Link>
-            </h3>
-          </div>
-          <p className="caption-2 text-slate-500 truncate mt-0.5 font-medium">
+          <h3 className="directory-card__title truncate">
+            <Link to={`/agents/${agent.slug || agent.id}`}>{agent.name}</Link>
+          </h3>
+          <p className="directory-card__subtitle truncate">
             {agent.role || 'Licensed Real Estate Advisor'}
           </p>
-          <p className="caption-3 text-brand-navy font-semibold truncate">
-            {agent.company}
-          </p>
-          <div className="flex items-center gap-1 text-[#C5A46D] caption-2 font-semibold mt-1">
-            <Star size={13} weight="fill" />
+          <p className="directory-card__company truncate">{agent.company}</p>
+          <div className="directory-card__rating">
+            <Star size={MKT_ICON.sm} weight="fill" aria-hidden />
             <span>{agent.rating || '4.95'}</span>
-            <span className="text-slate-400 font-normal">({agent.reviewCount || '28'} reviews)</span>
+            <span className="directory-card__rating-meta">({agent.reviewCount || '28'} reviews)</span>
           </div>
         </div>
       </div>
 
-      {/* Specialization & Experience */}
-      <div className="space-y-2 py-3 border-y border-slate-100 text-slate-600 caption-2 mb-4">
-        {/* Experience, only when supplied per PRD 5.8 */}
+      <div className="directory-card__facts space-y-2">
         {agent.experience && (
-          <div className="flex items-center justify-between">
-            <span className="text-slate-400">Experience:</span>
-            <span className="font-semibold text-brand-navy">{agent.experience}</span>
+          <div className="directory-card__fact">
+            <span className="directory-card__fact-label">Experience</span>
+            <span className="directory-card__fact-value">{agent.experience}</span>
           </div>
         )}
-        
+
         {agent.city && (
-          <div className="flex items-center justify-between">
-            <span className="text-slate-400">Territory:</span>
-            <span className="font-medium text-brand-navy flex items-center gap-1">
-              <MapPin size={12} className="text-[#C5A46D]" />
+          <div className="directory-card__fact">
+            <span className="directory-card__fact-label">Territory</span>
+            <span className="directory-card__fact-value inline-flex items-center gap-1">
+              <MapPin size={MKT_ICON.xs} className="text-brand-gold shrink-0" aria-hidden />
               <span>{agent.city}</span>
             </span>
           </div>
         )}
 
-        {/* Listed properties count, based on real data per PRD 5.8 */}
-        <div className="flex items-center justify-between">
-          <span className="text-slate-400">Active listings:</span>
-          <span className="font-semibold text-emerald-700 flex items-center gap-1">
-            <Buildings size={12} />
-            <span>{listingsCount} {listingsCount === 1 ? 'property' : 'properties'}</span>
+        <div className="directory-card__fact">
+          <span className="directory-card__fact-label">Active listings</span>
+          <span className="directory-card__fact-value directory-card__fact-value--accent inline-flex items-center gap-1">
+            <Buildings size={MKT_ICON.xs} aria-hidden />
+            <span>
+              {listingsCount} {listingsCount === 1 ? 'property' : 'properties'}
+            </span>
           </span>
         </div>
 
         {agent.specialization && (
-          <div className="pt-1 text-slate-500 line-clamp-1">
-            <span className="text-slate-400">Focus: </span>
-            <span className="text-slate-700 font-medium">{agent.specialization}</span>
-          </div>
+          <p className="pt-1 line-clamp-1">
+            <span className="directory-card__fact-label">Focus </span>
+            <span className="text-small font-medium text-brand-text">{agent.specialization}</span>
+          </p>
         )}
       </div>
 
-      {/* Action CTA Buttons */}
       <div className="mt-auto pt-2 grid grid-cols-2 gap-2">
         <Link
           to={`/agents/${agent.slug || agent.id}`}
-          className="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-brand-navy caption-1 font-semibold text-center transition-colors flex items-center justify-center gap-1"
+          className="directory-card__cta directory-card__cta--secondary"
         >
           <span>View profile</span>
-          <ArrowRight size={13} weight="bold" />
+          <ArrowRight size={MKT_ICON.sm} weight="bold" aria-hidden />
         </Link>
 
         {agent.publicContact ? (
           <a
             href={`tel:${agent.phone.replace(/[^0-9+]/g, '')}`}
-            className="py-2.5 px-3 rounded-xl bg-brand-navy hover:bg-brand-blue text-white caption-1 font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            className="directory-card__cta directory-card__cta--primary"
           >
-            <Phone size={14} weight="bold" />
+            <Phone size={MKT_ICON.sm} weight="bold" aria-hidden />
             <span>Call agent</span>
           </a>
         ) : (
           <Link
             to={`/agents/${agent.slug || agent.id}#enquire`}
-            className="py-2.5 px-3 rounded-xl bg-brand-navy hover:bg-brand-blue text-white caption-1 font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            className="directory-card__cta directory-card__cta--primary"
           >
-            <ChatCircleText size={14} weight="bold" />
+            <ChatCircleText size={MKT_ICON.sm} weight="bold" aria-hidden />
             <span>Contact</span>
           </Link>
         )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   User, 
@@ -93,12 +93,7 @@ export default function AccountPage() {
         </div>
 
         <div className="flex items-center gap-2 self-start md:self-auto">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={logout}
-            className="rounded-2xl text-xs font-semibold border-slate-200 hover:bg-slate-100 text-slate-700 cursor-pointer flex items-center gap-2"
-          >
+          <Button size="sm" type="button" variant="outline" onClick={logout} className="rounded-2xl border-slate-200 hover:bg-slate-100 text-slate-700 cursor-pointer flex items-center gap-2" >
             <SignOut size={16} />
             <span>Sign out</span>
           </Button>
@@ -123,12 +118,12 @@ export default function AccountPage() {
                   <h2 className="title-2 font-bold text-brand-navy truncate">
                     {user?.name || 'EstateOne Member'}
                   </h2>
-                  <ShieldCheck size={18} className="text-brand-blue shrink-0" weight="fill" />
+                  <ShieldCheck size={20} className="text-brand-blue shrink-0" weight="fill" />
                 </div>
                 <p className="caption-2 text-slate-500 capitalize">
-                  {user?.role || 'Verified Member'} {user?.company ? `• ${user.company}` : ''}
+                  Verified member {user?.company ? `• ${user.company}` : ''}
                 </p>
-                <Badge variant="outline" className="mt-1.5 text-[10px] bg-slate-50 text-slate-600 font-mono">
+                <Badge variant="outline" className="mt-1.5 text-caption bg-slate-50 text-slate-600 font-mono">
                   ID: {user?.id}
                 </Badge>
               </div>
@@ -163,11 +158,11 @@ export default function AccountPage() {
 
               {/* Session Expiry Test Trigger (Rule 7 Verification) */}
               <div className="pt-1">
-                <Button
+                <Button size="sm"
                   type="button"
                   variant="outline"
                   onClick={handleSimulateExpiry}
-                  className="w-full rounded-xl text-[11px] font-semibold border-blue-200 bg-white hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-brand-navy transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-full rounded-xl text-small font-semibold border-blue-200 bg-white hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-brand-navy transition-all cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <Lightning size={14} className="text-amber-500" />
                   <span>Simulate session expiration</span>
@@ -198,7 +193,7 @@ export default function AccountPage() {
                 className="p-5 rounded-2xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200/80 hover:border-brand-blue/30 transition-all group block"
               >
                 <div className="w-10 h-10 rounded-xl bg-white shadow-2xs flex items-center justify-center text-brand-navy group-hover:text-brand-blue mb-3">
-                  <PlusCircle size={22} weight="bold" />
+                  <PlusCircle size={20} weight="bold" />
                 </div>
                 <h3 className="caption-1 font-bold text-brand-navy group-hover:text-brand-blue">
                   List a property
@@ -214,13 +209,13 @@ export default function AccountPage() {
                 className="p-5 rounded-2xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200/80 hover:border-brand-blue/30 transition-all group block"
               >
                 <div className="w-10 h-10 rounded-xl bg-white shadow-2xs flex items-center justify-center text-brand-navy group-hover:text-brand-blue mb-3">
-                  <Buildings size={22} weight="bold" />
+                  <Buildings size={20} weight="bold" />
                 </div>
                 <div className="flex items-center justify-between">
                   <h3 className="caption-1 font-bold text-brand-navy group-hover:text-brand-blue">
                     My submissions
                   </h3>
-                  <Badge variant="outline" className="bg-white text-[11px] font-semibold text-slate-700">
+                  <Badge variant="outline" className="bg-white text-small font-semibold text-slate-700">
                     {submissionsCount}
                   </Badge>
                 </div>
@@ -235,7 +230,7 @@ export default function AccountPage() {
                 className="p-5 rounded-2xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200/80 hover:border-brand-blue/30 transition-all group block"
               >
                 <div className="w-10 h-10 rounded-xl bg-white shadow-2xs flex items-center justify-center text-brand-navy group-hover:text-brand-blue mb-3">
-                  <Heart size={22} weight="bold" />
+                  <Heart size={20} weight="bold" />
                 </div>
                 <h3 className="caption-1 font-bold text-brand-navy group-hover:text-brand-blue">
                   Saved shortlists
@@ -251,7 +246,7 @@ export default function AccountPage() {
                 className="p-5 rounded-2xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200/80 hover:border-brand-blue/30 transition-all group block"
               >
                 <div className="w-10 h-10 rounded-xl bg-white shadow-2xs flex items-center justify-center text-brand-navy group-hover:text-brand-blue mb-3">
-                  <Key size={22} weight="bold" />
+                  <Key size={20} weight="bold" />
                 </div>
                 <h3 className="caption-1 font-bold text-brand-navy group-hover:text-brand-blue">
                   Update password

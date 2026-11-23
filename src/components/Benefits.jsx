@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { ShieldCheck, Receipt, ChatCircleDots, CalendarCheck } from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
@@ -35,14 +35,14 @@ export default function Benefits() {
     <section id="why-us" className="py-20 px-4 max-w-7xl mx-auto scroll-mt-24">
       
       {/* Section Header */}
-      <div className="text-center max-w-[680px] mx-auto mb-16">
+      <div className="text-center max-w-[65ch] mx-auto mb-16">
         <Badge variant="default" className="mb-3">
           Why choose EstateOne
         </Badge>
-        <h2 className="heading-2 text-brand-navy mb-4 tracking-tight text-balance">
+        <h2 className="text-h2 text-brand-navy mb-4 tracking-tight text-balance">
           Real estate discovery built on authenticity
         </h2>
-        <p className="body-2 text-brand-muted text-pretty">
+        <p className="mkt-section-desc text-brand-muted mx-auto">
           Finding your next property should be transparent. Here is how we remove the uncertainty of traditional property portals.
         </p>
       </div>
@@ -71,7 +71,7 @@ export default function Benefits() {
               </CardHeader>
 
               <CardContent>
-                <div className="pt-4 border-t border-black/5 flex items-center gap-1.5 text-xs text-brand-navy font-semibold">
+                <div className="pt-4 border-t border-black/5 flex items-center gap-1.5 mkt-inline-stat text-brand-navy font-semibold">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand-gold"></span>
                   <span>Verified buyer standard</span>
                 </div>
@@ -83,18 +83,18 @@ export default function Benefits() {
 
       {/* Problem to Solution Comparison Glass Console (Borderless) */}
       <Card className="mt-16 p-6 md:p-8 bg-white/75 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.06)] border-0">
-        <h3 className="heading-5 text-brand-navy mb-6 text-center">
+        <h3 className="text-h4 text-brand-navy font-semibold mb-6 text-center text-balance">
           Traditional classifieds compared to EstateOne
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Legacy Portals Glass Dock */}
           <div className="p-5 rounded-2xl bg-rose-50/50 backdrop-blur-md border-0 shadow-xs">
-            <div className="flex items-center gap-2 mb-3 text-rose-600 font-semibold text-sm">
+            <div className="flex items-center gap-2 mb-3 text-rose-600 font-semibold text-small">
               <span className="w-2 h-2 rounded-full bg-rose-500"></span>
               <span>Traditional classifieds</span>
             </div>
-            <ul className="space-y-2.5 text-sm text-brand-muted">
+            <ul className="space-y-2.5 text-small text-brand-muted">
               <li className="flex items-start gap-2">
                 <span className="text-rose-500 font-bold">×</span>
                 <span>Unverified listings with duplicate entries across multiple agents</span>
@@ -112,11 +112,11 @@ export default function Benefits() {
 
           {/* EstateOne Standards Glass Dock */}
           <div className="p-5 rounded-2xl bg-blue-50/50 backdrop-blur-md border-0 shadow-xs">
-            <div className="flex items-center gap-2 mb-3 text-brand-navy font-semibold text-sm">
+            <div className="flex items-center gap-2 mb-3 text-brand-navy font-semibold text-small">
               <span className="w-2 h-2 rounded-full bg-brand-blue"></span>
               <span>EstateOne standard</span>
             </div>
-            <ul className="space-y-2.5 text-sm text-brand-navy">
+            <ul className="space-y-2.5 text-small text-brand-navy">
               <li className="flex items-start gap-2">
                 <span className="text-brand-blue font-bold">✓</span>
                 <span>RERA verified documentation and physical address confirmation</span>

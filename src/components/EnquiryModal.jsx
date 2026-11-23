@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { ChatCircleText, CheckCircle, WarningCircle, ShieldCheck, MapPin, X } from '@phosphor-icons/react';
+﻿import React, { useState } from 'react';
+import { CheckCircle, MapPin } from '@phosphor-icons/react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
+import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
 import { useProperty } from '../context/PropertyContext';
 import { useToast } from '../context/ToastContext';
+import { PhoneInput } from './ui/phone-input';
+import { formatPhoneDisplay, isValidPhone } from '../lib/phone';
 
 const ENQUIRY_TOPICS = [
   'Pricing and payment plan',
@@ -46,9 +49,8 @@ export default function EnquiryModal({ property: propProperty, onClose: propOnCl
       newErrors.fullName = 'Please enter your full name';
     }
 
-    const cleanedPhone = phoneNumber.replace(/\D/g, '');
-    if (!cleanedPhone || cleanedPhone.length < 10) {
-      newErrors.phoneNumber = 'Please enter a valid 10 digit mobile number';
+    if (!isValidPhone(phoneNumber)) {
+      newErrors.phoneNumber = 'Please enter a valid mobile number for the selected country';
     }
 
     if (!emailAddress.trim()) {
@@ -84,19 +86,13 @@ export default function EnquiryModal({ property: propProperty, onClose: propOnCl
 
   return (
     <Dialog open={true} onOpenChange={(open) => { if (!open) handleClose(); }}>
-      <DialogContent className="max-w-lg p-0 overflow-hidden rounded-3xl bg-white border-0 shadow-2xl text-left">
+      <DialogContent
+        closeClassName="right-5 top-5 text-slate-300 hover:text-white hover:bg-white/10 focus-visible:ring-white/40"
+        className="w-[min(42rem,95vw)] max-w-2xl max-h-[92vh] grid grid-rows-[auto_minmax(0,1fr)] overflow-hidden p-0 rounded-3xl bg-white border-0 shadow-2xl text-left"
+      >
         
         {/* Header Preview */}
-        <div className="bg-[#142B4A] text-white p-6 relative">
-          <button
-            type="button"
-            onClick={handleClose}
-            aria-label="Close dialog"
-            className="absolute top-5 right-5 text-slate-300 hover:text-white cursor-pointer"
-          >
-            <X size={18} weight="bold" />
-          </button>
-
+        <div className="shrink-0 bg-[#142B4A] text-white p-6 relative">
           <span className="caption-2 font-bold tracking-wider uppercase text-[#C5A46D] mb-1.5 block">
             Direct advisor enquiry
           </span>
@@ -109,8 +105,13 @@ export default function EnquiryModal({ property: propProperty, onClose: propOnCl
           </div>
         </div>
 
-        <ScrollArea className="max-h-[75vh]">
-          <div className="p-6 md:p-8">
+        <ScrollArea
+          type="always"
+          className="h-full min-h-0 overflow-hidden"
+          scrollbarClassName="w-2.5 py-1"
+          thumbClassName="bg-slate-400/90"
+        >
+          <div className="p-6 md:p-8 pb-8">
           {isSubmitted ? (
             /* PRD 4.2.7: Confirmation State */
             <div className="text-center py-4 space-y-4">
@@ -123,7 +124,8 @@ export default function EnquiryModal({ property: propProperty, onClose: propOnCl
               </h3>
 
               <p className="body-4 text-slate-600 max-w-sm mx-auto">
-                Thank you {fullName}. The verified advisor for <strong>{property.title}</strong> will contact you via <strong>{phoneNumber}</strong> within 2 hours.
+                Thank you {fullName}. The verified advisor for <strong>{property.title}</strong> will contact you via{' '}
+                <strong>{formatPhoneDisplay(phoneNumber)}</strong> within 2 hours.
               </p>
 
               <div className="p-4 rounded-2xl bg-slate-50 text-left space-y-2 text-xs text-slate-600 border border-slate-100">
@@ -142,22 +144,18 @@ export default function EnquiryModal({ property: propProperty, onClose: propOnCl
               </div>
 
               <div className="pt-4">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="w-full py-3 px-4 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold cursor-pointer transition-colors"
-                >
+                <Button type="button" size="sm" onClick={handleClose} className="w-full rounded-2xl shadow-xs">
                   Done
-                </button>
+                </Button>
               </div>
             </div>
           ) : (
             /* Enquiry Form */
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="estate-form-surface space-y-4">
               
               {/* Enquiry Topic */}
               <div>
-                <label className="caption-1 font-bold text-brand-navy block mb-2">
+                <label className="wizard-field-label text-brand-navy block mb-2">
                   What would you like to enquire about?
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -180,7 +178,7 @@ export default function EnquiryModal({ property: propProperty, onClose: propOnCl
 
               {/* Full Name */}
               <div>
-                <label className="caption-2 font-semibold text-slate-600 block mb-1">
+                <label className="wizard-field-label text-brand-navy block mb-1">
                   Full name <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -191,40 +189,40 @@ export default function EnquiryModal({ property: propProperty, onClose: propOnCl
                     setFullName(e.target.value);
                     if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: null }));
                   }}
-                  className={`w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border text-xs text-brand-navy focus:outline-none focus:bg-white transition-all ${
+                  className={`w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border text-brand-navy listing-wizard-field-control focus:outline-none focus:bg-white transition-all ${
                     errors.fullName ? 'border-rose-400 ring-1 ring-rose-400' : 'border-slate-200 focus:border-brand-blue'
                   }`}
                 />
                 {errors.fullName && (
-                  <p className="caption-2 text-rose-500 mt-1">{errors.fullName}</p>
+                  <p className="wizard-field-error mt-1">{errors.fullName}</p>
                 )}
               </div>
 
               {/* Phone & Email */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="caption-2 font-semibold text-slate-600 block mb-1">
+                  <label className="wizard-field-label text-brand-navy block mb-1">
                     Mobile number <span className="text-rose-500">*</span>
                   </label>
-                  <input
-                    type="tel"
-                    placeholder="+91 98200 00000"
+                  <PhoneInput
                     value={phoneNumber}
                     onChange={(e) => {
                       setPhoneNumber(e.target.value);
                       if (errors.phoneNumber) setErrors((prev) => ({ ...prev, phoneNumber: null }));
                     }}
-                    className={`w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border text-xs text-brand-navy focus:outline-none focus:bg-white transition-all ${
-                      errors.phoneNumber ? 'border-rose-400 ring-1 ring-rose-400' : 'border-slate-200 focus:border-brand-blue'
+                    aria-invalid={Boolean(errors.phoneNumber)}
+                    className={`rounded-2xl bg-slate-50 ${
+                      errors.phoneNumber ? 'border-rose-400 ring-1 ring-rose-400' : 'border-slate-200'
                     }`}
+                    inputClassName="rounded-2xl border-0 bg-slate-50 focus:bg-white"
                   />
                   {errors.phoneNumber && (
-                    <p className="caption-2 text-rose-500 mt-1">{errors.phoneNumber}</p>
+                    <p className="wizard-field-error mt-1">{errors.phoneNumber}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="caption-2 font-semibold text-slate-600 block mb-1">
+                  <label className="wizard-field-label text-brand-navy block mb-1">
                     Email address <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -235,19 +233,19 @@ export default function EnquiryModal({ property: propProperty, onClose: propOnCl
                       setEmailAddress(e.target.value);
                       if (errors.emailAddress) setErrors((prev) => ({ ...prev, emailAddress: null }));
                     }}
-                    className={`w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border text-xs text-brand-navy focus:outline-none focus:bg-white transition-all ${
+                    className={`w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border text-brand-navy listing-wizard-field-control focus:outline-none focus:bg-white transition-all ${
                       errors.emailAddress ? 'border-rose-400 ring-1 ring-rose-400' : 'border-slate-200 focus:border-brand-blue'
                     }`}
                   />
                   {errors.emailAddress && (
-                    <p className="caption-2 text-rose-500 mt-1">{errors.emailAddress}</p>
+                    <p className="wizard-field-error mt-1">{errors.emailAddress}</p>
                   )}
                 </div>
               </div>
 
               {/* Optional Message */}
               <div>
-                <label className="caption-2 font-semibold text-slate-600 block mb-1">
+                <label className="wizard-field-label text-brand-navy block mb-1">
                   Specific questions or preferences (optional)
                 </label>
                 <textarea
@@ -255,20 +253,14 @@ export default function EnquiryModal({ property: propProperty, onClose: propOnCl
                   placeholder="e.g. Are higher floors available? Can we discuss payment milestones?"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-brand-navy focus:outline-none focus:bg-white focus:border-brand-blue transition-all"
+                  className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-brand-navy listing-wizard-field-control focus:outline-none focus:bg-white focus:border-brand-blue transition-all"
                 />
               </div>
 
-              {/* Submit CTA */}
               <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-3.5 px-4 rounded-2xl bg-[#142B4A] hover:bg-brand-blue text-white text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
-                >
-                  <ChatCircleText size={16} weight="bold" />
-                  <span>{isSubmitting ? 'Submitting enquiry...' : 'Submit property enquiry'}</span>
-                </button>
+                <Button type="submit" size="sm" disabled={isSubmitting} className="w-full rounded-2xl shadow-xs">
+                  {isSubmitting ? 'Submitting enquiry...' : 'Submit enquiry'}
+                </Button>
               </div>
 
             </form>

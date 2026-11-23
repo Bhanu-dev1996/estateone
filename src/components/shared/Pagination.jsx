@@ -51,7 +51,7 @@ export default function Pagination({
         onClick={handlePrev}
         disabled={currentPage === 1}
         aria-label="Go to previous page"
-        className="flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:pointer-events-none transition-colors shadow-xs cursor-pointer"
+        className="min-h-10 button-sm flex items-center gap-1 px-3 py-2 rounded-xl bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:pointer-events-none transition-colors shadow-xs cursor-pointer"
       >
         <CaretLeft size={14} weight="bold" />
         <span>Previous</span>
@@ -95,7 +95,7 @@ export default function Pagination({
         onClick={handleNext}
         disabled={currentPage === totalPages}
         aria-label="Go to next page"
-        className="flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:pointer-events-none transition-colors shadow-xs cursor-pointer"
+        className="min-h-10 button-sm flex items-center gap-1 px-3 py-2 rounded-xl bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:pointer-events-none transition-colors shadow-xs cursor-pointer"
       >
         <span>Next</span>
         <CaretRight size={14} weight="bold" />

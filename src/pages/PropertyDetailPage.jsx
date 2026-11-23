@@ -1,4 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react';
+﻿import React, { useState, useMemo, useEffect, lazy, Suspense } from 'react';
+import { PhoneInput } from '../components/ui/phone-input';
+import { formatPhoneDisplay, isValidPhone } from '../lib/phone';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -38,11 +40,44 @@ import { useProperty } from '../context/PropertyContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Breadcrumbs from '../components/shared/Breadcrumbs';
+import PropertyDetailHeader from '../components/property/PropertyDetailHeader';
 import PropertyGallery from '../components/shared/PropertyGallery';
 import PropertyCard from '../components/shared/PropertyCard';
 import ReportListingModal from '../components/shared/ReportListingModal';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
+import { Checkbox } from '../components/ui/checkbox';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
+import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
+import { Alert, AlertDescription } from '../components/ui/alert';
+import { DatePickerField } from '../components/ui/date-picker';
+import { cn } from '../lib/utils';
+import { getRentalPriceDisplay } from '../lib/rentalPrice';
+import { getPropertyStatusBadgeClassOnPage } from '../lib/propertyStatusBadge';
+import { getListingVideoTourUrl, getListingFloorPlanUrl } from '../lib/propertyMedia';
+
+const PropertyLocationMap = lazy(() => import('../components/shared/PropertyLocationMap'));
+
+const VISIT_TIME_SLOTS = ['10:00 AM', '02:30 PM', '05:00 PM'];
+
+const CALLBACK_TIME_OPTIONS = [
+  'Morning (10:00 AM to 01:00 PM)',
+  'Afternoon (02:00 PM to 05:00 PM)',
+  'Evening (05:00 PM to 08:00 PM)',
+];
+
+const detailFieldClass =
+  'rounded-xl border-slate-200 bg-slate-50 focus-visible:bg-white aria-invalid:border-rose-400 aria-invalid:ring-rose-400/30';
 
 export default function PropertyDetailPage() {
   const { slug } = useParams();
@@ -123,8 +158,8 @@ export default function PropertyDetailPage() {
       floorLevel: rawProperty.floorNumber || (rawProperty.type === 'Villa' ? 'Entire independent villa' : isComm ? 'Mid floor (12th)' : '16th Floor'),
       ageOfProperty: rawProperty.status === 'Under construction' ? 'Under construction' : 'Under 2 years',
       facingDirection: 'East facing (Vaastu compliant)',
-      videoTourUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-      floorPlanImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+      videoTourUrl: getListingVideoTourUrl(rawProperty),
+      floorPlanImage: getListingFloorPlanUrl(rawProperty),
       highlights: [
         'Verified RERA registration certificate with verified title clearance',
         'Direct owner and principal advisor coordination with zero duplicate listings',
@@ -155,6 +190,7 @@ export default function PropertyDetailPage() {
 
   const saved = isSaved(property.id);
   const compared = isCompared(property.id);
+  const rentalPrice = property.isRental ? getRentalPriceDisplay(rawProperty) : null;
 
   // Handle Share Action
   const handleShare = () => {
@@ -175,7 +211,7 @@ export default function PropertyDetailPage() {
     e.preventDefault();
     const errors = {};
     if (!fullName.trim()) errors.fullName = 'Please enter your full name.';
-    if (!phone.trim() || phone.trim().length < 8) errors.phone = 'Please enter a valid phone number.';
+    if (!isValidPhone(phone)) errors.phone = 'Please enter a valid mobile number for the selected country.';
     if (!email.trim() || !email.includes('@')) errors.email = 'Please enter a valid email address.';
     if (!consent) errors.consent = 'You must accept the privacy consent.';
 
@@ -199,7 +235,7 @@ export default function PropertyDetailPage() {
     e.preventDefault();
     const errors = {};
     if (!visitDate) errors.visitDate = 'Please select a preferred date.';
-    if (!phone.trim()) errors.phone = 'Please enter your contact phone number.';
+    if (!isValidPhone(phone)) errors.phone = 'Please enter a valid mobile number for the selected country.';
 
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
@@ -219,8 +255,8 @@ export default function PropertyDetailPage() {
   // Callback Submission
   const handleCallbackSubmit = (e) => {
     e.preventDefault();
-    if (!phone.trim()) {
-      setFormErrors({ phone: 'Please enter your phone number for callback.' });
+    if (!isValidPhone(phone)) {
+      setFormErrors({ phone: 'Please enter a valid mobile number for the selected country.' });
       return;
     }
 
@@ -252,7 +288,6 @@ export default function PropertyDetailPage() {
          ========================================================================= */}
       <Breadcrumbs 
         items={[
-          { label: 'Home', href: '/' },
           { label: parentLabel, href: parentRoute },
           { label: property.city, href: `${parentRoute}?city=${encodeURIComponent(property.city)}` },
           { label: property.title }
@@ -260,109 +295,17 @@ export default function PropertyDetailPage() {
         className="mb-4" 
       />
 
-      {/* =========================================================================
-          Section C: Property Overview Header (Title, Location, Pricing, Overview Actions)
-         ========================================================================= */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
-        <div>
-          <div className="flex items-center gap-2 mb-2 flex-wrap">
-            {property.verified && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold">
-                <ShieldCheck size={14} weight="fill" className="text-emerald-600" />
-                <span>RERA verified: {property.reraId}</span>
-              </span>
-            )}
-            <span className="caption-2 text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full font-semibold">
-              {property.status}
-            </span>
-            <span className="caption-2 text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full font-medium">
-              ID: {property.propertyId}
-            </span>
-            <span className="caption-2 text-slate-400 font-medium">
-              {property.postedDateText}
-            </span>
-          </div>
-
-          <h1 className="heading-2 text-brand-navy tracking-tight">
-            {property.title}
-          </h1>
-          <p className="body-4 text-slate-500 flex items-center gap-1.5 mt-1">
-            <MapPin size={16} className="text-brand-gold shrink-0" />
-            <span>{property.location}</span>
-          </p>
-        </div>
-
-        {/* Overview Decision Suite: Save, Compare, Enquire, Visit per PRD 6.1 */}
-        <div className="flex items-center gap-2 shrink-0 flex-wrap">
-          <button
-            type="button"
-            onClick={() => openSiteVisit(property)}
-            className="px-4 py-2.5 rounded-2xl bg-brand-navy hover:bg-slate-900 text-white shadow-xs text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
-            title="Request property inspection visit"
-          >
-            <CalendarCheck size={16} weight="bold" className="text-brand-gold" />
-            <span>Request visit</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => openEnquiry(property)}
-            className="px-4 py-2.5 rounded-2xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/80 shadow-xs text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
-            title="Submit direct enquiry"
-          >
-            <ChatCircleText size={16} weight="bold" className="text-amber-700" />
-            <span>Enquire</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => toggleCompare(property)}
-            className={`px-3.5 py-2.5 rounded-2xl border shadow-xs text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-              compared 
-                ? 'bg-brand-navy text-brand-gold border-brand-navy' 
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-            }`}
-            title="Add to compare"
-          >
-            <Scales size={16} weight={compared ? 'fill' : 'bold'} />
-            <span>{compared ? 'In comparison' : 'Compare'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => toggleSave(property)}
-            className={`px-3.5 py-2.5 rounded-2xl border shadow-xs text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-              saved 
-                ? 'bg-rose-50 text-rose-600 border-rose-200' 
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-            }`}
-            title="Save to favorites"
-          >
-            <Heart size={16} weight={saved ? 'fill' : 'bold'} className={saved ? 'text-rose-600' : ''} />
-            <span>{saved ? 'Saved' : 'Save'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleShare}
-            className="px-3 py-2.5 rounded-2xl bg-white border border-slate-200 shadow-xs text-xs font-semibold text-brand-navy flex items-center gap-1.5 hover:bg-slate-50 transition-all cursor-pointer"
-            title="Share property"
-          >
-            <ShareNetwork size={16} />
-            <span className="hidden sm:inline">Share</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setReportModalOpen(true)}
-            className="px-3 py-2.5 rounded-2xl bg-slate-50 hover:bg-rose-50 hover:text-rose-600 border border-slate-200 text-xs font-semibold text-slate-500 transition-colors cursor-pointer flex items-center gap-1.5"
-            title="Report this listing"
-          >
-            <Flag size={14} />
-            <span className="hidden sm:inline">Report</span>
-          </button>
-        </div>
-      </div>
+      <PropertyDetailHeader
+        property={property}
+        saved={isSaved(property.id)}
+        compared={isCompared(property.id)}
+        onRequestVisit={() => openSiteVisit(property)}
+        onEnquire={() => openEnquiry(property)}
+        onToggleCompare={() => toggleCompare(property)}
+        onToggleSave={() => toggleSave(property)}
+        onShare={handleShare}
+        onReport={() => setReportModalOpen(true)}
+      />
 
       {/* =========================================================================
           Section B: Image Gallery & Lightbox (PRD 5.5)
@@ -387,129 +330,129 @@ export default function PropertyDetailPage() {
           {/* =========================================================================
               Section D: Property Specifications (Category Relevant Only)
              ========================================================================= */}
-          <section className="p-6 md:p-8 bg-white rounded-3xl border-0 shadow-xs">
-            <h2 className="heading-4 text-brand-navy font-bold mb-6">
+          <section className="property-spec-panel p-6 md:p-8 bg-white rounded-3xl border-0 shadow-xs">
+            <h2 className="property-spec-heading">
               Property specifications
             </h2>
 
             {/* Residential Specifications */}
             {!property.isCommercial && property.type !== 'Residential Plot' && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Bedrooms</span>
-                  <span className="heading-3 text-brand-navy font-bold">{property.bedrooms || '3 BHK'}</span>
+              <div className="property-spec-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Bedrooms</span>
+                  <span className="property-spec-value">{property.bedrooms || '3 BHK'}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Bathrooms</span>
-                  <span className="heading-3 text-brand-navy font-bold">{property.bathrooms || '3 Baths'}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Bathrooms</span>
+                  <span className="property-spec-value">{property.bathrooms || '3 Baths'}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Carpet area</span>
-                  <span className="heading-3 text-brand-navy font-bold">{property.carpetArea}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Carpet area</span>
+                  <span className="property-spec-value">{property.carpetArea}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Super built up area</span>
-                  <span className="heading-3 text-brand-navy font-bold">{property.superBuiltUpArea}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Super built up area</span>
+                  <span className="property-spec-value">{property.superBuiltUpArea}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Property type</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.type}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Property type</span>
+                  <span className="property-spec-value">{property.type}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Floor number</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.floorLevel}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Floor number</span>
+                  <span className="property-spec-value">{property.floorLevel}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Total floors</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.totalFloors}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Total floors</span>
+                  <span className="property-spec-value">{property.totalFloors}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Furnishing</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.furnishing || 'Furnished'}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Furnishing</span>
+                  <span className="property-spec-value">{property.furnishing || 'Furnished'}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Facing</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.facingDirection}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Facing</span>
+                  <span className="property-spec-value">{property.facingDirection}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Property age</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.ageOfProperty}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Property age</span>
+                  <span className="property-spec-value">{property.ageOfProperty}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Possession status</span>
-                  <span className="title-3 text-brand-blue font-bold">{property.status}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Possession status</span>
+                  <span className="property-spec-value property-spec-value--accent">{property.status}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Rate estimate</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.pricePerSqFt || 'Market price'}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Rate estimate</span>
+                  <span className="property-spec-value">{property.pricePerSqFt || 'Market price'}</span>
                 </div>
               </div>
             )}
 
             {/* Commercial Specifications (PRD 5.4 & 5.5: No Bedrooms/Bathrooms) */}
             {property.isCommercial && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Super built up area</span>
-                  <span className="heading-3 text-brand-navy font-bold">{property.superBuiltUpArea}</span>
+              <div className="property-spec-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Super built up area</span>
+                  <span className="property-spec-value">{property.superBuiltUpArea}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Carpet area</span>
-                  <span className="heading-3 text-brand-navy font-bold">{property.carpetArea}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Carpet area</span>
+                  <span className="property-spec-value">{property.carpetArea}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Category</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.commercialCategory || 'Office spaces'}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Category</span>
+                  <span className="property-spec-value">{property.commercialCategory || 'Office spaces'}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Building type</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.buildingType || 'Grade A tech park'}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Building type</span>
+                  <span className="property-spec-value">{property.buildingType || 'Grade A tech park'}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Floor number</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.floorLevel}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Floor number</span>
+                  <span className="property-spec-value">{property.floorLevel}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Fitout state</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.furnishing || 'Warm shell'}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Fitout state</span>
+                  <span className="property-spec-value">{property.furnishing || 'Warm shell'}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Parking allocation</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.parkingCount || 'Reserved slots'}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Parking allocation</span>
+                  <span className="property-spec-value">{property.parkingCount || 'Reserved slots'}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Power load capacity</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.powerLoad || '100% DG backup'}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Power load capacity</span>
+                  <span className="property-spec-value">{property.powerLoad || '100% DG backup'}</span>
                 </div>
               </div>
             )}
 
             {/* Plot Specifications */}
             {property.type === 'Residential Plot' && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Plot area</span>
-                  <span className="heading-3 text-brand-navy font-bold">{property.superBuiltUpArea}</span>
+              <div className="property-spec-grid grid grid-cols-2 sm:grid-cols-3">
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Plot area</span>
+                  <span className="property-spec-value">{property.superBuiltUpArea}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Dimensions</span>
-                  <span className="title-3 text-brand-navy font-bold">50 ft x 100 ft</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Dimensions</span>
+                  <span className="property-spec-value">50 ft x 100 ft</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Zoning status</span>
-                  <span className="title-3 text-brand-navy font-bold">Freehold residential</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Zoning status</span>
+                  <span className="property-spec-value">Freehold residential</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Facing</span>
-                  <span className="title-3 text-brand-navy font-bold">{property.facingDirection}</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Facing</span>
+                  <span className="property-spec-value">{property.facingDirection}</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Road width</span>
-                  <span className="title-3 text-brand-navy font-bold">40 feet asphalt road</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Road width</span>
+                  <span className="property-spec-value">40 feet asphalt road</span>
                 </div>
-                <div>
-                  <span className="caption-2 text-slate-400 block mb-1">Possession</span>
-                  <span className="title-3 text-brand-blue font-bold">Immediate registration</span>
+                <div className="property-spec-item">
+                  <span className="property-spec-label">Possession</span>
+                  <span className="property-spec-value property-spec-value--accent">Immediate registration</span>
                 </div>
               </div>
             )}
@@ -518,25 +461,25 @@ export default function PropertyDetailPage() {
           {/* =========================================================================
               Section E: Description and Key Highlights
              ========================================================================= */}
-          <section className="p-6 md:p-8 bg-white rounded-3xl border-0 shadow-xs space-y-6">
+          <section className="property-detail-about space-y-5 p-6 md:p-8 bg-white rounded-3xl border-0 shadow-xs">
             <div>
-              <h2 className="heading-4 text-brand-navy font-bold mb-3">
+              <h2 className="property-detail-section-heading">
                 About this property
               </h2>
-              <p className="body-4 text-slate-600 leading-relaxed">
+              <p className="property-detail-section-desc">
                 {property.description}
               </p>
             </div>
 
             {/* Key Highlights */}
-            <div className="pt-4 border-t border-slate-100">
-              <h3 className="caption-1 font-bold text-brand-navy uppercase tracking-wider mb-3">
+            <div className="border-t border-slate-100 pt-4">
+              <h3 className="property-detail-subheading">
                 Key property highlights
               </h3>
-              <ul className="space-y-2.5">
+              <ul className="property-detail-highlight-list">
                 {property.highlights.map((h, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-xs text-slate-700 leading-relaxed">
-                    <CheckCircle size={16} weight="fill" className="text-brand-blue shrink-0 mt-0.5" />
+                  <li key={i} className="property-detail-highlight-item">
+                    <CheckCircle size={16} weight="fill" className="text-brand-blue shrink-0" aria-hidden />
                     <span>{h}</span>
                   </li>
                 ))}
@@ -544,23 +487,25 @@ export default function PropertyDetailPage() {
             </div>
 
             {/* Official Title Notice */}
-            <div className="p-4 rounded-2xl bg-slate-50 text-xs text-slate-500 leading-relaxed">
-              Official RERA registration validated under certificate <span className="font-semibold text-brand-navy">{property.reraId}</span>. Legal deed verification, sanctioned municipal layout, and encumbrance checks cleared.
-            </div>
+            <p className="property-detail-callout">
+              Official RERA registration validated under certificate{' '}
+              <span className="property-detail-callout-emphasis">{property.reraId}</span>. Legal deed
+              verification, sanctioned municipal layout, and encumbrance checks cleared.
+            </p>
           </section>
 
           {/* =========================================================================
               Section F: Amenities
              ========================================================================= */}
-          <section className="p-6 md:p-8 bg-white rounded-3xl border-0 shadow-xs">
-            <h2 className="heading-4 text-brand-navy font-bold mb-4">
+          <section className="property-detail-amenities p-6 md:p-8 bg-white rounded-3xl border-0 shadow-xs">
+            <h2 className="property-detail-section-heading">
               Verified amenities
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="property-detail-amenity-grid grid grid-cols-2 sm:grid-cols-3">
               {(property.amenities || []).map((amenity) => (
-                <div key={amenity} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-slate-50">
-                  <CheckCircle size={16} weight="fill" className="text-brand-blue shrink-0" />
-                  <span className="text-xs font-semibold text-brand-navy">{amenity}</span>
+                <div key={amenity} className="property-detail-amenity-chip">
+                  <CheckCircle size={16} weight="fill" className="text-brand-blue shrink-0" aria-hidden />
+                  <span className="property-detail-amenity-label">{amenity}</span>
                 </div>
               ))}
             </div>
@@ -569,104 +514,95 @@ export default function PropertyDetailPage() {
           {/* =========================================================================
               Section G: Location & Neighbourhood Points of Interest
              ========================================================================= */}
-          <section className="p-6 md:p-8 bg-white rounded-3xl border-0 shadow-xs space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="heading-4 text-brand-navy font-bold">
+          <section className="property-detail-location space-y-5 p-6 md:p-8 bg-white rounded-3xl border-0 shadow-xs">
+            <div className="property-detail-location-header">
+              <div className="min-w-0">
+                <h2 className="property-detail-section-heading mb-0">
                   Location & neighbourhood
                 </h2>
-                <p className="caption-2 text-slate-500 mt-0.5">
+                <p className="property-detail-section-kicker">
                   {property.location}
                 </p>
               </div>
-              <Badge variant="neutral" className="text-xs font-semibold text-brand-navy">
+              <Badge variant="neutral" className="property-detail-location-badge text-brand-navy">
                 GPS Verified
               </Badge>
             </div>
 
-            {/* Styled Map Preview Card */}
-            <div className="relative aspect-[21/9] rounded-2xl overflow-hidden bg-slate-900 border border-slate-200">
-              <img
-                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80"
-                alt="Locality map overview"
-                className="w-full h-full object-cover opacity-80"
-              />
-              <div className="absolute inset-0 bg-brand-navy/50 flex flex-col items-center justify-center text-white p-4 text-center">
-                <div className="w-10 h-10 rounded-full bg-brand-gold text-brand-navy flex items-center justify-center shadow-lg mb-2">
-                  <MapPin size={22} weight="fill" />
+            <Suspense
+              fallback={
+                <div
+                  className="flex aspect-[21/9] min-h-[12rem] items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 text-caption text-slate-500"
+                  aria-hidden
+                >
+                  Loading map…
                 </div>
-                <p className="text-xs font-bold text-white tracking-tight">{property.location}</p>
-                <p className="text-[11px] text-slate-200 mt-0.5">Verified prime neighbourhood corridor</p>
-              </div>
-            </div>
+              }
+            >
+              <PropertyLocationMap property={rawProperty} label={property.location} />
+            </Suspense>
 
             {/* Verified Nearby Places Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              
-              {/* Schools */}
-              <div className="p-4 rounded-2xl bg-slate-50 space-y-2">
-                <div className="flex items-center gap-2 text-xs font-bold text-brand-navy">
-                  <GraduationCap size={16} className="text-brand-blue" />
+            <div className="property-detail-poi-grid grid grid-cols-1 sm:grid-cols-2">
+              <div className="property-detail-poi-card">
+                <div className="property-detail-poi-title">
+                  <GraduationCap size={16} className="text-brand-blue" aria-hidden />
                   <span>Nearby schools</span>
                 </div>
-                <div className="space-y-1.5 text-xs text-slate-600">
+                <div className="property-detail-poi-list">
                   {property.nearbyPlaces.schools.map((item, i) => (
-                    <div key={i} className="flex justify-between items-center">
-                      <span>{item.name}</span>
-                      <span className="font-semibold text-brand-navy">{item.distance}</span>
+                    <div key={i} className="property-detail-poi-row">
+                      <span className="property-detail-poi-name">{item.name}</span>
+                      <span className="property-detail-poi-distance">{item.distance}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Hospitals */}
-              <div className="p-4 rounded-2xl bg-slate-50 space-y-2">
-                <div className="flex items-center gap-2 text-xs font-bold text-brand-navy">
-                  <FirstAid size={16} className="text-rose-600" />
+              <div className="property-detail-poi-card">
+                <div className="property-detail-poi-title">
+                  <FirstAid size={16} className="text-rose-600" aria-hidden />
                   <span>Healthcare & hospitals</span>
                 </div>
-                <div className="space-y-1.5 text-xs text-slate-600">
+                <div className="property-detail-poi-list">
                   {property.nearbyPlaces.hospitals.map((item, i) => (
-                    <div key={i} className="flex justify-between items-center">
-                      <span>{item.name}</span>
-                      <span className="font-semibold text-brand-navy">{item.distance}</span>
+                    <div key={i} className="property-detail-poi-row">
+                      <span className="property-detail-poi-name">{item.name}</span>
+                      <span className="property-detail-poi-distance">{item.distance}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Transport */}
-              <div className="p-4 rounded-2xl bg-slate-50 space-y-2">
-                <div className="flex items-center gap-2 text-xs font-bold text-brand-navy">
-                  <AirplaneTilt size={16} className="text-brand-gold" />
+              <div className="property-detail-poi-card">
+                <div className="property-detail-poi-title">
+                  <AirplaneTilt size={16} className="text-brand-gold" aria-hidden />
                   <span>Transit & transport</span>
                 </div>
-                <div className="space-y-1.5 text-xs text-slate-600">
+                <div className="property-detail-poi-list">
                   {property.nearbyPlaces.transport.map((item, i) => (
-                    <div key={i} className="flex justify-between items-center">
-                      <span>{item.name}</span>
-                      <span className="font-semibold text-brand-navy">{item.distance}</span>
+                    <div key={i} className="property-detail-poi-row">
+                      <span className="property-detail-poi-name">{item.name}</span>
+                      <span className="property-detail-poi-distance">{item.distance}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Shopping */}
-              <div className="p-4 rounded-2xl bg-slate-50 space-y-2">
-                <div className="flex items-center gap-2 text-xs font-bold text-brand-navy">
-                  <ShoppingBag size={16} className="text-emerald-600" />
+              <div className="property-detail-poi-card">
+                <div className="property-detail-poi-title">
+                  <ShoppingBag size={16} className="text-emerald-600" aria-hidden />
                   <span>Shopping & lifestyle</span>
                 </div>
-                <div className="space-y-1.5 text-xs text-slate-600">
+                <div className="property-detail-poi-list">
                   {property.nearbyPlaces.shopping.map((item, i) => (
-                    <div key={i} className="flex justify-between items-center">
-                      <span>{item.name}</span>
-                      <span className="font-semibold text-brand-navy">{item.distance}</span>
+                    <div key={i} className="property-detail-poi-row">
+                      <span className="property-detail-poi-name">{item.name}</span>
+                      <span className="property-detail-poi-distance">{item.distance}</span>
                     </div>
                   ))}
                 </div>
               </div>
-
             </div>
 
           </section>
@@ -674,43 +610,41 @@ export default function PropertyDetailPage() {
           {/* =========================================================================
               Section H: Floor Plans
              ========================================================================= */}
-          <section className="p-6 md:p-8 bg-white rounded-3xl border-0 shadow-xs space-y-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="heading-4 text-brand-navy font-bold">
+          <section className="property-detail-floorplan space-y-4 p-6 md:p-8 bg-white rounded-3xl border-0 shadow-xs">
+            <div className="property-detail-section-header">
+              <div className="min-w-0">
+                <h2 className="property-detail-section-heading mb-0">
                   Sanctioned floor plans
                 </h2>
-                <p className="caption-2 text-slate-500 mt-0.5">
+                <p className="property-detail-section-kicker">
                   Architectural layout and area breakdown
                 </p>
               </div>
-              <Badge variant="neutral" className="text-xs font-semibold text-brand-navy">
+              <Badge variant="neutral" className="property-detail-section-badge text-brand-navy">
                 Scale 1:100
               </Badge>
             </div>
 
-            {/* Floor Plan Metrics */}
-            <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-50 text-center">
-              <div>
-                <span className="caption-2 text-slate-400 block mb-0.5">Carpet area</span>
-                <span className="caption-1 font-bold text-brand-navy">{property.carpetArea}</span>
+            <div className="property-detail-metric-strip">
+              <div className="property-spec-item">
+                <span className="property-spec-label">Carpet area</span>
+                <span className="property-spec-value">{property.carpetArea}</span>
               </div>
-              <div>
-                <span className="caption-2 text-slate-400 block mb-0.5">Balcony area</span>
-                <span className="caption-1 font-bold text-brand-navy">{property.balconyArea}</span>
+              <div className="property-spec-item">
+                <span className="property-spec-label">Balcony area</span>
+                <span className="property-spec-value">{property.balconyArea}</span>
               </div>
-              <div>
-                <span className="caption-2 text-slate-400 block mb-0.5">Super built up</span>
-                <span className="caption-1 font-bold text-brand-navy">{property.superBuiltUpArea}</span>
+              <div className="property-spec-item">
+                <span className="property-spec-label">Super built up</span>
+                <span className="property-spec-value">{property.superBuiltUpArea}</span>
               </div>
             </div>
 
-            {/* Floor Plan Graphic Display */}
-            <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center p-4">
+            <div className="property-detail-floorplan-figure">
               <img
                 src={property.floorPlanImage}
                 alt={`${property.title} architectural floor plan layout`}
-                className="max-h-full max-w-full object-contain rounded-xl"
+                className="max-h-full max-w-full rounded-lg object-contain"
               />
             </div>
           </section>
@@ -719,35 +653,33 @@ export default function PropertyDetailPage() {
               Section I: Agent / Owner Details
              ========================================================================= */}
           {property.agent && (
-            <section className="p-6 md:p-8 bg-white rounded-3xl border-0 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-brand-navy text-brand-gold flex items-center justify-center font-bold text-xl shrink-0 shadow-md">
+            <section className="property-detail-advisor p-6 md:p-8 bg-white rounded-3xl border-0 shadow-xs">
+              <div className="flex min-w-0 items-center gap-4">
+                <div className="property-detail-advisor-avatar bg-brand-navy text-brand-gold shadow-md">
                   {property.agent.name.charAt(0)}
                 </div>
-                <div>
+                <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <h3 className="heading-4 text-brand-navy font-bold">{property.agent.name}</h3>
-                    <ShieldCheck size={18} weight="fill" className="text-emerald-600" />
+                    <h3 className="property-detail-advisor-name">{property.agent.name}</h3>
+                    <ShieldCheck size={18} weight="fill" className="shrink-0 text-emerald-600" aria-hidden />
                   </div>
-                  <p className="caption-2 text-slate-500">
+                  <p className="property-detail-advisor-meta">
                     {property.agent.role} • EstateOne Certified Partner
                   </p>
-                  <p className="caption-2 text-brand-navy font-medium mt-1">
-                    {property.agent.phone}
-                  </p>
+                  <p className="property-detail-advisor-phone">{property.agent.phone}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="property-detail-advisor-actions">
                 <Link
                   to="/agents"
-                  className="flex-1 sm:flex-initial py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-brand-navy text-xs font-semibold text-center transition-colors"
+                  className="button-sm flex-1 min-h-10 rounded-xl bg-slate-100 py-2.5 px-4 text-center text-small font-semibold text-brand-navy transition-colors hover:bg-slate-200 sm:flex-initial"
                 >
                   View profile
                 </Link>
                 <a
                   href={`tel:${property.agent.phone}`}
-                  className="flex-1 sm:flex-initial py-2.5 px-4 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold text-center transition-colors"
+                  className="button-sm flex-1 min-h-10 cursor-pointer rounded-xl bg-brand-navy py-2.5 px-4 text-center text-small font-semibold text-white transition-colors hover:bg-brand-navy-hover sm:flex-initial"
                 >
                   Call advisor
                 </a>
@@ -756,12 +688,14 @@ export default function PropertyDetailPage() {
           )}
 
           {/* Legal Diligence Notice (PRD 4.2.14) */}
-          <div className="p-5 rounded-2xl bg-amber-50/70 border border-amber-200/50 text-xs text-amber-900 leading-relaxed flex items-start gap-3">
-            <Info size={18} className="text-amber-700 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-bold block mb-1">Independent diligence notice</span>
-              <p>
-                EstateOne provides verified platform listing information and RERA disclosures. EstateOne does not guarantee future financial returns or third party titles. Prospective purchasers and tenants are advised to conduct independent legal verification prior to financial settlement.
+          <div className="property-detail-notice" role="note">
+            <Info size={18} className="mt-0.5 shrink-0 text-amber-700" aria-hidden />
+            <div className="min-w-0">
+              <span className="property-detail-notice-title">Independent diligence notice</span>
+              <p className="property-detail-notice-body">
+                EstateOne provides verified platform listing information and RERA disclosures. EstateOne does not
+                guarantee future financial returns or third party titles. Prospective purchasers and tenants are advised
+                to conduct independent legal verification prior to financial settlement.
               </p>
             </div>
           </div>
@@ -779,9 +713,13 @@ export default function PropertyDetailPage() {
               <span className="caption-2 text-slate-400 block mb-1">
                 {property.isRental ? 'Monthly rental price' : property.isCommercial ? 'Commercial offering price' : 'Offering price'}
               </span>
-              <div className="flex items-baseline gap-2">
-                <span className="heading-2 text-brand-navy font-bold">{property.priceDisplay}</span>
-                {property.isRental && <span className="caption-1 text-slate-500 font-normal">/ month</span>}
+              <div className="flex items-baseline gap-2 flex-wrap">
+                <span className="type-card-price text-brand-navy">
+                  {property.isRental ? rentalPrice.text : property.priceDisplay}
+                </span>
+                {rentalPrice?.showMonthSuffix && (
+                  <span className="caption-1 text-slate-500 font-normal">/ month</span>
+                )}
               </div>
               {property.pricePerSqFt && (
                 <p className="caption-2 text-brand-blue font-semibold mt-1">{property.pricePerSqFt}</p>
@@ -790,7 +728,7 @@ export default function PropertyDetailPage() {
 
             {/* Separate Security Deposit / Extra Fees (PRD 4.2.13) */}
             {property.isRental && (property.depositDisplay || property.deposit) && (
-              <div className="p-3 rounded-2xl bg-slate-50 text-xs space-y-1 text-slate-600">
+              <div className="p-3 rounded-2xl bg-slate-50 text-small space-y-1 text-slate-600 text-pretty">
                 <div className="flex justify-between">
                   <span className="text-slate-400">Security deposit:</span>
                   <span className="font-semibold text-brand-navy">{property.depositDisplay || property.deposit}</span>
@@ -803,321 +741,327 @@ export default function PropertyDetailPage() {
             )}
 
             {/* Tabbed Interactive Conversion Panel (PRD 5.5) */}
-            <div className="space-y-4 pt-2 border-t border-slate-100">
-              
-              {/* Funnel Mode Switcher Tabs */}
-              <div className="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-2xl text-[11px] font-semibold text-center">
-                <button
-                  type="button"
-                  onClick={() => setActiveFormTab('enquiry')}
-                  className={`py-2 rounded-xl transition-all cursor-pointer ${
-                    activeFormTab === 'enquiry'
-                      ? 'bg-white text-brand-navy shadow-xs font-bold'
-                      : 'text-slate-500 hover:text-brand-navy'
-                  }`}
+            <Tabs
+              value={activeFormTab}
+              onValueChange={setActiveFormTab}
+              className="space-y-4 pt-2 border-t border-slate-100"
+            >
+              <TabsList className="grid h-auto w-full grid-cols-3 gap-1 rounded-2xl border-0 bg-slate-100 p-1 shadow-none">
+                <TabsTrigger
+                  value="enquiry"
+                  className="rounded-xl py-2 text-small font-semibold shadow-none data-[state=active]:font-bold data-[state=active]:shadow-xs"
                 >
                   Enquiry
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveFormTab('visit')}
-                  className={`py-2 rounded-xl transition-all cursor-pointer ${
-                    activeFormTab === 'visit'
-                      ? 'bg-white text-brand-navy shadow-xs font-bold'
-                      : 'text-slate-500 hover:text-brand-navy'
-                  }`}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="visit"
+                  className="rounded-xl py-2 text-small font-semibold shadow-none data-[state=active]:font-bold data-[state=active]:shadow-xs"
                 >
                   Site visit
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveFormTab('callback')}
-                  className={`py-2 rounded-xl transition-all cursor-pointer ${
-                    activeFormTab === 'callback'
-                      ? 'bg-white text-brand-navy shadow-xs font-bold'
-                      : 'text-slate-500 hover:text-brand-navy'
-                  }`}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="callback"
+                  className="rounded-xl py-2 text-small font-semibold shadow-none data-[state=active]:font-bold data-[state=active]:shadow-xs"
                 >
                   Callback
-                </button>
-              </div>
+                </TabsTrigger>
+              </TabsList>
 
-              {/* Mode 1: Send Direct Enquiry Form */}
-              {activeFormTab === 'enquiry' && (
-                <div>
-                  {enquirySuccess ? (
-                    <div className="py-6 text-center space-y-3">
-                      <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
-                        <CheckCircle size={28} weight="fill" />
-                      </div>
-                      <h4 className="title-3 text-brand-navy font-bold">Enquiry transmitted</h4>
-                      <p className="caption-2 text-slate-500 leading-relaxed">
-                        The advisor for {property.title} will review your request and contact you via phone or email shortly.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => setEnquirySuccess(false)}
-                        className="text-xs font-semibold text-brand-blue hover:underline cursor-pointer"
-                      >
-                        Send another enquiry
-                      </button>
+              <TabsContent value="enquiry" className="mt-0">
+                {enquirySuccess ? (
+                  <div className="py-6 text-center space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
+                      <CheckCircle size={28} weight="fill" />
                     </div>
-                  ) : (
-                    <form onSubmit={handleEnquirySubmit} className="space-y-3">
-                      <div>
-                        <label className="caption-2 font-semibold text-slate-500 block mb-1">
-                          Full name
-                        </label>
-                        <input
-                          type="text"
-                          value={fullName}
-                          onChange={(e) => setFullName(e.target.value)}
-                          placeholder="Your full name"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue font-medium"
-                        />
-                        {formErrors.fullName && (
-                          <p className="text-[11px] text-rose-600 mt-1">{formErrors.fullName}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="caption-2 font-semibold text-slate-500 block mb-1">
-                          Phone number
-                        </label>
-                        <input
-                          type="tel"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="+91 98765 43210"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue font-medium"
-                        />
-                        {formErrors.phone && (
-                          <p className="text-[11px] text-rose-600 mt-1">{formErrors.phone}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="caption-2 font-semibold text-slate-500 block mb-1">
-                          Email address
-                        </label>
-                        <input
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="your.email@company.com"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue font-medium"
-                        />
-                        {formErrors.email && (
-                          <p className="text-[11px] text-rose-600 mt-1">{formErrors.email}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label className="caption-2 font-semibold text-slate-500 block mb-1">
-                          Message
-                        </label>
-                        <textarea
-                          rows={2}
-                          value={message}
-                          onChange={(e) => setMessage(e.target.value)}
-                          className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue font-medium"
-                        />
-                      </div>
-
-                      <label className="flex items-start gap-2 text-[11px] text-slate-500 cursor-pointer pt-1">
-                        <input
-                          type="checkbox"
-                          checked={consent}
-                          onChange={(e) => setConsent(e.target.checked)}
-                          className="mt-0.5 rounded text-brand-navy focus:ring-brand-blue"
-                        />
-                        <span>I consent to EstateOne and the verified advisor contacting me regarding this property.</span>
-                      </label>
-                      {formErrors.consent && (
-                        <p className="text-[11px] text-rose-600">{formErrors.consent}</p>
+                    <h4 className="text-h4 text-brand-navy font-semibold">Enquiry transmitted</h4>
+                    <p className="caption-2 text-slate-500 leading-relaxed">
+                      The advisor for {property.title} will review your request and contact you via phone or email shortly.
+                    </p>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setEnquirySuccess(false)}
+                      className="text-brand-blue hover:text-brand-blue hover:bg-transparent font-semibold"
+                    >
+                      Send another enquiry
+                    </Button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleEnquirySubmit} className="estate-form-surface space-y-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="detail-enquiry-name" className="text-slate-500 font-semibold">
+                        Full name
+                      </Label>
+                      <Input
+                        id="detail-enquiry-name"
+                        type="text"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Your full name"
+                        aria-invalid={Boolean(formErrors.fullName)}
+                        className={detailFieldClass}
+                      />
+                      {formErrors.fullName && (
+                        <p className="wizard-field-error mt-1">{formErrors.fullName}</p>
                       )}
-
-                      <Button
-                        type="submit"
-                        disabled={isSubmittingEnquiry}
-                        className="w-full py-3 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
-                      >
-                        <PaperPlaneTilt size={16} weight="bold" />
-                        <span>{isSubmittingEnquiry ? 'Sending enquiry...' : 'Send Enquiry'}</span>
-                      </Button>
-                    </form>
-                  )}
-                </div>
-              )}
-
-              {/* Mode 2: Schedule Site Visit Form */}
-              {activeFormTab === 'visit' && (
-                <div>
-                  {visitSuccess ? (
-                    <div className="py-6 text-center space-y-3">
-                      <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
-                        <CalendarCheck size={28} weight="fill" />
-                      </div>
-                      <h4 className="title-3 text-brand-navy font-bold">Visit requested</h4>
-                      <p className="caption-2 text-slate-500 leading-relaxed">
-                        Your inspection request for <span className="font-semibold text-brand-navy">{visitDate}</span> at <span className="font-semibold text-brand-navy">{visitSlot}</span> is pending agent confirmation.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => setVisitSuccess(false)}
-                        className="text-xs font-semibold text-brand-blue hover:underline cursor-pointer"
-                      >
-                        Schedule another slot
-                      </button>
                     </div>
-                  ) : (
-                    <form onSubmit={handleVisitSubmit} className="space-y-3">
-                      <div>
-                        <label className="caption-2 font-semibold text-slate-500 block mb-1">
-                          Select date
-                        </label>
-                        <input
-                          type="date"
-                          value={visitDate}
-                          min={new Date().toISOString().split('T')[0]}
-                          onChange={(e) => setVisitDate(e.target.value)}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-brand-navy focus:outline-none focus:border-brand-blue font-medium"
-                        />
-                        {formErrors.visitDate && (
-                          <p className="text-[11px] text-rose-600 mt-1">{formErrors.visitDate}</p>
-                        )}
-                      </div>
 
-                      <div>
-                        <label className="caption-2 font-semibold text-slate-500 block mb-1">
-                          Select available time slot
-                        </label>
-                        <div className="grid grid-cols-3 gap-1.5">
-                          {['10:00 AM', '02:30 PM', '05:00 PM'].map((slot) => (
-                            <button
-                              key={slot}
-                              type="button"
-                              onClick={() => setVisitSlot(slot)}
-                              className={`py-2 px-1 text-[11px] rounded-xl font-semibold border transition-all cursor-pointer ${
-                                visitSlot === slot
-                                  ? 'bg-brand-navy text-white border-brand-navy shadow-xs'
-                                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                              }`}
-                            >
-                              {slot}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="caption-2 font-semibold text-slate-500 block mb-1">
-                          Contact phone number
-                        </label>
-                        <input
-                          type="tel"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="+91 98765 43210"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue font-medium"
-                        />
-                        {formErrors.phone && (
-                          <p className="text-[11px] text-rose-600 mt-1">{formErrors.phone}</p>
-                        )}
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-amber-50 text-amber-900 text-[11px] leading-relaxed">
-                        Notice: Visit requests remain pending until confirmed by the responsible agent or owner.
-                      </div>
-
-                      <Button
-                        type="submit"
-                        disabled={isSubmittingVisit}
-                        className="w-full py-3 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
-                      >
-                        <CalendarCheck size={16} weight="bold" />
-                        <span>{isSubmittingVisit ? 'Scheduling visit...' : 'Schedule Site Visit'}</span>
-                      </Button>
-                    </form>
-                  )}
-                </div>
-              )}
-
-              {/* Mode 3: Request Callback Form */}
-              {activeFormTab === 'callback' && (
-                <div>
-                  {callbackSuccess ? (
-                    <div className="py-6 text-center space-y-3">
-                      <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
-                        <PhoneCall size={28} weight="fill" />
-                      </div>
-                      <h4 className="title-3 text-brand-navy font-bold">Callback confirmed</h4>
-                      <p className="caption-2 text-slate-500 leading-relaxed">
-                        A property specialist will call you at <span className="font-semibold text-brand-navy">{phone}</span> during {callbackTime}.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => setCallbackSuccess(false)}
-                        className="text-xs font-semibold text-brand-blue hover:underline cursor-pointer"
-                      >
-                        Request another callback
-                      </button>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="detail-enquiry-phone" className="text-slate-500 font-semibold">
+                        Phone number
+                      </Label>
+                      <PhoneInput
+                        id="detail-enquiry-phone"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        aria-invalid={Boolean(formErrors.phone)}
+                        className={cn('rounded-xl border-slate-200', formErrors.phone && 'border-rose-400 ring-1 ring-rose-400/30')}
+                        inputClassName="rounded-xl border-0 bg-slate-50 text-body md:text-small font-medium focus:bg-white"
+                      />
+                      {formErrors.phone && (
+                        <p className="wizard-field-error mt-1">{formErrors.phone}</p>
+                      )}
                     </div>
-                  ) : (
-                    <form onSubmit={handleCallbackSubmit} className="space-y-3">
-                      <div>
-                        <label className="caption-2 font-semibold text-slate-500 block mb-1">
-                          Preferred callback window
-                        </label>
-                        <select
-                          value={callbackTime}
-                          onChange={(e) => setCallbackTime(e.target.value)}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-brand-navy focus:outline-none focus:border-brand-blue font-medium cursor-pointer"
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="detail-enquiry-email" className="text-slate-500 font-semibold">
+                        Email address
+                      </Label>
+                      <Input
+                        id="detail-enquiry-email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="your.email@company.com"
+                        aria-invalid={Boolean(formErrors.email)}
+                        className={detailFieldClass}
+                      />
+                      {formErrors.email && (
+                        <p className="wizard-field-error mt-1">{formErrors.email}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="detail-enquiry-message" className="text-slate-500 font-semibold">
+                        Message
+                      </Label>
+                      <Textarea
+                        id="detail-enquiry-message"
+                        rows={3}
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        className={cn(detailFieldClass, 'min-h-[4.5rem] resize-y')}
+                      />
+                    </div>
+
+                    <div className="space-y-1.5 pt-1">
+                      <div className="flex items-start gap-2">
+                        <Checkbox
+                          id="detail-enquiry-consent"
+                          checked={consent}
+                          onCheckedChange={(checked) => setConsent(checked === true)}
+                          className="mt-0.5"
+                        />
+                        <Label
+                          htmlFor="detail-enquiry-consent"
+                          className="text-small font-normal text-slate-500 leading-snug cursor-pointer"
                         >
-                          <option value="Morning (10:00 AM to 01:00 PM)">Morning (10:00 AM to 01:00 PM)</option>
-                          <option value="Afternoon (02:00 PM to 05:00 PM)">Afternoon (02:00 PM to 05:00 PM)</option>
-                          <option value="Evening (05:00 PM to 08:00 PM)">Evening (05:00 PM to 08:00 PM)</option>
-                        </select>
+                          I consent to EstateOne and the verified advisor contacting me regarding this property.
+                        </Label>
                       </div>
+                      {formErrors.consent && (
+                        <p className="wizard-field-error">{formErrors.consent}</p>
+                      )}
+                    </div>
 
-                      <div>
-                        <label className="caption-2 font-semibold text-slate-500 block mb-1">
-                          Phone number
-                        </label>
-                        <input
-                          type="tel"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="+91 98765 43210"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue font-medium"
-                        />
-                        {formErrors.phone && (
-                          <p className="text-[11px] text-rose-600 mt-1">{formErrors.phone}</p>
-                        )}
-                      </div>
+                    <Button type="submit" size="sm" disabled={isSubmittingEnquiry} className="w-full rounded-2xl shadow-xs">
+                      <PaperPlaneTilt size={16} weight="bold" />
+                      <span>{isSubmittingEnquiry ? 'Sending enquiry...' : 'Send Enquiry'}</span>
+                    </Button>
+                  </form>
+                )}
+              </TabsContent>
 
-                      <Button
-                        type="submit"
-                        disabled={isSubmittingCallback}
-                        className="w-full py-3 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
+              <TabsContent value="visit" className="mt-0">
+                {visitSuccess ? (
+                  <div className="py-6 text-center space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
+                      <CalendarCheck size={28} weight="fill" />
+                    </div>
+                    <h4 className="text-h4 text-brand-navy font-semibold">Visit requested</h4>
+                    <p className="caption-2 text-slate-500 leading-relaxed">
+                      Your inspection request for <span className="font-semibold text-brand-navy">{visitDate}</span> at{' '}
+                      <span className="font-semibold text-brand-navy">{visitSlot}</span> is pending agent confirmation.
+                    </p>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setVisitSuccess(false)}
+                      className="text-brand-blue hover:text-brand-blue hover:bg-transparent font-semibold"
+                    >
+                      Schedule another slot
+                    </Button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleVisitSubmit} className="estate-form-surface space-y-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="detail-visit-date" className="text-slate-500 font-semibold">
+                        Select date
+                      </Label>
+                      <DatePickerField
+                        id="detail-visit-date"
+                        value={visitDate}
+                        onChange={setVisitDate}
+                        placeholder="dd-mm-yyyy"
+                        minDate={new Date()}
+                        aria-invalid={Boolean(formErrors.visitDate)}
+                        className={detailFieldClass}
+                      />
+                      {formErrors.visitDate && (
+                        <p className="wizard-field-error mt-1">{formErrors.visitDate}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <span className="wizard-field-label block font-semibold text-slate-500">
+                        Select available time slot
+                      </span>
+                      <RadioGroup
+                        value={visitSlot}
+                        onValueChange={setVisitSlot}
+                        className="grid grid-cols-3 gap-1.5"
                       >
-                        <PhoneCall size={16} weight="bold" />
-                        <span>{isSubmittingCallback ? 'Requesting...' : 'Request Callback'}</span>
-                      </Button>
-                    </form>
-                  )}
-                </div>
-              )}
+                        {VISIT_TIME_SLOTS.map((slot) => {
+                          const slotId = `detail-visit-slot-${slot.replace(/[\s:]/g, '-')}`;
+                          const isActive = visitSlot === slot;
+                          return (
+                            <div key={slot}>
+                              <RadioGroupItem value={slot} id={slotId} className="peer sr-only" />
+                              <label
+                                htmlFor={slotId}
+                                className={cn(
+                                  'flex cursor-pointer items-center justify-center rounded-xl border px-1 py-2 text-center text-small font-semibold transition-all',
+                                  isActive
+                                    ? 'border-brand-navy bg-brand-navy text-white shadow-xs'
+                                    : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'
+                                )}
+                              >
+                                {slot}
+                              </label>
+                            </div>
+                          );
+                        })}
+                      </RadioGroup>
+                    </div>
 
-            </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="detail-visit-phone" className="text-slate-500 font-semibold">
+                        Contact phone number
+                      </Label>
+                      <PhoneInput
+                        id="detail-visit-phone"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        aria-invalid={Boolean(formErrors.phone)}
+                        className={cn('rounded-xl border-slate-200', formErrors.phone && 'border-rose-400 ring-1 ring-rose-400/30')}
+                        inputClassName="rounded-xl border-0 bg-slate-50 text-body md:text-small font-medium focus:bg-white"
+                      />
+                      {formErrors.phone && (
+                        <p className="wizard-field-error mt-1">{formErrors.phone}</p>
+                      )}
+                    </div>
+
+                    <Alert variant="default" className="rounded-xl border-amber-200/80 bg-amber-50 text-amber-900">
+                      <AlertDescription className="text-small text-amber-900">
+                        Notice: Visit requests remain pending until confirmed by the responsible agent or owner.
+                      </AlertDescription>
+                    </Alert>
+
+                    <Button type="submit" size="sm" disabled={isSubmittingVisit} className="w-full rounded-2xl shadow-xs">
+                      <CalendarCheck size={16} weight="bold" />
+                      <span>{isSubmittingVisit ? 'Scheduling visit...' : 'Schedule Site Visit'}</span>
+                    </Button>
+                  </form>
+                )}
+              </TabsContent>
+
+              <TabsContent value="callback" className="mt-0">
+                {callbackSuccess ? (
+                  <div className="py-6 text-center space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
+                      <PhoneCall size={28} weight="fill" />
+                    </div>
+                    <h4 className="text-h4 text-brand-navy font-semibold">Callback confirmed</h4>
+                    <p className="caption-2 text-slate-500 leading-relaxed">
+                      A property specialist will call you at{' '}
+                      <span className="font-semibold text-brand-navy">{formatPhoneDisplay(phone)}</span> during{' '}
+                      {callbackTime}.
+                    </p>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setCallbackSuccess(false)}
+                      className="text-brand-blue hover:text-brand-blue hover:bg-transparent font-semibold"
+                    >
+                      Request another callback
+                    </Button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleCallbackSubmit} className="estate-form-surface space-y-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="detail-callback-window" className="text-slate-500 font-semibold">
+                        Preferred callback window
+                      </Label>
+                      <Select value={callbackTime} onValueChange={setCallbackTime}>
+                        <SelectTrigger id="detail-callback-window" className={detailFieldClass}>
+                          <SelectValue placeholder="Choose a time window" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CALLBACK_TIME_OPTIONS.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="detail-callback-phone" className="text-slate-500 font-semibold">
+                        Phone number
+                      </Label>
+                      <PhoneInput
+                        id="detail-callback-phone"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        aria-invalid={Boolean(formErrors.phone)}
+                        className={cn('rounded-xl border-slate-200', formErrors.phone && 'border-rose-400 ring-1 ring-rose-400/30')}
+                        inputClassName="rounded-xl border-0 bg-slate-50 text-body md:text-small font-medium focus:bg-white"
+                      />
+                      {formErrors.phone && (
+                        <p className="wizard-field-error mt-1">{formErrors.phone}</p>
+                      )}
+                    </div>
+
+                    <Button type="submit" size="sm" disabled={isSubmittingCallback} className="w-full rounded-2xl shadow-xs">
+                      <PhoneCall size={16} weight="bold" />
+                      <span>{isSubmittingCallback ? 'Requesting...' : 'Request Callback'}</span>
+                    </Button>
+                  </form>
+                )}
+              </TabsContent>
+            </Tabs>
 
             {/* Seller Direct Guarantee Stamp */}
-            <div className="p-4 rounded-2xl bg-emerald-50 text-xs text-emerald-900 space-y-1.5">
+            <div className="p-4 rounded-2xl bg-emerald-50 text-small text-emerald-900 space-y-1.5">
               <div className="flex items-center gap-1.5 font-bold">
                 <ShieldCheck size={16} weight="fill" className="text-emerald-600" />
                 <span>Verified seller direct coordination</span>
               </div>
-              <p className="text-[11px] text-emerald-800/80 leading-relaxed">
+              <p className="text-small text-emerald-800/80 leading-relaxed">
                 Connect directly with certified property owners and RERA registered advisors with transparent terms.
               </p>
             </div>
@@ -1131,20 +1075,17 @@ export default function PropertyDetailPage() {
           Section J: Similar Properties (PRD 5.5)
          ========================================================================= */}
       {similarProperties.length > 0 && (
-        <section className="mt-20 pt-10 border-t border-slate-200">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="heading-3 text-brand-navy font-bold">
+        <section className="property-detail-related">
+          <div className="property-detail-related-header">
+            <div className="min-w-0">
+              <h2 className="property-detail-related-heading">
                 Similar properties you may like
               </h2>
-              <p className="caption-1 text-slate-500 mt-1">
+              <p className="property-detail-related-desc">
                 Verified listings in {property.city} with comparable specifications
               </p>
             </div>
-            <Link
-              to={parentRoute}
-              className="text-xs font-semibold text-brand-blue hover:underline hidden sm:inline"
-            >
+            <Link to={parentRoute} className="property-detail-related-link hidden sm:inline-flex">
               Browse all {parentLabel.toLowerCase()} listings
             </Link>
           </div>

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   MagnifyingGlass, 
@@ -11,6 +11,7 @@ import {
   CaretDown
 } from '@phosphor-icons/react';
 import { Button } from './ui/button';
+import { MKT_ICON } from '../lib/iconScale';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './ui/select';
 import { ScrollArea } from './ui/scroll-area';
 
@@ -137,7 +138,10 @@ export default function Hero({
     : LOCATION_SUGGESTIONS.slice(0, 8);
 
   return (
-    <section className="relative z-20 min-h-[92vh] md:min-h-[88vh] pt-32 pb-36 md:pt-40 md:pb-48 px-4 flex flex-col items-center justify-center text-center">
+    <section
+      aria-labelledby="hero-headline"
+      className="hero-section relative z-20 min-h-[92vh] md:min-h-[88vh] pt-32 pb-36 md:pt-40 md:pb-48 px-4 flex flex-col items-center justify-center text-center"
+    >
       
       {/* Luxury Architectural Background Image with Cinematic Scrim */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -153,74 +157,76 @@ export default function Hero({
         
         {/* Frosted Proof Signal Badge per A2 & B8 */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white shadow-sm mb-6 transition-all hover:bg-white/15">
-          <ShieldCheck size={18} weight="fill" className="text-brand-gold" />
-          <span className="caption-1 font-semibold text-white">
+          <ShieldCheck size={MKT_ICON.lg} weight="fill" className="text-brand-gold" aria-hidden />
+          <span className="hero-eyebrow text-white">
             RERA validated listings with direct agent and owner access
           </span>
         </div>
 
         {/* Hero Heading per PRD 5.1 */}
-        <h1 className="heading-1 max-w-[760px] mb-6 text-balance tracking-tight bg-gradient-to-r from-white via-white to-slate-200 bg-clip-text text-transparent">
+        <h1 id="hero-headline" className="text-display hero-display-on-dark max-w-[760px] mb-6">
           Find your place in the world.
         </h1>
 
-        {/* Subheadline per PRD 5.1 */}
-        <p className="body-2 text-slate-200 max-w-[680px] mb-10 text-pretty leading-relaxed">
+        {/* Subheadline per PRD 5.1 — lead token, 65ch measure (typography system §9.3) */}
+        <p className="hero-lead-on-dark mb-10">
           Explore exceptional properties, discover the right neighbourhood, and make your next move with confidence.
         </p>
 
-        {/* =========================================================================
-            Airbnb Style Search Capsule for Hero Fields (Per User Request)
-           ========================================================================= */}
-        <div className="w-full max-w-5xl flex flex-col items-center">
-          
-          {/* Category Switcher Tabs per PRD 5.1 */}
-          <div className="flex items-center gap-1 sm:gap-2 bg-white/10 backdrop-blur-xl p-1 rounded-full border border-white/20 mb-3 self-center sm:self-start">
-            {[
-              { id: 'buy', label: 'Buy' },
-              { id: 'rent', label: 'Rent' },
-              { id: 'commercial', label: 'Commercial' },
-            ].map((tab) => {
-              const isActive = (tab.id === 'buy' && intent === 'buy' && selectedType !== 'Commercial') ||
-                               (tab.id === 'rent' && intent === 'rent') ||
-                               (tab.id === 'commercial' && (selectedType === 'Commercial' || intent === 'commercial'));
+        {/* Hero search module — intent tabs on scrim + floating capsule */}
+        <div className="hero-search-module w-full flex flex-col items-center sm:items-stretch gap-3">
+          <div className="w-full flex justify-center sm:justify-start">
+            <div
+              role="tablist"
+              aria-label="Property search intent"
+              className="hero-intent-tabs"
+            >
+              {[
+                { id: 'buy', label: 'Buy' },
+                { id: 'rent', label: 'Rent' },
+                { id: 'commercial', label: 'Commercial' },
+              ].map((tab) => {
+                const isCommercial =
+                  selectedType === 'Commercial' || intent === 'commercial';
+                const isActive =
+                  (tab.id === 'buy' && intent === 'buy' && !isCommercial) ||
+                  (tab.id === 'rent' && intent === 'rent') ||
+                  (tab.id === 'commercial' && isCommercial);
 
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => {
-                    if (tab.id === 'buy') {
-                      setIntent('buy');
-                      setSelectedType('All types');
-                    } else if (tab.id === 'rent') {
-                      setIntent('rent');
-                      setSelectedType('All types');
-                    } else if (tab.id === 'commercial') {
-                      setIntent('commercial');
-                      setSelectedType('Commercial');
-                    }
-                  }}
-                  className={`px-5 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-white text-brand-navy shadow-sm'
-                      : 'text-slate-200 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => {
+                      if (tab.id === 'buy') {
+                        setIntent('buy');
+                        setSelectedType('All types');
+                      } else if (tab.id === 'rent') {
+                        setIntent('rent');
+                        setSelectedType('All types');
+                      } else if (tab.id === 'commercial') {
+                        setIntent('commercial');
+                        setSelectedType('Commercial');
+                      }
+                    }}
+                    className="hero-intent-tab"
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* The Iconic Airbnb Search Capsule Bar (Unified Pill Container) */}
-          <div className="w-full bg-white/95 backdrop-blur-2xl rounded-3xl lg:rounded-full p-2.5 sm:p-3 shadow-[0_25px_60px_rgba(0,0,0,0.3)] border border-white/60 transition-all text-left">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:divide-x lg:divide-slate-200/90 gap-2 lg:gap-0">
+          <div className="hero-search-capsule w-full text-left">
+            <div className="flex flex-col lg:flex-row lg:items-stretch lg:divide-x lg:divide-slate-200/80 gap-0">
               
               {/* Field 1: Location input with autocomplete per PRD 5.1 */}
-              <div ref={locationRef} className="flex-1 px-4 py-2 bg-transparent relative">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 uppercase tracking-wider mb-0.5">
-                  <MapPin size={14} weight="fill" className="text-brand-blue" />
+              <div ref={locationRef} className="hero-search-field flex-1 min-w-0 relative">
+                <div className="flex items-center gap-1 hero-field-label mb-0.5">
+                  <MapPin size={MKT_ICON.sm} weight="fill" className="text-brand-blue shrink-0" aria-hidden />
                   <span>Location</span>
                 </div>
                 <div className="relative flex items-center">
@@ -233,7 +239,7 @@ export default function Hero({
                     }}
                     onFocus={() => setLocationOpen(true)}
                     placeholder="Search city, locality, or landmark..."
-                    className="w-full bg-transparent border-0 p-0 text-sm font-semibold text-brand-navy placeholder:text-slate-400 placeholder:font-normal focus:outline-none focus:ring-0 truncate"
+                    className="hero-field-value w-full bg-transparent border-0 p-0 focus:outline-none focus:ring-0 truncate"
                   />
                   {selectedCity && selectedCity !== 'All cities' && (
                     <button
@@ -244,7 +250,7 @@ export default function Hero({
                       }}
                       className="text-slate-400 hover:text-brand-navy ml-1 cursor-pointer"
                     >
-                      <X size={12} weight="bold" />
+                      <X size={MKT_ICON.xs} weight="bold" aria-hidden />
                     </button>
                   )}
                 </div>
@@ -262,19 +268,19 @@ export default function Hero({
                                 setSelectedCity(item.locality ? `${item.locality}, ${item.city}` : item.city);
                                 setLocationOpen(false);
                               }}
-                              className="px-3.5 py-2.5 rounded-2xl text-xs flex items-center justify-between text-slate-700 hover:bg-slate-100 hover:text-brand-navy cursor-pointer transition-colors"
+                              className="px-3.5 py-2.5 rounded-2xl text-small flex items-center justify-between text-slate-700 hover:bg-slate-100 hover:text-brand-navy cursor-pointer transition-colors"
                             >
                               <div className="flex items-center gap-2 truncate">
-                                <MapPin size={14} className="text-[#C5A46D] shrink-0" />
-                                <span className="font-semibold text-brand-navy truncate">{item.label}</span>
+                                <MapPin size={MKT_ICON.sm} className="text-brand-gold shrink-0" aria-hidden />
+                                <span className="text-small font-semibold text-brand-navy truncate">{item.label}</span>
                               </div>
-                              <span className="text-[10px] uppercase font-bold text-slate-500 px-2 py-0.5 rounded-full bg-slate-100 shrink-0 ml-2">
+                              <span className="text-label font-bold text-slate-500 px-2 py-0.5 rounded-full bg-slate-100 shrink-0 ml-2">
                                 {item.type}
                               </span>
                             </li>
                           ))
                         ) : (
-                          <li className="px-4 py-3 text-xs text-slate-400 text-center">
+                          <li className="px-4 py-3 text-small text-slate-400 text-center">
                             No matching locations found
                           </li>
                         )}
@@ -285,18 +291,18 @@ export default function Hero({
               </div>
 
               {/* Field 2: Property Type Selector per PRD 5.1 */}
-              <div className="flex-1 px-4 py-2 bg-transparent">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 uppercase tracking-wider mb-0.5">
-                  <Buildings size={14} weight="fill" className="text-brand-blue" />
+              <div className="hero-search-field flex-1 min-w-0">
+                <div className="flex items-center gap-1 hero-field-label mb-0.5">
+                  <Buildings size={MKT_ICON.sm} weight="fill" className="text-brand-blue shrink-0" aria-hidden />
                   <span>Property type</span>
                 </div>
                 <Select value={selectedType} onValueChange={setSelectedType}>
-                  <SelectTrigger className="border-0 bg-transparent shadow-none hover:bg-transparent focus:ring-0 focus:outline-none focus:shadow-none h-6 p-0 font-semibold text-brand-navy text-sm cursor-pointer truncate">
+                  <SelectTrigger className="hero-field-value border-0 bg-transparent shadow-none hover:bg-transparent focus:ring-0 focus:outline-none focus:shadow-none h-auto min-h-8 p-0 cursor-pointer truncate w-full [&_svg]:size-3.5">
                     <SelectValue placeholder="All property types" />
                   </SelectTrigger>
                   <SelectContent className="shadow-xl border border-slate-100 bg-white rounded-2xl p-1.5 max-h-64">
                     {(isCommercial ? COMMERCIAL_TYPES : RESIDENTIAL_TYPES).map((t) => (
-                      <SelectItem key={t} value={t} className="rounded-xl text-xs font-medium cursor-pointer">
+                      <SelectItem key={t} value={t} className="rounded-xl text-small font-medium cursor-pointer">
                         {t}
                       </SelectItem>
                     ))}
@@ -305,18 +311,18 @@ export default function Hero({
               </div>
 
               {/* Field 3: Budget Range Selector per PRD 5.1 */}
-              <div className="flex-1 px-4 py-2 bg-transparent">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 uppercase tracking-wider mb-0.5">
-                  <CurrencyInr size={14} weight="bold" className="text-brand-blue" />
+              <div className="hero-search-field flex-1 min-w-0">
+                <div className="flex items-center gap-1 hero-field-label mb-0.5">
+                  <CurrencyInr size={MKT_ICON.sm} weight="bold" className="text-brand-blue shrink-0" aria-hidden />
                   <span>Budget range</span>
                 </div>
                 <Select value={budgetRange} onValueChange={setBudgetRange}>
-                  <SelectTrigger className="border-0 bg-transparent shadow-none hover:bg-transparent focus:ring-0 focus:outline-none focus:shadow-none h-6 p-0 font-semibold text-brand-navy text-sm cursor-pointer truncate">
+                  <SelectTrigger className="hero-field-value border-0 bg-transparent shadow-none hover:bg-transparent focus:ring-0 focus:outline-none focus:shadow-none h-auto min-h-8 p-0 cursor-pointer truncate w-full [&_svg]:size-3.5">
                     <SelectValue placeholder="Select budget" />
                   </SelectTrigger>
                   <SelectContent className="shadow-xl border border-slate-100 bg-white rounded-2xl p-1.5 max-h-64">
                     {budgetOptions.map((b) => (
-                      <SelectItem key={b.id} value={b.id} className="rounded-xl text-xs font-medium cursor-pointer">
+                      <SelectItem key={b.id} value={b.id} className="rounded-xl text-small font-medium cursor-pointer">
                         {b.label}
                       </SelectItem>
                     ))}
@@ -325,15 +331,15 @@ export default function Hero({
               </div>
 
               {/* Search Button per PRD 5.1 */}
-              <div className="p-1 pl-2 shrink-0">
+              <div className="hero-search-field hero-search-field--cta shrink-0 flex items-center justify-center lg:justify-end">
                 <Button
                   type="button"
                   onClick={handleSearchClick}
-                  size="lg"
-                  className="w-full lg:w-auto rounded-full px-7 py-3.5 bg-brand-navy hover:bg-brand-blue text-white font-heading font-semibold shadow-[0_6px_20px_rgba(20,43,74,0.35)] active:scale-[0.97] transition-all flex items-center justify-center gap-2 cursor-pointer border-0"
+                  size="sm"
+                  className="hero-search-cta w-full lg:w-auto min-h-10 px-5 rounded-full bg-brand-navy hover:bg-brand-navy-hover text-white shadow-[0_6px_20px_rgba(20,43,74,0.35)] active:scale-[0.98] border-0"
                 >
-                  <MagnifyingGlass size={18} weight="bold" className="text-brand-gold shrink-0" />
-                  <span className="text-sm font-semibold">Search</span>
+                  <MagnifyingGlass size={MKT_ICON.md} weight="bold" className="text-brand-gold shrink-0" aria-hidden />
+                  <span>Search</span>
                 </Button>
               </div>
 

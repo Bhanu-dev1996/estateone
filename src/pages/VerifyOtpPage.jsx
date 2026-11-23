@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -158,17 +158,18 @@ export default function VerifyOtpPage() {
           <h1 className="heading-2 text-brand-navy font-bold tracking-tight">
             Verify your identity
           </h1>
-          <p className="caption-1 text-slate-500">
+          <p className="text-caption text-slate-500 leading-snug">
             Enter the 6 digit code dispatched to{' '}
-            <strong className="text-brand-navy">
+            <strong className="font-semibold text-brand-navy">
               {pendingRegistration?.phone || pendingRegistration?.email || 'your registered contact'}
             </strong>
           </p>
         </div>
 
+        <div className="estate-form-surface space-y-4">
         {/* Intended Destination Notice (Rule 6) */}
         {intendedDestination && (
-          <div className="p-3 rounded-2xl bg-blue-50/80 border border-blue-200 text-blue-900 text-xs flex items-center gap-2">
+          <div className="p-3 rounded-2xl bg-blue-50/80 border border-blue-200 text-blue-900 text-caption leading-snug flex items-center gap-2">
             <ShieldCheck size={16} className="text-brand-blue shrink-0" weight="fill" />
             <span className="truncate">
               Verification will redirect you to <strong className="font-semibold">{intendedDestination}</strong>
@@ -177,17 +178,17 @@ export default function VerifyOtpPage() {
         )}
 
         {/* Demo Helper Banner for Evaluation */}
-        <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="bg-white text-slate-700 text-[11px] font-mono font-bold">
+        <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-wrap items-center justify-between gap-2 text-caption leading-snug">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="outline" className="bg-white text-slate-700 text-caption font-mono font-semibold py-0">
               Demo OTP: 123456
             </Badge>
-            <span className="text-slate-500 text-[11px] hidden sm:inline">Valid for instant evaluation</span>
+            <span className="text-slate-500 hidden sm:inline">Valid for instant evaluation</span>
           </div>
           <button
             type="button"
             onClick={handleFillDemoCode}
-            className="text-[11px] font-semibold text-brand-blue hover:underline cursor-pointer"
+            className="text-caption font-semibold text-brand-blue hover:underline cursor-pointer shrink-0"
           >
             Auto fill code
           </button>
@@ -197,9 +198,9 @@ export default function VerifyOtpPage() {
         {errorMsg && (
           <div 
             role="alert" 
-            className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5 animate-fadeIn"
+            className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-caption leading-snug flex items-start gap-2.5 animate-fadeIn"
           >
-            <WarningCircle size={18} className="text-rose-600 shrink-0 mt-0.5" weight="fill" />
+            <WarningCircle size={20} className="text-rose-600 shrink-0 mt-0.5" weight="fill" />
             <div className="flex-1">
               <span className="font-semibold block">Verification notice</span>
               <span>{errorMsg}</span>
@@ -208,8 +209,17 @@ export default function VerifyOtpPage() {
         )}
 
         {/* 6-Digit OTP Form */}
-        <form onSubmit={handleVerify} className="space-y-6">
-          <div className="flex items-center justify-between gap-2 sm:gap-3" onPaste={handlePaste}>
+        <form onSubmit={handleVerify} className="space-y-4">
+          <div>
+            <p className="wizard-field-label text-brand-navy sr-only" id="otp-code-label">
+              Verification code
+            </p>
+            <div
+              className="flex items-center justify-between gap-1.5 sm:gap-2"
+              onPaste={handlePaste}
+              role="group"
+              aria-labelledby="otp-code-label"
+            >
             {otp.map((digit, idx) => (
               <input
                 key={idx}
@@ -217,30 +227,28 @@ export default function VerifyOtpPage() {
                 id={`otp-${idx}`}
                 type="text"
                 inputMode="numeric"
-                autoComplete="one-time-code"
+                autoComplete={idx === 0 ? 'one-time-code' : 'off'}
                 maxLength={1}
                 value={digit}
                 onChange={(e) => handleDigitChange(e.target.value, idx)}
                 onKeyDown={(e) => handleKeyDown(e, idx)}
-                className="w-11 h-13 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-2xl border border-slate-200 bg-slate-50 text-brand-navy focus:bg-white focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all shadow-2xs"
+                aria-label={`Digit ${idx + 1} of 6`}
+                className="listing-wizard-field-control auth-otp-digit h-10 w-full min-w-0 max-w-[3rem] sm:max-w-[3.25rem] text-center font-semibold tabular-nums rounded-xl border border-slate-200 bg-slate-50 text-brand-navy focus:bg-white focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all"
               />
             ))}
+            </div>
           </div>
 
-          <Button 
-            type="submit" 
-            disabled={isVerifying || otp.join('').length < 6}
-            className="w-full rounded-2xl py-3 text-xs font-semibold bg-brand-navy hover:bg-slate-900 text-white cursor-pointer transition-all shadow-xs"
-          >
+          <Button type="submit" size="sm" disabled={isVerifying || otp.join('').length < 6} className="w-full rounded-2xl shadow-xs">
             {isVerifying ? 'Verifying...' : 'Confirm and open destination'}
           </Button>
         </form>
 
         {/* Rule 4: Resend OTP Countdown & Resend Limits */}
-        <div className="pt-2 border-t border-slate-100 space-y-2 text-center text-xs">
+        <div className="pt-2 border-t border-slate-100 space-y-2 text-caption leading-snug">
           {maxResendsReached ? (
             <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-left flex items-start gap-2.5">
-              <Clock size={18} className="text-amber-600 shrink-0 mt-0.5" weight="fill" />
+              <Clock size={20} className="text-amber-600 shrink-0 mt-0.5" weight="fill" />
               <div>
                 <span className="font-semibold block">Resend limit reached</span>
                 <span>You have used all 3 resend attempts. For security, please wait 15 minutes before requesting a new code.</span>
@@ -248,37 +256,41 @@ export default function VerifyOtpPage() {
             </div>
           ) : (
             <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-slate-500">
-              <span className="text-[11px]">
-                Resend attempts used: <strong className="text-brand-navy">{resendCount} of {AUTH_SECURITY_CONFIG.OTP_MAX_RESEND_ATTEMPTS}</strong>
+              <span>
+                Resend attempts used:{' '}
+                <strong className="font-semibold text-brand-navy">
+                  {resendCount} of {AUTH_SECURITY_CONFIG.OTP_MAX_RESEND_ATTEMPTS}
+                </strong>
               </span>
 
               {cooldownSeconds > 0 ? (
-                <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
-                  <Clock size={13} />
+                <span className="font-medium text-slate-400 inline-flex items-center gap-1.5">
+                  <Clock size={12} className="shrink-0" />
                   <span>Resend code in {cooldownSeconds}s</span>
                 </span>
               ) : (
                 <button
                   type="button"
                   onClick={handleResend}
-                  className="font-semibold text-brand-blue hover:underline cursor-pointer flex items-center gap-1"
+                  className="font-semibold text-brand-blue hover:underline cursor-pointer inline-flex items-center gap-1"
                 >
-                  <ArrowClockwise size={13} />
+                  <ArrowClockwise size={12} />
                   <span>Resend code</span>
                 </button>
               )}
             </div>
           )}
 
-          <div className="pt-2">
+          <div className="pt-2 text-center">
             <Link 
               to="/register" 
-              className="text-slate-500 hover:text-brand-navy inline-flex items-center gap-1.5 text-xs font-medium"
+              className="text-slate-500 hover:text-brand-navy inline-flex items-center gap-1.5 font-medium"
             >
-              <ArrowLeft size={13} />
+              <ArrowLeft size={12} />
               <span>Edit registration details</span>
             </Link>
           </div>
+        </div>
         </div>
 
       </Card>

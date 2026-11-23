@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { 
   ShieldCheck, 
   MapPin, 
@@ -140,7 +140,7 @@ export default function PropertyDetailModal({ property, onClose, onScheduleVisit
                   <div className="grid grid-cols-2 gap-2.5 text-xs text-slate-700">
                     {property.amenities.map((amenity) => (
                       <div key={amenity} className="flex items-center gap-2 py-1">
-                        <CheckCircle size={15} weight="fill" className="text-emerald-600 shrink-0" />
+                        <CheckCircle size={16} weight="fill" className="text-emerald-600 shrink-0" />
                         <span>{amenity}</span>
                       </div>
                     ))}
@@ -155,13 +155,13 @@ export default function PropertyDetailModal({ property, onClose, onScheduleVisit
                 <span className="caption-4 text-brand-muted uppercase tracking-wider block mb-2">
                   Verified listing partner
                 </span>
-                <h4 className="title-2 text-brand-navy font-semibold mb-1">
+                <h4 className="text-h4 text-brand-navy font-semibold mb-1">
                   {property.agent?.name || 'Verified Advisor'}
                 </h4>
                 <p className="caption-2 text-brand-blue font-medium mb-3">
                   {property.agent?.role || 'Premier Property Partner'}
                 </p>
-                <div className="space-y-2 text-xs text-brand-muted mb-4">
+                <div className="space-y-2 text-small text-brand-muted mb-4">
                   <div className="flex items-center gap-1.5">
                     <CheckCircle size={14} className="text-emerald-600" />
                     <span>Identity and background verified</span>
@@ -214,7 +214,7 @@ export default function PropertyDetailModal({ property, onClose, onScheduleVisit
                 <p className="body-4 text-brand-navy mb-1 font-semibold">
                   Carpet area plan: {property.area}
                 </p>
-                <p className="caption-2 text-brand-muted">
+                <p className="text-small text-brand-muted">
                   Includes master suite, ensuite baths, living lounge, modular kitchen layout, and service balusters.
                 </p>
               </div>
@@ -230,7 +230,7 @@ export default function PropertyDetailModal({ property, onClose, onScheduleVisit
             <span className="title-2 font-bold text-brand-navy block">
               {property.priceDisplay}
             </span>
-            <span className="text-[11px] text-brand-muted">
+            <span className="text-small text-brand-muted">
               {property.pricePerSqFt || property.priceUnit}
             </span>
           </div>
@@ -241,12 +241,12 @@ export default function PropertyDetailModal({ property, onClose, onScheduleVisit
                 href={`tel:${property.agent.phone.replace(/\s+/g, '')}`}
                 className="hidden sm:inline-flex py-2 px-4 rounded-full bg-slate-100 hover:bg-slate-200 text-brand-navy text-xs font-semibold transition-all items-center gap-1.5"
               >
-                <Phone size={15} />
+                <Phone size={16} />
                 <span>Call agent</span>
               </a>
             )}
 
-            <Button
+            <Button size="sm"
               type="button"
               onClick={() => {
                 onClose();

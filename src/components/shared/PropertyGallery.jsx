@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { 
-  X, 
   CaretLeft, 
   CaretRight, 
   Images, 
@@ -10,6 +9,12 @@ import {
   VideoCamera
 } from '@phosphor-icons/react';
 import { Dialog, DialogContent } from '../ui/dialog';
+import {
+  resolvePropertyVideoSource,
+  pickDummyPropertyVideo,
+  pickDummyFloorPlan,
+  isUsableFloorPlanUrl,
+} from '../../lib/propertyMedia';
 
 export default function PropertyGallery({ 
   images = [], 
@@ -28,6 +33,19 @@ export default function PropertyGallery({
   ];
 
   const total = displayImages.length;
+
+  const floorPlanSrc = isUsableFloorPlanUrl(floorPlanImage)
+    ? floorPlanImage.trim()
+    : pickDummyFloorPlan(title);
+  const showFloorPlanTab = Boolean(floorPlanSrc);
+  const showVideoTab = Boolean(videoUrl?.trim());
+  const videoSource = resolvePropertyVideoSource(videoUrl);
+  const activeVideo =
+    videoSource.kind !== 'none'
+      ? videoSource
+      : showVideoTab
+        ? resolvePropertyVideoSource(pickDummyPropertyVideo(title))
+        : null;
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : total - 1));
@@ -109,14 +127,14 @@ export default function PropertyGallery({
         <div className="absolute bottom-4 right-4 flex items-center gap-2 flex-wrap">
           
           {/* Video Tour Button */}
-          {videoUrl && (
+          {showVideoTab && (
             <button
               type="button"
               onClick={() => {
                 setActiveTab('video');
                 setLightboxOpen(true);
               }}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-slate-900/90 hover:bg-slate-900 text-white shadow-md backdrop-blur-md text-xs font-semibold transition-all cursor-pointer"
+              className="min-h-10 button-sm flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-slate-900/90 hover:bg-slate-900 text-white shadow-md backdrop-blur-md transition-all cursor-pointer"
             >
               <PlayCircle size={16} weight="fill" className="text-brand-gold" />
               <span>Video tour</span>
@@ -124,14 +142,14 @@ export default function PropertyGallery({
           )}
 
           {/* Floor Plan Button */}
-          {floorPlanImage && (
+          {showFloorPlanTab && (
             <button
               type="button"
               onClick={() => {
                 setActiveTab('floorplan');
                 setLightboxOpen(true);
               }}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white/90 hover:bg-white text-brand-navy shadow-md backdrop-blur-md text-xs font-semibold transition-all cursor-pointer"
+              className="min-h-10 button-sm flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white/90 hover:bg-white text-brand-navy shadow-md backdrop-blur-md transition-all cursor-pointer"
             >
               <Blueprint size={16} weight="bold" />
               <span>Floor plan</span>
@@ -146,7 +164,7 @@ export default function PropertyGallery({
               setCurrentIndex(0);
               setLightboxOpen(true);
             }}
-            className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/95 hover:bg-white text-brand-navy shadow-md backdrop-blur-md text-xs font-semibold transition-all cursor-pointer"
+            className="min-h-10 button-sm flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/95 hover:bg-white text-brand-navy shadow-md backdrop-blur-md transition-all cursor-pointer"
           >
             <Images size={16} weight="bold" />
             <span>View all {total} photographs</span>
@@ -158,22 +176,26 @@ export default function PropertyGallery({
 
       {/* Full Screen Interactive Lightbox Modal */}
       <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
-        <DialogContent className="max-w-6xl w-[95vw] h-[90vh] p-0 rounded-3xl bg-slate-950 border-0 shadow-2xl flex flex-col overflow-hidden text-white">
+        <DialogContent
+          showClose
+          closeClassName="right-5 top-5 z-20 text-slate-300 hover:text-white hover:bg-white/10 focus-visible:ring-white/40"
+          className="max-w-6xl w-[95vw] h-[90vh] p-0 rounded-3xl bg-slate-950 border-0 shadow-2xl flex flex-col overflow-hidden text-white"
+        >
           
           {/* Lightbox Top Header & Tab Controls */}
           <div className="px-6 py-4 flex items-center justify-between border-b border-white/10 shrink-0">
             <div className="flex items-center gap-4">
               <div>
-                <p className="text-xs font-semibold text-white tracking-tight">{title}</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">
+                <p className="text-small font-semibold text-white tracking-tight">{title}</p>
+                <p className="text-small text-slate-400 mt-0.5">
                   {activeTab === 'photos' && `Photograph ${currentIndex + 1} of ${total}`}
-                  {activeTab === 'video' && 'Architectural virtual walk through'}
-                  {activeTab === 'floorplan' && 'Sanctioned architectural layout'}
+                  {activeTab === 'video' && 'Sample walkthrough preview (demo media)'}
+                  {activeTab === 'floorplan' && 'Sample layout drawing (demo)'}
                 </p>
               </div>
 
               {/* Mode Switcher Tabs */}
-              <div className="hidden sm:flex items-center bg-white/10 p-1 rounded-full text-xs">
+              <div className="hidden sm:flex items-center bg-white/10 p-1 rounded-full text-caption">
                 <button
                   type="button"
                   onClick={() => setActiveTab('photos')}
@@ -183,7 +205,7 @@ export default function PropertyGallery({
                 >
                   Photographs ({total})
                 </button>
-                {floorPlanImage && (
+                {showFloorPlanTab && (
                   <button
                     type="button"
                     onClick={() => setActiveTab('floorplan')}
@@ -194,7 +216,7 @@ export default function PropertyGallery({
                     Floor plan
                   </button>
                 )}
-                {videoUrl && (
+                {showVideoTab && (
                   <button
                     type="button"
                     onClick={() => setActiveTab('video')}
@@ -207,15 +229,6 @@ export default function PropertyGallery({
                 )}
               </div>
             </div>
-            
-            <button
-              type="button"
-              onClick={() => setLightboxOpen(false)}
-              aria-label="Close photo gallery"
-              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
-            >
-              <X size={18} weight="bold" />
-            </button>
           </div>
 
           {/* Lightbox Main Stage */}
@@ -236,7 +249,7 @@ export default function PropertyGallery({
                   aria-label="Previous photograph"
                   className="absolute left-6 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all cursor-pointer"
                 >
-                  <CaretLeft size={22} weight="bold" />
+                  <CaretLeft size={20} weight="bold" />
                 </button>
 
                 {/* Next Arrow */}
@@ -246,7 +259,7 @@ export default function PropertyGallery({
                   aria-label="Next photograph"
                   className="absolute right-6 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all cursor-pointer"
                 >
-                  <CaretRight size={22} weight="bold" />
+                  <CaretRight size={20} weight="bold" />
                 </button>
               </>
             )}
@@ -254,28 +267,40 @@ export default function PropertyGallery({
             {activeTab === 'floorplan' && (
               <div className="w-full h-full flex flex-col items-center justify-center p-4">
                 <img
-                  src={floorPlanImage || displayImages[0]}
+                  src={floorPlanSrc}
                   alt={`${title} architectural floor plan layout`}
-                  className="max-h-full max-w-full object-contain rounded-2xl bg-white p-2"
+                  className="max-h-full max-w-full object-contain rounded-2xl bg-white p-4 shadow-inner"
                 />
               </div>
             )}
 
             {activeTab === 'video' && (
-              <div className="w-full max-w-4xl aspect-video rounded-3xl overflow-hidden bg-black flex items-center justify-center">
-                {videoUrl ? (
-                  <iframe
-                    src={videoUrl}
-                    title={`${title} video tour`}
-                    className="w-full h-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (
-                  <div className="text-center p-8 text-slate-400">
-                    <VideoCamera size={48} className="mx-auto mb-2 text-slate-600" />
-                    <p className="text-sm font-semibold">Video walk through processing</p>
+              <div className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden bg-black shadow-lg">
+                {!activeVideo ? (
+                  <div className="flex h-full items-center justify-center p-8 text-center text-slate-400">
+                    <VideoCamera size={48} className="mx-auto mb-2 text-slate-600" aria-hidden />
+                    <p className="text-small font-semibold">Video walkthrough is not available for this listing yet.</p>
                   </div>
+                ) : activeVideo.kind === 'file' ? (
+                  <video
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="absolute inset-0 h-full w-full object-contain bg-black"
+                    title={`${title} video tour`}
+                  >
+                    <source src={activeVideo.src} />
+                    <track kind="captions" />
+                  </video>
+                ) : (
+                  <iframe
+                    src={activeVideo.src}
+                    title={`${title} video tour`}
+                    className="absolute inset-0 h-full w-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                    allowFullScreen
+                    referrerPolicy="strict-origin-when-cross-origin"
+                  />
                 )}
               </div>
             )}

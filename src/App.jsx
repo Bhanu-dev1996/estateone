@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { ENABLE_CUSTOMER_DASHBOARD } from './config/productScope';
 
 // Layouts
 import MainLayout from './layouts/MainLayout';
 import AuthLayout from './layouts/AuthLayout';
+import CustomerDashboardLayout from './layouts/CustomerDashboardLayout';
 
 // Shared Context Providers (PRD Section 4)
 import { ToastProvider } from './context/ToastContext';
 import { PropertyProvider } from './context/PropertyContext';
 import { AuthProvider } from './context/AuthContext';
+import { CustomerDashboardProvider } from './context/CustomerDashboardContext';
 
 // Global Modals
 import PropertyDetailModal from './components/PropertyDetailModal';
@@ -17,6 +20,24 @@ import LegalModal from './components/LegalModal';
 
 // Route Guards (PRD Acceptance Rule 5)
 import ProtectedRoute from './components/shared/ProtectedRoute';
+
+// Authenticated Customer Dashboard Pages (Customer Portal PRD Section 3.2)
+import DashboardOverview from './pages/customer/DashboardOverview';
+import DiscoverProperties from './pages/customer/DiscoverProperties';
+import Enquiries from './pages/customer/Enquiries';
+import EnquiryDetails from './pages/customer/EnquiryDetails';
+import SiteVisits from './pages/customer/SiteVisits';
+import SiteVisitDetails from './pages/customer/SiteVisitDetails';
+import CustomerSavedProperties from './pages/customer/SavedProperties';
+import CustomerCompareProperties from './pages/customer/CompareProperties';
+import RecentSearches from './pages/customer/RecentSearches';
+import SearchAlerts from './pages/customer/SearchAlerts';
+import Messages from './pages/customer/Messages';
+import Notifications from './pages/customer/Notifications';
+import Profile from './pages/customer/Profile';
+import Settings from './pages/customer/Settings';
+import Support from './pages/customer/Support';
+import CreateSupportTicket from './pages/customer/CreateSupportTicket';
 
 // Public & Portal Pages
 import HomePage from './pages/HomePage';
@@ -113,34 +134,184 @@ export default function App() {
       <ToastProvider>
         <AuthProvider>
           <PropertyProvider>
-            <ScrollToTop />
+            {ENABLE_CUSTOMER_DASHBOARD ? (
+              <CustomerDashboardProvider>
+                <AppRoutes
+                  selectedCity={selectedCity}
+                  setSelectedCity={setSelectedCity}
+                  selectedType={selectedType}
+                  setSelectedType={setSelectedType}
+                  intent={intent}
+                  setIntent={setIntent}
+                  budgetRange={budgetRange}
+                  setBudgetRange={setBudgetRange}
+                  selectedBedrooms={selectedBedrooms}
+                  setSelectedBedrooms={setSelectedBedrooms}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  favorites={favorites}
+                  onToggleFavorite={handleToggleFavorite}
+                  onExploreProperties={handleExploreProperties}
+                  onExploreClick={handleExploreProperties}
+                  onContactClick={() => setActiveScheduleProperty({ title: 'EstateOne Priority Consultation' })}
+                  onOpenLegal={(type) => setLegalModalConfig(type)}
+                  onCitySelect={handleCitySelectFromFooter}
+                  setActivePropertyDetail={setActivePropertyDetail}
+                  setActiveScheduleProperty={setActiveScheduleProperty}
+                />
+              </CustomerDashboardProvider>
+            ) : (
+              <AppRoutes
+                selectedCity={selectedCity}
+                setSelectedCity={setSelectedCity}
+                selectedType={selectedType}
+                setSelectedType={setSelectedType}
+                intent={intent}
+                setIntent={setIntent}
+                budgetRange={budgetRange}
+                setBudgetRange={setBudgetRange}
+                selectedBedrooms={selectedBedrooms}
+                setSelectedBedrooms={setSelectedBedrooms}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                favorites={favorites}
+                onToggleFavorite={handleToggleFavorite}
+                onExploreProperties={handleExploreProperties}
+                onExploreClick={handleExploreProperties}
+                onContactClick={() => setActiveScheduleProperty({ title: 'EstateOne Priority Consultation' })}
+                onOpenLegal={(type) => setLegalModalConfig(type)}
+                onCitySelect={handleCitySelectFromFooter}
+                setActivePropertyDetail={setActivePropertyDetail}
+                setActiveScheduleProperty={setActiveScheduleProperty}
+              />
+            )}
 
-            <Routes>
-              {/* =========================================================================
-                  1. DEDICATED FOCUSED AUTH LAYOUT (Login, Register, OTP, Password Reset)
-                  Completely removes complete website header and footer to keep users focused
-                 ========================================================================= */}
-              <Route element={<AuthLayout />}>
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                <Route path="/verify-otp" element={<VerifyOtpPage />} />
-                <Route path="/reset-password" element={<ResetPasswordPage />} />
-              </Route>
+            {/* Global Modals */}
+            {activePropertyDetail && (
+              <PropertyDetailModal
+                property={activePropertyDetail}
+                onClose={() => setActivePropertyDetail(null)}
+                onScheduleVisit={(prop) => {
+                  setActivePropertyDetail(null);
+                  setActiveScheduleProperty(prop);
+                }}
+              />
+            )}
 
-              {/* =========================================================================
-                  2. STANDARD PUBLIC & PORTAL LAYOUT (Complete Website Navigation & Footer)
-                 ========================================================================= */}
-              <Route
-                element={
-                  <MainLayout
-                    onExploreClick={handleExploreProperties}
-                    onContactClick={() => setActiveScheduleProperty({ title: 'EstateOne Priority Consultation' })}
-                    onOpenLegal={(type) => setLegalModalConfig(type)}
-                    onCitySelect={handleCitySelectFromFooter}
-                  />
+            {activeScheduleProperty && (
+              <EnquiryModal
+                property={activeScheduleProperty}
+                onClose={() => setActiveScheduleProperty(null)}
+              />
+            )}
+
+            {legalModalConfig && (
+              <LegalModal
+                type={legalModalConfig}
+                title={
+                  legalModalConfig === 'privacy'
+                    ? 'Privacy Policy'
+                    : legalModalConfig === 'rera'
+                      ? 'RERA Compliance Disclaimer'
+                      : 'Terms and Conditions'
                 }
-              >
+                onClose={() => setLegalModalConfig(null)}
+              />
+            )}
+          </PropertyProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </BrowserRouter>
+  );
+}
+
+function AppRoutes({
+  selectedCity,
+  setSelectedCity,
+  selectedType,
+  setSelectedType,
+  intent,
+  setIntent,
+  budgetRange,
+  setBudgetRange,
+  selectedBedrooms,
+  setSelectedBedrooms,
+  searchQuery,
+  setSearchQuery,
+  favorites,
+  onToggleFavorite,
+  onExploreProperties,
+  onExploreClick,
+  onContactClick,
+  onOpenLegal,
+  onCitySelect,
+  setActivePropertyDetail,
+  setActiveScheduleProperty
+}) {
+  return (
+    <>
+      <ScrollToTop />
+
+      <Routes>
+                {/* =========================================================================
+                    1. DEDICATED FOCUSED AUTH LAYOUT (Login, Register, OTP, Password Reset)
+                    Completely removes complete website header and footer to keep users focused
+                   ========================================================================= */}
+                <Route element={<AuthLayout />}>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                  <Route path="/verify-otp" element={<VerifyOtpPage />} />
+                  <Route path="/reset-password" element={<ResetPasswordPage />} />
+                </Route>
+
+                {ENABLE_CUSTOMER_DASHBOARD ? (
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <CustomerDashboardLayout />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route index element={<DashboardOverview />} />
+                    <Route path="discover" element={<DiscoverProperties />} />
+                    <Route path="enquiries" element={<Enquiries />} />
+                    <Route path="enquiries/:enquiryId" element={<EnquiryDetails />} />
+                    <Route path="site-visits" element={<SiteVisits />} />
+                    <Route path="site-visits/:visitId" element={<SiteVisitDetails />} />
+                    <Route path="saved" element={<CustomerSavedProperties />} />
+                    <Route path="compare" element={<CustomerCompareProperties />} />
+                    <Route path="recent-searches" element={<RecentSearches />} />
+                    <Route path="alerts" element={<SearchAlerts />} />
+                    <Route path="messages" element={<Messages />} />
+                    <Route path="messages/:conversationId" element={<Messages />} />
+                    <Route path="notifications" element={<Notifications />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="settings" element={<Settings />} />
+                    <Route path="support" element={<Support />} />
+                    <Route path="support/new" element={<CreateSupportTicket />} />
+                  </Route>
+                ) : (
+                  <Route
+                    path="/dashboard/*"
+                    element={<Navigate to="/account" replace />}
+                  />
+                )}
+
+                {/* =========================================================================
+                    3. STANDARD PUBLIC & PORTAL LAYOUT (Complete Website Navigation & Footer)
+                   ========================================================================= */}
+                <Route
+                  element={
+                    <MainLayout
+                      onExploreClick={onExploreClick}
+                      onContactClick={onContactClick}
+                      onOpenLegal={onOpenLegal}
+                      onCitySelect={onCitySelect}
+                    />
+                  }
+                >
                 {/* Primary Discovery Routes */}
                 <Route 
                   path="/" 
@@ -158,7 +329,7 @@ export default function App() {
                       setSelectedBedrooms={setSelectedBedrooms}
                       searchQuery={searchQuery}
                       setSearchQuery={setSearchQuery}
-                      onExploreProperties={handleExploreProperties}
+                      onExploreProperties={onExploreProperties}
                       onSelectProperty={(prop) => setActivePropertyDetail(prop)}
                       onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
                     />
@@ -213,7 +384,7 @@ export default function App() {
                   element={
                     <SavedPropertiesPage 
                       favorites={favorites}
-                      onToggleFavorite={handleToggleFavorite}
+                      onToggleFavorite={onToggleFavorite}
                       onScheduleVisit={(prop) => setActiveScheduleProperty(prop)}
                     />
                   } 
@@ -259,44 +430,7 @@ export default function App() {
                 {/* Branded 404 Catch-All */}
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
-            </Routes>
-
-            {/* Global Modals */}
-            {activePropertyDetail && (
-              <PropertyDetailModal
-                property={activePropertyDetail}
-                onClose={() => setActivePropertyDetail(null)}
-                onScheduleVisit={(prop) => {
-                  setActivePropertyDetail(null);
-                  setActiveScheduleProperty(prop);
-                }}
-              />
-            )}
-
-            {activeScheduleProperty && (
-              <EnquiryModal
-                property={activeScheduleProperty}
-                onClose={() => setActiveScheduleProperty(null)}
-              />
-            )}
-
-            {legalModalConfig && (
-              <LegalModal
-                type={legalModalConfig}
-                title={
-                  legalModalConfig === 'privacy' 
-                    ? 'Privacy Policy' 
-                    : legalModalConfig === 'rera' 
-                      ? 'RERA Compliance Disclaimer' 
-                      : 'Terms and Conditions'
-                }
-                onClose={() => setLegalModalConfig(null)}
-              />
-            )}
-
-          </PropertyProvider>
-        </AuthProvider>
-      </ToastProvider>
-    </BrowserRouter>
+      </Routes>
+    </>
   );
 }

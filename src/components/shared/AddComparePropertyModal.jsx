@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { MagnifyingGlass, X, Scales, ShieldCheck, Plus, Check } from '@phosphor-icons/react';
 import { SAMPLE_PROPERTIES } from '../../data/properties';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
@@ -52,14 +52,14 @@ export default function AddComparePropertyModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl p-6 sm:p-8 bg-white rounded-3xl border-0 shadow-2xl">
         <DialogHeader className="text-left mb-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-semibold mb-2 self-start">
-            <Scales size={15} weight="fill" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-small font-semibold mb-2 self-start">
+            <Scales size={16} weight="fill" />
             <span>{isReplacing ? 'Replace comparison slot' : 'Expand comparison'}</span>
           </div>
-          <DialogTitle className="heading-3 text-brand-navy font-bold">
+          <DialogTitle className="text-h4 text-brand-navy font-semibold">
             {isReplacing ? 'Select replacement property' : 'Add property to compare'}
           </DialogTitle>
-          <DialogDescription className="body-4 text-slate-500 mt-1">
+          <DialogDescription className="text-small text-slate-500 mt-1">
             {isReplacing
               ? 'Choose a listing to swap into this comparison column.'
               : 'Choose another verified listing to evaluate side by side (up to 4 properties).'}
@@ -75,7 +75,7 @@ export default function AddComparePropertyModal({
               placeholder="Search by building name, locality, city, or property type..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-9 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-medium text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue focus:bg-white transition-all"
+              className="w-full pl-9 pr-9 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-body font-medium text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue focus:bg-white transition-all"
             />
             {searchQuery && (
               <button
@@ -84,7 +84,7 @@ export default function AddComparePropertyModal({
                 aria-label="Clear search query"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-navy cursor-pointer transition-colors"
               >
-                <X size={13} weight="bold" />
+                <X size={14} weight="bold" />
               </button>
             )}
           </div>
@@ -101,7 +101,7 @@ export default function AddComparePropertyModal({
                 key={tab.id}
                 type="button"
                 onClick={() => setSelectedIntent(tab.id)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-small font-semibold transition-all cursor-pointer ${
                   selectedIntent === tab.id
                     ? 'bg-brand-navy text-white shadow-xs'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-brand-navy'
@@ -144,13 +144,13 @@ export default function AddComparePropertyModal({
                         <span className="caption-3 font-bold text-brand-navy">
                           {prop.intent === 'rent' ? (prop.monthlyRentDisplay || prop.priceDisplay) : prop.priceDisplay}
                         </span>
-                        <span className="text-[10px] text-slate-400">•</span>
+                        <span className="text-caption text-slate-400">•</span>
                         <span className="caption-4 text-slate-500">
                           {prop.area}
                         </span>
                         {prop.bedrooms && (
                           <>
-                            <span className="text-[10px] text-slate-400">•</span>
+                            <span className="text-caption text-slate-400">•</span>
                             <span className="caption-4 text-slate-500">
                               {prop.bedrooms}
                             </span>
@@ -160,22 +160,22 @@ export default function AddComparePropertyModal({
                     </div>
                   </div>
 
-                  <Button
+                  <Button size="sm"
                     type="button"
                     onClick={() => {
                       onSelectProperty(prop);
                       onClose();
                     }}
-                    className="shrink-0 px-3.5 py-1.5 h-auto text-xs font-semibold rounded-xl bg-brand-navy hover:bg-brand-blue text-white cursor-pointer transition-colors flex items-center gap-1"
+                    className="shrink-0 px-3.5 py-1.5 h-auto text-small font-semibold rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white cursor-pointer transition-colors flex items-center gap-1"
                   >
-                    <Plus size={13} weight="bold" />
+                    <Plus size={14} weight="bold" />
                     <span>{isReplacing ? 'Select' : 'Add'}</span>
                   </Button>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="py-12 text-center text-slate-400 text-xs">
+            <div className="py-12 text-center text-slate-400 text-small">
               <p>No available properties found matching your search.</p>
               <button
                 type="button"
@@ -192,15 +192,15 @@ export default function AddComparePropertyModal({
         </ScrollArea>
 
         {/* Modal Footer */}
-        <div className="flex items-center justify-between pt-4 border-t border-slate-100 text-xs">
+        <div className="flex items-center justify-between pt-4 border-t border-slate-100 text-small">
           <span className="caption-4 text-slate-400">
             Showing {availableProperties.length} available listings
           </span>
-          <Button
+          <Button size="sm"
             type="button"
             variant="ghost"
             onClick={onClose}
-            className="text-xs font-semibold text-slate-600 hover:text-brand-navy cursor-pointer"
+            className="font-semibold text-slate-600 min-h-10 hover:text-brand-navy cursor-pointer"
           >
             Cancel
           </Button>

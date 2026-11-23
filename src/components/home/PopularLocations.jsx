@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, ArrowRight, Buildings } from '@phosphor-icons/react';
 
@@ -60,20 +60,20 @@ export default function PopularLocations() {
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
         <div>
-          <span className="caption-2 font-bold tracking-wider uppercase text-[#C5A46D] mb-2 block">
+          <span className="text-label text-[#C5A46D] mb-2 block">
             Territory discovery
           </span>
-          <h2 className="heading-2 text-brand-navy font-bold tracking-tight">
+          <h2 className="text-h2 text-brand-navy">
             Popular locations
           </h2>
-          <p className="body-4 text-slate-500 mt-2 max-w-xl">
+          <p className="mkt-section-desc">
             Explore exceptional residences and commercial developments across premier Indian metropolitan centres.
           </p>
         </div>
 
         <Link
           to="/buy"
-          className="self-start md:self-auto flex items-center gap-1.5 text-xs font-semibold text-brand-blue hover:text-brand-navy transition-colors group"
+          className="self-start md:self-auto mkt-section-link text-brand-blue hover:text-brand-navy transition-colors group flex items-center gap-1.5"
         >
           <span>View all locations</span>
           <ArrowRight size={14} weight="bold" className="group-hover:translate-x-0.5 transition-transform" />
@@ -99,20 +99,20 @@ export default function PopularLocations() {
 
             {/* Top Pill */}
             <div className="absolute top-4 left-4 z-10">
-              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold text-white shadow-xs">
-                <Buildings size={13} />
+              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-small font-semibold text-white shadow-xs">
+                <Buildings size={14} />
                 <span>{loc.count}</span>
               </span>
             </div>
 
             {/* Content Details */}
             <div className="relative z-10">
-              <div className="flex items-center gap-1.5 text-xs text-[#C5A46D] font-semibold mb-1">
-                <MapPin size={13} weight="fill" />
+              <div className="flex items-center gap-1.5 text-small text-brand-gold font-semibold mb-1">
+                <MapPin size={14} weight="fill" />
                 <span>{loc.state}</span>
               </div>
               
-              <h3 className="heading-3 text-white font-bold tracking-tight mb-1.5">
+              <h3 className="text-h3 text-white font-bold tracking-tight mb-1.5">
                 {loc.city}
               </h3>
 
@@ -125,7 +125,7 @@ export default function PopularLocations() {
                 {loc.popularLocalities.slice(0, 3).map((locality) => (
                   <span
                     key={locality}
-                    className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 backdrop-blur-sm text-slate-200"
+                    className="text-caption px-2 py-0.5 rounded-full bg-white/10 backdrop-blur-sm text-slate-200"
                   >
                     {locality}
                   </span>

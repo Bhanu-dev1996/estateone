@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
           <h1 className="heading-2 text-brand-navy font-bold tracking-tight">
             Reset your password
           </h1>
-          <p className="caption-1 text-slate-500">
+          <p className="text-caption text-slate-500 leading-snug">
             Enter your registered email address or mobile number to receive a secure verification code
           </p>
         </div>
@@ -65,14 +65,14 @@ export default function ForgotPasswordPage() {
               <h2 className="title-2 font-bold text-brand-navy">
                 Dispatch request processed
               </h2>
-              <p className="caption-1 text-slate-500 leading-relaxed max-w-md mx-auto">
+              <p className="text-caption text-slate-500 leading-relaxed max-w-md mx-auto">
                 {MASKED_AUTH_MESSAGES.ACCOUNT_RESET_DISPATCHED}
               </p>
             </div>
 
             <div className="pt-3 space-y-2.5">
               <Link to="/verify-otp" className="block">
-                <Button className="w-full rounded-2xl py-3 text-xs font-semibold bg-brand-navy hover:bg-slate-900 text-white cursor-pointer">
+                <Button size="sm" className="w-full rounded-2xl shadow-xs">
                   Enter verification code
                 </Button>
               </Link>
@@ -80,16 +80,16 @@ export default function ForgotPasswordPage() {
               <button
                 type="button"
                 onClick={() => setDispatched(false)}
-                className="text-xs font-medium text-slate-500 hover:text-brand-navy cursor-pointer"
+                className="text-caption font-medium text-slate-500 hover:text-brand-navy cursor-pointer"
               >
                 Try another email or number
               </button>
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSend} className="space-y-4">
+          <form onSubmit={handleSend} className="estate-form-surface space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="reset-identity" className="caption-1 font-semibold text-brand-navy">
+              <Label htmlFor="reset-identity">
                 Email address or mobile number
               </Label>
               <Input
@@ -99,15 +99,11 @@ export default function ForgotPasswordPage() {
                 placeholder="e.g. rahul@example.com or +91 98000 00000"
                 value={emailOrPhone}
                 onChange={(e) => setEmailOrPhone(e.target.value)}
-                className="rounded-2xl border-slate-200 bg-slate-50 text-xs text-brand-navy py-3 px-3.5 focus:bg-white focus:border-brand-blue"
+                className="rounded-2xl border-slate-200 bg-slate-50 text-brand-navy py-3 px-3.5 focus:bg-white focus:border-brand-blue"
               />
             </div>
 
-            <Button 
-              type="submit" 
-              disabled={isSubmitting || !emailOrPhone.trim()}
-              className="w-full rounded-2xl py-3 text-xs font-semibold bg-brand-navy hover:bg-slate-900 text-white cursor-pointer transition-all shadow-xs"
-            >
+            <Button type="submit" size="sm" disabled={isSubmitting || !emailOrPhone.trim()} className="w-full rounded-2xl shadow-xs">
               {isSubmitting ? 'Dispatching code...' : 'Send verification code'}
             </Button>
           </form>
@@ -116,7 +112,7 @@ export default function ForgotPasswordPage() {
         <div className="text-center pt-2 border-t border-slate-100">
           <Link 
             to="/login" 
-            className="text-xs font-semibold text-slate-600 flex items-center justify-center gap-1.5 hover:text-brand-navy cursor-pointer"
+            className="text-caption font-semibold text-slate-600 flex items-center justify-center gap-1.5 hover:text-brand-navy cursor-pointer"
           >
             <ArrowLeft size={14} />
             <span>Return to sign in</span>

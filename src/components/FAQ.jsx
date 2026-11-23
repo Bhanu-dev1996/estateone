@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Question } from '@phosphor-icons/react';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './ui/accordion';
 import { Badge } from './ui/badge';
@@ -53,15 +53,15 @@ export default function FAQ({ onContactClick }) {
     <section id="faq" className="py-20 px-4 max-w-4xl mx-auto scroll-mt-24">
       
       {/* Section Header */}
-      <div className="text-center max-w-[680px] mx-auto mb-16">
+      <div className="text-center max-w-[65ch] mx-auto mb-16">
         <Badge variant="default" className="mb-3">
           <Question size={16} weight="bold" className="text-brand-blue" />
           <span>Got questions?</span>
         </Badge>
-        <h2 className="heading-2 text-brand-navy mb-4 tracking-tight text-balance">
+        <h2 className="text-h2 text-brand-navy mb-4 tracking-tight text-balance">
           Frequently asked questions
         </h2>
-        <p className="body-2 text-brand-muted text-pretty">
+        <p className="mkt-section-desc text-brand-muted mx-auto">
           Everything you need to know about our verification process, visit scheduling, and property authenticity.
         </p>
       </div>
@@ -83,20 +83,16 @@ export default function FAQ({ onContactClick }) {
       {/* Objection Reassurance Frosted Card (Borderless) */}
       <Card className="mt-12 p-6 md:p-8 bg-white/75 backdrop-blur-2xl border-0 shadow-[0_16px_40px_rgba(0,0,0,0.05)] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
         <div>
-          <h4 className="title-2 text-brand-navy font-semibold">
+          <h4 className="text-h4 text-brand-navy font-semibold">
             Have a question not answered here?
           </h4>
-          <p className="caption-2 text-brand-muted mt-1">
+          <p className="text-small text-brand-muted mt-1">
             Our property support desk is available Monday through Saturday.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onContactClick}
-          className="button-sm py-2.5 px-5 rounded-xl bg-brand-navy text-white hover:bg-slate-800 transition-all shadow-md inline-block cursor-pointer"
-        >
+        <Button type="button" size="sm" onClick={onContactClick} className="rounded-2xl shadow-xs">
           Contact support
-        </button>
+        </Button>
       </Card>
 
     </section>

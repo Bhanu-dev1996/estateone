@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -17,8 +17,9 @@ import {
   PaperPlaneTilt
 } from '@phosphor-icons/react';
 import Logo from './Logo';
+import { cn } from '../lib/utils';
 
-export default function Footer({ onCitySelect }) {
+export default function Footer({ onCitySelect, className = '' }) {
   // Newsletter subscription states
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'duplicate' | 'error'
@@ -76,7 +77,12 @@ export default function Footer({ onCitySelect }) {
   ];
 
   return (
-    <footer className="bg-[#142B4A] text-slate-300 pt-16 pb-12 px-4 border-t border-white/10 text-left relative overflow-hidden">
+    <footer
+      className={cn(
+        'w-full bg-[#142B4A] text-slate-300 pt-16 pb-12 px-4 border-t border-white/10 text-left relative overflow-hidden z-10',
+        className
+      )}
+    >
       
       {/* Subtle Architectural Glow Accent */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#C5A46D]/10 rounded-full blur-[140px] pointer-events-none"></div>
@@ -91,7 +97,7 @@ export default function Footer({ onCitySelect }) {
             <span className="caption-2 font-bold tracking-wider uppercase text-[#C5A46D] mb-2 block">
               Market intelligence
             </span>
-            <h3 className="heading-3 text-white font-bold tracking-tight mb-2">
+            <h3 className="text-h4 text-white font-semibold tracking-tight mb-2">
               Subscribe to EstateOne property briefings
             </h3>
             <p className="body-4 text-slate-300 leading-relaxed">
@@ -133,19 +139,19 @@ export default function Footer({ onCitySelect }) {
             {/* Validation & Status Notifications */}
             {status === 'success' && (
               <div className="flex items-center gap-1.5 mt-2.5 text-xs text-emerald-400 font-medium">
-                <CheckCircle size={15} weight="fill" />
+                <CheckCircle size={16} weight="fill" />
                 <span>Thank you for subscribing to EstateOne property briefings.</span>
               </div>
             )}
             {status === 'duplicate' && (
               <div className="flex items-center gap-1.5 mt-2.5 text-xs text-amber-300 font-medium">
-                <WarningCircle size={15} weight="fill" />
+                <WarningCircle size={16} weight="fill" />
                 <span>This email address is already subscribed to updates.</span>
               </div>
             )}
             {status === 'error' && (
               <div className="flex items-center gap-1.5 mt-2.5 text-xs text-rose-300 font-medium">
-                <WarningCircle size={15} weight="fill" />
+                <WarningCircle size={16} weight="fill" />
                 <span>Please provide a valid email address.</span>
               </div>
             )}
@@ -172,7 +178,7 @@ export default function Footer({ onCitySelect }) {
             </p>
 
             {/* Verified Business Contact Information */}
-            <div className="space-y-2 pt-2 text-xs text-slate-300">
+            <div className="space-y-2 pt-2 text-small text-slate-300">
               <div className="flex items-start gap-2.5">
                 <MapPin size={16} className="text-[#C5A46D] shrink-0 mt-0.5" />
                 <span>Bandra Kurla Complex (BKC), Mumbai, Maharashtra 400051, India</span>
@@ -245,7 +251,7 @@ export default function Footer({ onCitySelect }) {
                 {openSections.explore ? <CaretUp size={16} /> : <CaretDown size={16} />}
               </span>
             </div>
-            <ul className={`space-y-2.5 text-xs text-slate-300 mt-3 md:mt-0 ${openSections.explore ? 'block' : 'hidden md:block'}`}>
+            <ul className={`space-y-2.5 text-small text-slate-300 mt-3 md:mt-0 ${openSections.explore ? 'block' : 'hidden md:block'}`}>
               <li>
                 <Link to="/buy" onClick={scrollToTop} className="hover:text-white transition-colors">Buy properties</Link>
               </li>
@@ -280,7 +286,7 @@ export default function Footer({ onCitySelect }) {
                 {openSections.cities ? <CaretUp size={16} /> : <CaretDown size={16} />}
               </span>
             </div>
-            <ul className={`space-y-2.5 text-xs text-slate-300 mt-3 md:mt-0 ${openSections.cities ? 'block' : 'hidden md:block'}`}>
+            <ul className={`space-y-2.5 text-small text-slate-300 mt-3 md:mt-0 ${openSections.cities ? 'block' : 'hidden md:block'}`}>
               {popularCities.map((city) => (
                 <li key={city.name}>
                   <Link to={city.href} onClick={scrollToTop} className="hover:text-white transition-colors">
@@ -304,7 +310,7 @@ export default function Footer({ onCitySelect }) {
                 {openSections.owners ? <CaretUp size={16} /> : <CaretDown size={16} />}
               </span>
             </div>
-            <ul className={`space-y-2.5 text-xs text-slate-300 mt-3 md:mt-0 ${openSections.owners ? 'block' : 'hidden md:block'}`}>
+            <ul className={`space-y-2.5 text-small text-slate-300 mt-3 md:mt-0 ${openSections.owners ? 'block' : 'hidden md:block'}`}>
               <li>
                 <Link to="/list-property" onClick={scrollToTop} className="hover:text-white transition-colors font-semibold text-[#C5A46D]">
                   List your property
@@ -338,7 +344,7 @@ export default function Footer({ onCitySelect }) {
                 {openSections.company ? <CaretUp size={16} /> : <CaretDown size={16} />}
               </span>
             </div>
-            <ul className={`space-y-2.5 text-xs text-slate-300 mt-3 md:mt-0 ${openSections.company ? 'block' : 'hidden md:block'}`}>
+            <ul className={`space-y-2.5 text-small text-slate-300 mt-3 md:mt-0 ${openSections.company ? 'block' : 'hidden md:block'}`}>
               <li>
                 <Link to="/about" onClick={scrollToTop} className="hover:text-white transition-colors">About us</Link>
               </li>
@@ -384,7 +390,7 @@ export default function Footer({ onCitySelect }) {
             type="button"
             onClick={scrollToTop}
             aria-label="Scroll back to top of page"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white button-sm font-semibold min-h-10 transition-all cursor-pointer"
           >
             <span>Back to top</span>
             <ArrowUp size={14} weight="bold" />

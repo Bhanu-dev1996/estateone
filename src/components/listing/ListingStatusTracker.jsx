@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { 
   ShieldCheck, 
   Clock, 
@@ -75,7 +75,7 @@ export function getStatusBadge(status) {
   const Icon = match.icon;
   return (
     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${match.color}`}>
-      <Icon size={13} weight="fill" />
+      <Icon size={14} weight="fill" />
       <span>{match.label}</span>
     </span>
   );
@@ -139,7 +139,7 @@ export default function ListingStatusTracker({ currentStatus = 'Pending verifica
                       : 'bg-white border-slate-300'
                   }`}
                 >
-                  {isCompleted && <CheckCircle size={10} weight="bold" />}
+                  {isCompleted && <CheckCircle size={12} weight="bold" />}
                 </div>
                 <div>
                   <p className={`caption-1 font-bold ${isCurrent ? 'text-amber-700' : isCompleted ? 'text-brand-navy' : 'text-slate-400'}`}>
@@ -171,7 +171,7 @@ export default function ListingStatusTracker({ currentStatus = 'Pending verifica
           {LISTING_STATUSES.map((item) => (
             <div key={item.status} className="p-2.5 rounded-xl bg-slate-50/70 border border-slate-100/80">
               <span className="font-semibold text-brand-navy block">{item.label}</span>
-              <span className="text-slate-500 text-[11px]">{item.meaning}</span>
+              <span className="text-slate-500 text-small">{item.meaning}</span>
             </div>
           ))}
         </div>

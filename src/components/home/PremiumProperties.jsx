@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { Crown, ArrowRight } from '@phosphor-icons/react';
 import { SAMPLE_PROPERTIES } from '../../data/properties';
@@ -16,21 +16,21 @@ export default function PremiumProperties() {
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
         <div>
-          <span className="caption-2 font-bold tracking-wider uppercase text-[#C5A46D] mb-2 block flex items-center gap-1.5">
-            <Crown size={15} weight="fill" />
+          <span className="text-label text-[#C5A46D] mb-2 block flex items-center gap-1.5">
+            <Crown size={16} weight="fill" />
             <span>Ultra luxury collection</span>
           </span>
-          <h2 className="heading-2 text-brand-navy font-bold tracking-tight">
+          <h2 className="text-h2 text-brand-navy">
             Premium properties
           </h2>
-          <p className="body-4 text-slate-500 mt-2 max-w-xl">
+          <p className="mkt-section-desc">
             Signature estates, sea facing sky penthouses, and private architectural masterpieces curated for high net worth buyers.
           </p>
         </div>
 
         <Link
           to="/buy?budget=above-15cr"
-          className="self-start md:self-auto flex items-center gap-1.5 text-xs font-semibold text-brand-blue hover:text-brand-navy transition-colors group"
+          className="self-start md:self-auto mkt-section-link text-brand-blue hover:text-brand-navy transition-colors group flex items-center gap-1.5"
         >
           <span>Explore luxury portfolio</span>
           <ArrowRight size={14} weight="bold" className="group-hover:translate-x-0.5 transition-transform" />

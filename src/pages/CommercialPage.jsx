@@ -1,20 +1,8 @@
-import React, { useState, useMemo, useEffect } from 'react';
+﻿import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { 
-  Buildings, 
-  MagnifyingGlass, 
-  ShieldCheck, 
-  SortAscending, 
-  SquaresFour, 
-  Rows, 
-  X, 
-  MapPin, 
-  Clock, 
-  ArrowClockwise
-} from '@phosphor-icons/react';
+import { Buildings, ShieldCheck } from '@phosphor-icons/react';
 import { 
   SAMPLE_PROPERTIES, 
-  CITIES,
   COMMERCIAL_CATEGORIES,
   COMMERCIAL_TRANSACTION_TYPES
 } from '../data/properties';
@@ -26,8 +14,10 @@ import PropertyCard from '../components/shared/PropertyCard';
 import EmptyState from '../components/shared/EmptyState';
 import ErrorState from '../components/shared/ErrorState';
 import Pagination from '../components/shared/Pagination';
+import PropertyListingToolbar from '../components/shared/PropertyListingToolbar';
 import { PropertyCardSkeleton } from '../components/shared/LoadingSkeleton';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select';
+import { COMMERCIAL_LISTING_SORT_OPTIONS } from '../lib/listingSortOptions';
+import { getPropertyResultsLayoutClass } from '../lib/listingResultsLayout';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 
@@ -342,21 +332,22 @@ export default function CommercialPage() {
   // Recently viewed commercial properties (PRD 5.4)
   const recentlyViewedCommercial = useMemo(() => {
     if (!recentlyViewedIds || recentlyViewedIds.length === 0) return [];
-    return SAMPLE_PROPERTIES.filter(
-      (p) => recentlyViewedIds.includes(p.id) && 
-        (p.intent === 'commercial' || p.type === 'Commercial' || p.category === 'commercial')
-    ).slice(0, 3);
+    return recentlyViewedIds
+      .map((id) => SAMPLE_PROPERTIES.find((p) => p.id === id))
+      .filter(
+        (p) =>
+          p &&
+          (p.intent === 'commercial' || p.type === 'Commercial' || p.category === 'commercial')
+      )
+      .slice(0, 3);
   }, [recentlyViewedIds]);
 
   return (
-    <div className="pt-28 pb-20 px-4 max-w-7xl mx-auto text-left">
+    <div className="pt-28 pb-12 px-4 max-w-7xl mx-auto text-left">
       
       {/* 1. Breadcrumbs Component (PRD 4.1 & 5.4) */}
       <Breadcrumbs 
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'Commercial real estate' }
-        ]} 
+        items={[{ label: 'Commercial real estate' }]} 
         className="mb-4" 
       />
 
@@ -364,7 +355,7 @@ export default function CommercialPage() {
       <div className="mb-8">
         <div className="flex items-center gap-2 flex-wrap mb-3">
           <Badge variant="default" className="px-3 py-1 text-xs gap-1.5 font-semibold">
-            <Buildings size={15} weight="fill" className="text-brand-blue" />
+            <Buildings size={16} weight="fill" className="text-brand-blue" />
             <span>Grade A corporate inventory</span>
           </Badge>
           {cityParam !== 'All cities' && (
@@ -386,109 +377,20 @@ export default function CommercialPage() {
         </p>
       </div>
 
-      {/* 3. Control & Search Bar */}
-      <div className="mb-6 p-4 rounded-3xl bg-white shadow-xs border-0 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-        
-        {/* Search Input with Instant Clear */}
-        <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-md">
-          <MagnifyingGlass size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search business park, BKC, Cyber City, or corridor..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-9 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue focus:bg-white transition-all font-medium"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={handleClearSearch}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-navy cursor-pointer"
-              aria-label="Clear search input"
-            >
-              <X size={14} weight="bold" />
-            </button>
-          )}
-        </form>
-
-        {/* Controls Cluster: City Selector, Sort Dropdown, Layout Toggle */}
-        <div className="flex items-center gap-2.5 flex-wrap self-end lg:self-auto">
-          
-          {/* Quick City Selector Dropdown */}
-          <div className="flex items-center gap-1.5">
-            <MapPin size={16} className="text-brand-gold shrink-0 hidden sm:inline" />
-            <Select value={cityParam} onValueChange={handleCitySelect}>
-              <SelectTrigger className="h-9 px-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-semibold text-brand-navy min-w-[140px] cursor-pointer">
-                <SelectValue placeholder="Select city" />
-              </SelectTrigger>
-              <SelectContent className="rounded-2xl border-slate-100 shadow-xl bg-white p-1 max-h-64">
-                {CITIES.map((c) => (
-                  <SelectItem key={c} value={c} className="rounded-xl text-xs font-medium cursor-pointer">
-                    {c}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Sort Dropdown */}
-          <div className="flex items-center gap-1.5">
-            <SortAscending size={16} className="text-slate-400 shrink-0 hidden sm:inline" />
-            <Select value={sortBy} onValueChange={handleSortChange}>
-              <SelectTrigger className="h-9 px-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-semibold text-brand-navy min-w-[150px] cursor-pointer">
-                <SelectValue placeholder="Sort listings" />
-              </SelectTrigger>
-              <SelectContent className="rounded-2xl border-slate-100 shadow-xl bg-white p-1">
-                <SelectItem value="relevance" className="rounded-xl text-xs font-medium cursor-pointer">
-                  Relevance
-                </SelectItem>
-                <SelectItem value="price-low" className="rounded-xl text-xs font-medium cursor-pointer">
-                  Price: Low to high
-                </SelectItem>
-                <SelectItem value="price-high" className="rounded-xl text-xs font-medium cursor-pointer">
-                  Price: High to low
-                </SelectItem>
-                <SelectItem value="newest" className="rounded-xl text-xs font-medium cursor-pointer">
-                  Newest first
-                </SelectItem>
-                <SelectItem value="area-desc" className="rounded-xl text-xs font-medium cursor-pointer">
-                  Area: Largest first
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Grid / List Layout Switcher */}
-          <div className="flex items-center bg-slate-50 p-1 rounded-2xl border border-slate-200">
-            <button
-              type="button"
-              onClick={() => handleLayoutChange('grid')}
-              aria-label="Grid layout view"
-              className={`p-1.5 rounded-xl transition-all cursor-pointer ${
-                layout === 'grid'
-                  ? 'bg-white text-brand-navy shadow-xs font-bold'
-                  : 'text-slate-400 hover:text-brand-navy'
-              }`}
-            >
-              <SquaresFour size={16} weight={layout === 'grid' ? 'bold' : 'regular'} />
-            </button>
-            <button
-              type="button"
-              onClick={() => handleLayoutChange('list')}
-              aria-label="List layout view"
-              className={`p-1.5 rounded-xl transition-all cursor-pointer ${
-                layout === 'list'
-                  ? 'bg-white text-brand-navy shadow-xs font-bold'
-                  : 'text-slate-400 hover:text-brand-navy'
-              }`}
-            >
-              <Rows size={16} weight={layout === 'list' ? 'bold' : 'regular'} />
-            </button>
-          </div>
-
-        </div>
-
-      </div>
+      <PropertyListingToolbar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onSearchClear={handleClearSearch}
+        onSearchSubmit={handleSearchSubmit}
+        searchPlaceholder="Search business park, BKC, Cyber City, or corridor..."
+        city={cityParam}
+        onCityChange={handleCitySelect}
+        layout={layout}
+        onLayoutChange={handleLayoutChange}
+        sortBy={sortBy}
+        sortOptions={COMMERCIAL_LISTING_SORT_OPTIONS}
+        onSortChange={handleSortChange}
+      />
 
       {/* 6. Active Filter Chips with direct param removal */}
       <ActiveFilterChips 
@@ -508,7 +410,7 @@ export default function CommercialPage() {
         />
 
         {/* Results Area */}
-        <div className="flex-1 w-full">
+        <div className="flex-1 w-full min-w-0">
           
           {/* Result Count Indicator */}
           <div className="flex items-center justify-between mb-4 px-1">
@@ -524,7 +426,7 @@ export default function CommercialPage() {
 
           {/* Loading Skeletons */}
           {isLoading ? (
-            <div className={`grid ${layout === 'list' ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'} gap-6 mb-8`}>
+            <div className={getPropertyResultsLayoutClass(layout, 'catalogue')}>
               {Array.from({ length: 4 }).map((_, i) => (
                 <PropertyCardSkeleton key={i} />
               ))}
@@ -543,7 +445,7 @@ export default function CommercialPage() {
           ) : paginatedProperties.length > 0 ? (
             /* Loaded Results Grid / List */
             <>
-              <div className={`grid ${layout === 'list' ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'} gap-6 mb-8`}>
+              <div className={getPropertyResultsLayoutClass(layout, 'catalogue')}>
                 {paginatedProperties.map((property) => (
                   <PropertyCard 
                     key={property.id} 
@@ -574,26 +476,28 @@ export default function CommercialPage() {
             />
           )}
 
-          {/* 9. Recently Viewed Properties Section per PRD 5.4 */}
-          {recentlyViewedCommercial.length > 0 && (
-            <section className="mt-16 pt-8 border-t border-slate-200">
-              <div className="flex items-center gap-2 mb-6">
-                <Clock size={18} className="text-brand-gold" />
-                <h2 className="heading-4 text-brand-navy font-bold">
-                  Recently viewed commercial spaces
-                </h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {recentlyViewedCommercial.map((property) => (
-                  <PropertyCard key={`recent-${property.id}`} property={property} />
-                ))}
-              </div>
-            </section>
-          )}
-
         </div>
 
       </div>
+
+      {/* Recently viewed — full width (same as Buy page) */}
+      {recentlyViewedCommercial.length > 0 && (
+        <section className="listing-recent-section">
+          <div className="listing-recent-section__header">
+            <span className="listing-recent-section__eyebrow mkt-section-eyebrow">
+              Browsing history
+            </span>
+            <h2 className="listing-recent-section__title">
+              Recently viewed commercial spaces
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {recentlyViewedCommercial.map((property) => (
+              <PropertyCard key={`recent-${property.id}`} property={property} />
+            ))}
+          </div>
+        </section>
+      )}
 
     </div>
   );

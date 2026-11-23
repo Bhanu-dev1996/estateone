@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { 
   Buildings, 
   MapPin, 
@@ -16,7 +16,7 @@ import {
 } from '@phosphor-icons/react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 import { getStatusBadge } from './ListingStatusTracker';
 
 // Sample demonstration submissions illustrating all moderation decision states (PRD 6.4)
@@ -103,12 +103,8 @@ export default function MySubmissionsView({
             Track moderation progress, compliance checkpoints, and administrative decisions.
           </p>
         </div>
-        <Button
-          type="button"
-          onClick={onNewListing}
-          className="px-5 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold flex items-center gap-2 cursor-pointer shadow-xs"
-        >
-          <PlusCircle size={15} weight="bold" />
+        <Button size="sm" type="button" onClick={onNewListing} className="px-5 shadow-xs cursor-pointer">
+          <PlusCircle size={16} weight="bold" />
           <span>Submit another property</span>
         </Button>
       </div>
@@ -147,14 +143,14 @@ export default function MySubmissionsView({
                   <div className="absolute top-3 left-3">
                     {getStatusBadge(sub.status || 'Pending verification')}
                   </div>
-                  <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-full bg-brand-navy/90 text-white font-mono text-[10px] font-bold">
+                  <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-full bg-brand-navy/90 text-white font-mono text-caption font-bold">
                     {sub.referenceId}
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs text-slate-400">
-                    <span className="font-semibold text-brand-blue uppercase tracking-wider text-[10px]">
+                    <span className="font-semibold text-brand-blue uppercase tracking-wider text-caption">
                       {sub.purpose} • {sub.propertyType}
                     </span>
                     <span>Submitted {formattedDate}</span>
@@ -165,7 +161,7 @@ export default function MySubmissionsView({
                   </h3>
 
                   <p className="caption-2 text-slate-500 flex items-center gap-1">
-                    <MapPin size={13} className="text-[#C5A46D] shrink-0" />
+                    <MapPin size={14} className="text-[#C5A46D] shrink-0" />
                     <span className="truncate">{sub.locality ? `${sub.locality}, ` : ''}{sub.city}</span>
                   </p>
 
@@ -178,7 +174,7 @@ export default function MySubmissionsView({
 
                   {/* Flowchart Decision: Changes Required Notice */}
                   {isChangesRequired && (
-                    <div className="p-3 rounded-2xl bg-orange-50 border border-orange-200/80 text-[11px] text-orange-900 leading-relaxed">
+                    <div className="p-3 rounded-2xl bg-orange-50 border border-orange-200/80 text-small text-orange-900 leading-relaxed">
                       <div className="flex items-center gap-1.5 font-bold mb-1 text-orange-800">
                         <WarningCircle size={14} weight="fill" />
                         <span>Action required by submitter</span>
@@ -189,7 +185,7 @@ export default function MySubmissionsView({
 
                   {/* Flowchart Decision: Rejection Notice */}
                   {isRejected && (
-                    <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200/80 text-[11px] text-rose-900 leading-relaxed">
+                    <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200/80 text-small text-rose-900 leading-relaxed">
                       <div className="flex items-center gap-1.5 font-bold mb-1 text-rose-800">
                         <XCircle size={14} weight="fill" />
                         <span>Not approved for publication</span>
@@ -200,7 +196,7 @@ export default function MySubmissionsView({
 
                   {/* Flowchart Decision: Published State */}
                   {isPublished && (
-                    <div className="p-2.5 rounded-2xl bg-emerald-50 text-[11px] text-emerald-800 flex items-center gap-1.5 font-medium">
+                    <div className="p-2.5 rounded-2xl bg-emerald-50 text-small text-emerald-800 flex items-center gap-1.5 font-medium">
                       <CheckCircle size={14} weight="fill" className="text-emerald-600 shrink-0" />
                       <span>Live and actively discoverable on marketplace</span>
                     </div>
@@ -213,10 +209,10 @@ export default function MySubmissionsView({
               <div className="pt-4 flex items-center justify-between gap-2 border-t border-slate-100 mt-4">
                 {isChangesRequired ? (
                   /* PRD 6.4 Owner Journey: Changes Required -> Update Listing */
-                  <Button
+                  <Button size="sm"
                     type="button"
                     onClick={() => onEditSubmission?.(sub)}
-                    className="w-full py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                    className="min-h-10 w-full py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                   >
                     <PencilSimple size={14} weight="bold" />
                     <span>Update listing</span>
@@ -226,11 +222,11 @@ export default function MySubmissionsView({
                     <span className="caption-3 text-slate-400">
                       Moderation: 24 to 48 hours
                     </span>
-                    <Button
+                    <Button size="sm"
                       type="button"
                       variant="outline"
                       onClick={() => setSelectedSubmission(sub)}
-                      className="rounded-xl text-xs font-semibold border-slate-200 text-brand-navy hover:bg-slate-50 flex items-center gap-1 cursor-pointer"
+                      className="min-h-10 rounded-xl border-slate-200 text-brand-navy hover:bg-slate-50 flex items-center gap-1 cursor-pointer"
                     >
                       <Eye size={14} />
                       <span>View details</span>
@@ -246,109 +242,114 @@ export default function MySubmissionsView({
       {/* Submission Detail Modal */}
       {selectedSubmission && (
         <Dialog open={!!selectedSubmission} onOpenChange={() => setSelectedSubmission(null)}>
-          <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-6 sm:p-8 bg-white rounded-3xl border-0 shadow-2xl text-left">
-            <DialogHeader className="mb-4">
-              <div className="flex items-center justify-between gap-2 flex-wrap mb-2">
-                <div className="font-mono text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-brand-navy">
-                  {selectedSubmission.referenceId}
-                </div>
+          <DialogContent className="submission-detail-dialog">
+            <DialogHeader>
+              <div className="submission-detail-dialog__meta">
+                <span className="submission-detail-dialog__ref">{selectedSubmission.referenceId}</span>
                 {getStatusBadge(selectedSubmission.status || 'Pending verification')}
               </div>
-              <DialogTitle className="heading-3 text-brand-navy font-bold">
-                {selectedSubmission.title}
-              </DialogTitle>
-              <DialogDescription className="caption-2 text-slate-500">
-                Submitted on {new Date(selectedSubmission.submittedAt || Date.now()).toLocaleString('en-IN')}
+              <DialogTitle>{selectedSubmission.title || 'Untitled listing'}</DialogTitle>
+              <DialogDescription>
+                Submitted on{' '}
+                {new Date(selectedSubmission.submittedAt || Date.now()).toLocaleString('en-IN', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit',
+                })}
               </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-5 text-xs">
-              
-              {/* Rejection / Changes Required Banner inside Modal */}
+            <div className="wizard-review">
               {selectedSubmission.status === 'Changes required' && (
-                <div className="p-4 rounded-2xl bg-orange-50 border border-orange-200 text-orange-950 space-y-1">
-                  <div className="flex items-center gap-2 font-bold text-orange-900">
-                    <WarningCircle size={16} weight="fill" />
-                    <span>Moderation feedback (Action required)</span>
-                  </div>
-                  <p className="leading-relaxed text-orange-900">
-                    {selectedSubmission.moderationNotes}
+                <div className="wizard-review-feedback wizard-review-feedback--warning">
+                  <p className="wizard-review-feedback__title">
+                    <WarningCircle size={18} weight="fill" aria-hidden />
+                    <span>Moderation feedback (action required)</span>
                   </p>
+                  <p className="wizard-review-feedback__body">{selectedSubmission.moderationNotes}</p>
                 </div>
               )}
 
               {selectedSubmission.status === 'Rejected' && (
-                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-950 space-y-1">
-                  <div className="flex items-center gap-2 font-bold text-rose-900">
-                    <XCircle size={16} weight="fill" />
+                <div className="wizard-review-feedback wizard-review-feedback--danger">
+                  <p className="wizard-review-feedback__title">
+                    <XCircle size={18} weight="fill" aria-hidden />
                     <span>Rejection reason</span>
-                  </div>
-                  <p className="leading-relaxed text-rose-900">
-                    {selectedSubmission.rejectionReason}
                   </p>
+                  <p className="wizard-review-feedback__body">{selectedSubmission.rejectionReason}</p>
                 </div>
               )}
 
-              {/* Overview Details */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="p-3 rounded-2xl bg-slate-50">
-                  <span className="text-slate-400 block mb-0.5">Purpose</span>
-                  <span className="font-bold text-brand-navy capitalize">{selectedSubmission.purpose}</span>
+              <div className="submission-detail-stats">
+                <div className="submission-detail-stat">
+                  <span className="wizard-review-label">Purpose</span>
+                  <p className="wizard-review-value capitalize">{selectedSubmission.purpose}</p>
                 </div>
-                <div className="p-3 rounded-2xl bg-slate-50">
-                  <span className="text-slate-400 block mb-0.5">Type</span>
-                  <span className="font-bold text-brand-navy">{selectedSubmission.propertyType}</span>
+                <div className="submission-detail-stat">
+                  <span className="wizard-review-label">Type</span>
+                  <p className="wizard-review-value">{selectedSubmission.propertyType}</p>
                 </div>
-                <div className="p-3 rounded-2xl bg-slate-50">
-                  <span className="text-slate-400 block mb-0.5">Area</span>
-                  <span className="font-bold text-brand-navy">{selectedSubmission.carpetArea || selectedSubmission.builtUpArea || '2,400'} sq ft</span>
+                <div className="submission-detail-stat">
+                  <span className="wizard-review-label">Area</span>
+                  <p className="wizard-review-value">
+                    {selectedSubmission.carpetArea || selectedSubmission.builtUpArea || '2,400'} sq ft
+                  </p>
                 </div>
-                <div className="p-3 rounded-2xl bg-slate-50">
-                  <span className="text-slate-400 block mb-0.5">City</span>
-                  <span className="font-bold text-brand-navy">{selectedSubmission.city}</span>
+                <div className="submission-detail-stat">
+                  <span className="wizard-review-label">City</span>
+                  <p className="wizard-review-value">{selectedSubmission.city}</p>
                 </div>
               </div>
 
-              {/* Location */}
-              <div className="p-4 rounded-2xl bg-slate-50 space-y-1">
-                <span className="font-semibold text-brand-navy block">Full address</span>
-                <p className="text-slate-600 leading-relaxed">
-                  {selectedSubmission.fullAddress || selectedSubmission.locality}, {selectedSubmission.city}, {selectedSubmission.state || 'India'}
-                </p>
+              <div className="wizard-review-card">
+                <div className="wizard-review-card__body wizard-review-card__body--stack">
+                  <span className="wizard-review-label">Full address</span>
+                  <p className="wizard-review-meta wizard-review-meta--muted">
+                    {selectedSubmission.fullAddress ||
+                      `${selectedSubmission.locality}, ${selectedSubmission.city}, ${selectedSubmission.state || 'India'}`}
+                  </p>
+                </div>
               </div>
 
-              {/* Submitter details */}
-              <div className="p-4 rounded-2xl bg-slate-50 space-y-1">
-                <span className="font-semibold text-brand-navy block">Submitter information</span>
-                <p className="text-slate-600">
-                  {selectedSubmission.submitterName} ({selectedSubmission.submitterRole}) • {selectedSubmission.submitterPhone} • {selectedSubmission.submitterEmail}
-                </p>
-              </div>
-
-              <div className="pt-2 flex items-center justify-end gap-2">
-                {selectedSubmission.status === 'Changes required' && (
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      setSelectedSubmission(null);
-                      onEditSubmission?.(selectedSubmission);
-                    }}
-                    className="px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold cursor-pointer"
-                  >
-                    Update listing now
-                  </Button>
-                )}
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setSelectedSubmission(null)}
-                  className="px-5 py-2.5 rounded-xl border-slate-200 text-brand-navy text-xs font-semibold cursor-pointer"
-                >
-                  Close
-                </Button>
+              <div className="wizard-review-card">
+                <div className="wizard-review-card__body wizard-review-card__body--stack">
+                  <span className="wizard-review-label">Submitter information</span>
+                  <p className="wizard-review-value">
+                    {selectedSubmission.submitterName} ({selectedSubmission.submitterRole})
+                  </p>
+                  <p className="wizard-review-meta wizard-review-meta--muted">
+                    {selectedSubmission.submitterPhone} • {selectedSubmission.submitterEmail}
+                  </p>
+                </div>
               </div>
             </div>
+
+            <DialogFooter className="gap-2 sm:gap-2">
+              {selectedSubmission.status === 'Changes required' && (
+                <Button
+                  size="sm"
+                  type="button"
+                  onClick={() => {
+                    setSelectedSubmission(null);
+                    onEditSubmission?.(selectedSubmission);
+                  }}
+                  className="min-h-10 rounded-xl bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                  Update listing now
+                </Button>
+              )}
+              <Button
+                size="sm"
+                type="button"
+                variant="outline"
+                onClick={() => setSelectedSubmission(null)}
+                className="min-h-10 rounded-xl"
+              >
+                Close
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       )}

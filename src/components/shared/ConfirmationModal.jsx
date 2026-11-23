@@ -1,6 +1,7 @@
 import React from 'react';
 import { Warning, Check, X } from '@phosphor-icons/react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
+import { Button } from '../ui/button';
 import { useProperty } from '../../context/PropertyContext';
 
 export default function ConfirmationModal() {
@@ -33,34 +34,28 @@ export default function ConfirmationModal() {
           </div>
 
           <div className="flex-1 min-w-0">
-            <DialogTitle className="heading-4 text-brand-navy font-bold mb-1">
+            <DialogTitle className="text-h4 text-brand-navy font-semibold mb-1">
               {title}
             </DialogTitle>
-            <DialogDescription className="body-5 text-slate-500 leading-relaxed">
+            <DialogDescription className="text-small text-slate-500 leading-relaxed">
               {message}
             </DialogDescription>
           </div>
         </div>
 
         <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-end gap-2.5">
-          <button
-            type="button"
-            onClick={closeConfirm}
-            className="py-2 px-4 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
-          >
+          <Button type="button" size="sm" variant="ghost" onClick={closeConfirm} className="rounded-2xl shadow-none">
             {cancelText}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            size="sm"
+            variant={isDestructive ? 'destructive' : 'primary'}
             onClick={handleConfirm}
-            className={`py-2 px-4 rounded-xl text-xs font-semibold text-white transition-colors cursor-pointer ${
-              isDestructive 
-                ? 'bg-rose-600 hover:bg-rose-700' 
-                : 'bg-brand-navy hover:bg-brand-blue'
-            }`}
+            className="rounded-2xl shadow-xs"
           >
             {confirmText}
-          </button>
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

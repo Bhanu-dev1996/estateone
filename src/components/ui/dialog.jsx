@@ -20,7 +20,7 @@ export function DialogOverlay({ className, ...props }) {
   );
 }
 
-export function DialogContent({ className, children, ...props }) {
+export function DialogContent({ className, children, showClose = true, closeClassName, ...props }) {
   return (
     <DialogPortal>
       <DialogOverlay />
@@ -32,10 +32,17 @@ export function DialogContent({ className, children, ...props }) {
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="absolute right-4 top-4 p-1.5 rounded-full text-brand-muted hover:text-brand-navy hover:bg-white/70 transition-brand-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue cursor-pointer">
-          <X size={20} weight="bold" />
-          <span className="sr-only">Close</span>
-        </DialogPrimitive.Close>
+        {showClose && (
+          <DialogPrimitive.Close
+            className={cn(
+              'absolute right-4 top-4 p-1.5 rounded-full text-brand-muted hover:text-brand-navy hover:bg-white/70 transition-brand-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue cursor-pointer',
+              closeClassName
+            )}
+          >
+            <X size={20} weight="bold" />
+            <span className="sr-only">Close</span>
+          </DialogPrimitive.Close>
+        )}
       </DialogPrimitive.Content>
     </DialogPortal>
   );
@@ -56,5 +63,11 @@ export function DialogTitle({ className, ...props }) {
 export function DialogDescription({ className, ...props }) {
   return (
     <DialogPrimitive.Description className={cn('caption-2 text-brand-muted', className)} {...props} />
+  );
+}
+
+export function DialogFooter({ className, ...props }) {
+  return (
+    <div className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-4 border-t border-black/5 mt-4', className)} {...props} />
   );
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { MagnifyingGlass, ShieldCheck, CheckCircle } from '@phosphor-icons/react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -18,7 +18,7 @@ export default function FinalCTA({ onExploreClick }) {
             <span>Risk free property discovery</span>
           </Badge>
 
-          <h2 className="heading-2 tracking-tight mb-4 text-balance text-white">
+          <h2 className="text-h2 tracking-tight mb-4 text-balance text-white">
             Ready to find your verified property in India?
           </h2>
 
@@ -35,7 +35,7 @@ export default function FinalCTA({ onExploreClick }) {
               onClick={onExploreClick}
               className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl shadow-[0_6px_24px_rgba(197,164,109,0.35)] hover:scale-105"
             >
-              <MagnifyingGlass size={18} weight="bold" />
+              <MagnifyingGlass size={20} weight="bold" />
               <span>Explore properties</span>
             </Button>
           </div>

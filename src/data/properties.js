@@ -7,6 +7,7 @@ export const SAMPLE_PROPERTIES = [
     slug: 'the-grand-horizon-penthouse',
     title: 'The Grand Horizon Penthouse',
     location: 'Worli, Mumbai',
+    geo: { lat: 18.9986, lng: 72.8174, zoom: 15 },
     city: 'Mumbai',
     type: 'Penthouse',
     intent: 'buy',

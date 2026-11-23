@@ -22,10 +22,18 @@ export function CardHeader({ className, ...props }) {
   );
 }
 
+function hasTextSizeClass(className) {
+  return typeof className === 'string' && /\btext-(h[1-4]|body|small|caption|xs|sm|base|lg)\b/.test(className);
+}
+
 export function CardTitle({ className, ...props }) {
   return (
     <h3
-      className={cn('title-1 text-brand-navy font-semibold leading-snug tracking-tight', className)}
+      className={cn(
+        'font-semibold leading-snug tracking-tight text-brand-navy text-pretty',
+        !hasTextSizeClass(className) && 'text-h4',
+        className
+      )}
       {...props}
     />
   );
@@ -34,7 +42,11 @@ export function CardTitle({ className, ...props }) {
 export function CardDescription({ className, ...props }) {
   return (
     <p
-      className={cn('body-5 text-brand-muted leading-relaxed', className)}
+      className={cn(
+        'text-brand-muted leading-relaxed text-pretty max-w-[65ch]',
+        !hasTextSizeClass(className) && 'text-small',
+        className
+      )}
       {...props}
     />
   );

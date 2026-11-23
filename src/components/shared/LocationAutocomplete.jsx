@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { MapPin, MagnifyingGlass, X } from '@phosphor-icons/react';
 import { ScrollArea } from '../ui/scroll-area';
 
@@ -106,7 +106,7 @@ export default function LocationAutocomplete({
   return (
     <div ref={containerRef} className={`relative text-left ${className}`}>
       <div className="relative flex items-center">
-        <MapPin size={18} className="absolute left-3.5 text-brand-gold shrink-0 pointer-events-none" />
+        <MapPin size={20} className="absolute left-3.5 text-brand-gold shrink-0 pointer-events-none" />
         <input
           ref={inputRef}
           type="text"
@@ -160,7 +160,7 @@ export default function LocationAutocomplete({
                         <MapPin size={14} className="text-[#C5A46D] shrink-0" />
                         <span className="font-medium truncate">{item.label}</span>
                       </div>
-                      <span className="text-[10px] uppercase font-semibold text-slate-400 px-1.5 py-0.5 rounded bg-slate-100 shrink-0 ml-2">
+                      <span className="text-caption uppercase font-semibold text-slate-400 px-1.5 py-0.5 rounded bg-slate-100 shrink-0 ml-2">
                         {item.type}
                       </span>
                     </li>

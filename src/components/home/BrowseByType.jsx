@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Buildings, 
@@ -85,20 +85,20 @@ export default function BrowseByType() {
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
         <div>
-          <span className="caption-2 font-bold tracking-wider uppercase text-[#C5A46D] mb-2 block">
+          <span className="text-label text-[#C5A46D] mb-2 block">
             Asset categories
           </span>
-          <h2 className="heading-2 text-brand-navy font-bold tracking-tight">
+          <h2 className="text-h2 text-brand-navy">
             Browse by property type
           </h2>
-          <p className="body-4 text-slate-500 mt-2 max-w-xl">
+          <p className="mkt-section-desc">
             Find the exact architectural category tailored to your family residence or corporate expansion.
           </p>
         </div>
 
         <Link
           to="/buy"
-          className="self-start md:self-auto flex items-center gap-1.5 text-xs font-semibold text-brand-blue hover:text-brand-navy transition-colors group"
+          className="self-start md:self-auto mkt-section-link text-brand-blue hover:text-brand-navy transition-colors group flex items-center gap-1.5"
         >
           <span>View all categories</span>
           <ArrowRight size={14} weight="bold" className="group-hover:translate-x-0.5 transition-transform" />
@@ -119,7 +119,7 @@ export default function BrowseByType() {
                 <div className="w-12 h-12 rounded-2xl bg-slate-100 group-hover:bg-[#142B4A] text-brand-navy group-hover:text-[#C5A46D] flex items-center justify-center transition-colors mb-4">
                   <Icon size={24} weight="duotone" />
                 </div>
-                <h3 className="heading-4 text-brand-navy font-bold group-hover:text-brand-blue transition-colors mb-1">
+                <h3 className="text-h4 text-brand-navy font-bold group-hover:text-brand-blue transition-colors mb-1">
                   {cat.title}
                 </h3>
                 <p className="caption-2 text-slate-500 line-clamp-2 mb-4 leading-relaxed">
@@ -128,7 +128,7 @@ export default function BrowseByType() {
               </div>
 
               <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[11px] font-bold text-slate-400">
+                <span className="text-small font-bold text-slate-400">
                   {cat.count}
                 </span>
                 <span className="text-brand-blue group-hover:translate-x-1 transition-transform">

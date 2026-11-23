@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { 
   ShieldCheck, 
   MapPin, 
@@ -103,7 +103,7 @@ export default function ProofShowcase({
             <ShieldCheck size={16} weight="fill" className="text-brand-blue" />
             <span>Curated verified inventory</span>
           </Badge>
-          <h2 className="heading-2 text-brand-navy tracking-tight">
+          <h2 className="text-h2 text-brand-navy tracking-tight">
             Verified properties in India
           </h2>
           <p className="body-4 text-brand-muted mt-2 max-w-xl">
@@ -231,9 +231,9 @@ export default function ProofShowcase({
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer transition-all"
+                className="button-sm inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer transition-all"
               >
-                <ArrowCounterClockwise size={13} weight="bold" />
+                <ArrowCounterClockwise size={14} weight="bold" />
                 <span>Clear all</span>
               </button>
             </>

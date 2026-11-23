@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Star, ShieldCheck, Quotes } from '@phosphor-icons/react';
 
 const TESTIMONIALS = [
@@ -34,13 +34,13 @@ export default function Testimonials() {
       
       {/* Section Header */}
       <div className="text-center max-w-2xl mx-auto mb-14">
-        <span className="caption-2 font-bold tracking-wider uppercase text-[#C5A46D] mb-2 block">
+        <span className="text-label text-[#C5A46D] mb-2 block">
           Client experiences
         </span>
-        <h2 className="heading-2 text-brand-navy font-bold tracking-tight">
+        <h2 className="text-h2 text-brand-navy">
           Trusted by homeowners and property seekers
         </h2>
-        <p className="body-4 text-slate-500 mt-2">
+        <p className="mkt-section-desc">
           Read genuine experiences from buyers, tenants, and property owners who transacted with verified title confidence.
         </p>
       </div>
@@ -61,7 +61,7 @@ export default function Testimonials() {
               </div>
 
               {/* Quote */}
-              <p className="body-4 text-slate-700 leading-relaxed mb-6">
+              <p className="text-body text-slate-700 text-pretty mb-6 max-w-[65ch]">
                 "{t.quote}"
               </p>
             </div>
@@ -74,11 +74,11 @@ export default function Testimonials() {
                 className="w-11 h-11 rounded-full object-cover shrink-0"
               />
               <div className="min-w-0">
-                <h4 className="heading-4 text-brand-navy font-bold text-xs truncate">
+                <h4 className="text-h4 text-brand-navy font-semibold truncate">
                   {t.author}
                 </h4>
-                <div className="flex items-center gap-1 text-[11px] text-emerald-700 font-semibold mt-0.5">
-                  <ShieldCheck size={13} weight="fill" />
+                <div className="flex items-center gap-1 text-small text-emerald-700 font-semibold mt-0.5">
+                  <ShieldCheck size={14} weight="fill" />
                   <span>{t.role}</span>
                 </div>
                 <p className="caption-2 text-slate-400 truncate mt-0.5">

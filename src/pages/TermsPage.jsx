@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -55,7 +55,7 @@ export default function TermsPage() {
 
         <div className="flex items-center gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-semibold">
-            <Gavel size={15} weight="fill" />
+            <Gavel size={16} weight="fill" />
             <span>Marketplace operating agreement</span>
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold">
@@ -75,7 +75,7 @@ export default function TermsPage() {
 
         {/* Mandatory Jurisdictional Notice */}
         <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-xs text-amber-900 leading-relaxed flex items-start gap-3 max-w-3xl">
-          <Info size={18} weight="fill" className="text-amber-700 shrink-0 mt-0.5" />
+          <Info size={20} weight="fill" className="text-amber-700 shrink-0 mt-0.5" />
           <div className="space-y-0.5">
             <span className="font-bold block">Jurisdictional notice and legal disclaimer</span>
             <p className="text-amber-800">
@@ -277,7 +277,7 @@ export default function TermsPage() {
               className="inline-flex items-center gap-1.5 font-bold text-brand-blue hover:underline"
             >
               <span>Read privacy policy</span>
-              <ArrowRight size={13} weight="bold" />
+              <ArrowRight size={14} weight="bold" />
             </Link>
           </Card>
 

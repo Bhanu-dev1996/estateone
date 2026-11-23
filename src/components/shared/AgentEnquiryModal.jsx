@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { ChatCircleText, CheckCircle, ShieldCheck, User, Phone, Envelope, X, Buildings } from '@phosphor-icons/react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { PhoneInput } from '../ui/phone-input';
+import { isValidPhone } from '../../lib/phone';
 
 export default function AgentEnquiryModal({ 
   isOpen, 
@@ -32,8 +34,9 @@ export default function AgentEnquiryModal({
   const validate = () => {
     const errs = {};
     if (!fullName.trim()) errs.fullName = 'Please enter your full name.';
-    const cleanPhone = phoneNumber.replace(/\D/g, '');
-    if (!cleanPhone || cleanPhone.length < 8) errs.phoneNumber = 'Please enter a valid phone number.';
+    if (!isValidPhone(phoneNumber)) {
+      errs.phoneNumber = 'Please enter a valid mobile number for the selected country.';
+    }
     if (!emailAddress.trim() || !emailAddress.includes('@')) errs.emailAddress = 'Please enter a valid email address.';
     if (!privacyConsent) errs.privacyConsent = 'You must accept the privacy consent to proceed.';
     setErrors(errs);
@@ -92,22 +95,22 @@ export default function AgentEnquiryModal({
             <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-xs">
               <CheckCircle size={36} weight="fill" />
             </div>
-            <DialogTitle className="heading-3 text-brand-navy font-bold">
+            <DialogTitle className="text-h4 text-brand-navy font-semibold">
               Enquiry registered successfully
             </DialogTitle>
             <p className="body-4 text-slate-500 max-w-sm mx-auto">
               Your inquiry has been assigned to <span className="font-semibold text-brand-navy">{agent.name}</span> at {agent.company}.
             </p>
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-xs text-slate-600 inline-block font-mono">
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-small text-slate-600 inline-block font-mono">
               Reference code: <span className="font-bold text-brand-navy">{enquiryRef}</span>
             </div>
             <p className="caption-3 text-slate-400">
               The advisor will reach out during your preferred time window.
             </p>
-            <Button
+            <Button size="sm"
               type="button"
               onClick={handleReset}
-              className="mt-4 px-6 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold cursor-pointer"
+              className="mt-4 px-6 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white font-semibold min-h-10 cursor-pointer"
             >
               Done
             </Button>
@@ -134,24 +137,24 @@ export default function AgentEnquiryModal({
                   </p>
                 </div>
               </div>
-              <DialogTitle className="heading-3 text-brand-navy font-bold">
+              <DialogTitle className="text-h4 text-brand-navy font-semibold">
                 Contact verified advisor
               </DialogTitle>
-              <DialogDescription className="body-4 text-slate-500">
+              <DialogDescription className="text-small text-slate-500">
                 Send a direct enquiry regarding property portfolios or schedule a consultation.
               </DialogDescription>
             </DialogHeader>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="estate-form-surface space-y-4">
               {/* Property Context Selection */}
               <div>
-                <label className="caption-1 font-semibold text-brand-navy block mb-1">
+                <label className="wizard-field-label text-brand-navy block mb-1">
                   Property or advisory context
                 </label>
                 <select
                   value={selectedPropertyId}
                   onChange={(e) => setSelectedPropertyId(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-brand-navy focus:bg-white focus:outline-none focus:border-brand-blue"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-brand-navy listing-wizard-field-control focus:bg-white focus:outline-none focus:border-brand-blue"
                 >
                   <option value="general">General territory advisory in {agent.city}</option>
                   {availableProperties.map((p) => (
@@ -164,7 +167,7 @@ export default function AgentEnquiryModal({
 
               {/* Full Name */}
               <div>
-                <label className="caption-1 font-semibold text-brand-navy block mb-1">
+                <label className="wizard-field-label text-brand-navy block mb-1">
                   Full name *
                 </label>
                 <input
@@ -174,7 +177,7 @@ export default function AgentEnquiryModal({
                   placeholder="e.g. Rahul Sharma"
                   className={`w-full p-2.5 rounded-xl border ${
                     errors.fullName ? 'border-rose-500' : 'border-slate-200'
-                  } bg-slate-50 text-xs text-brand-navy focus:bg-white focus:outline-none focus:border-brand-blue`}
+                  } bg-slate-50 text-brand-navy listing-wizard-field-control focus:bg-white focus:outline-none focus:border-brand-blue`}
                 />
                 {errors.fullName && <p className="caption-3 text-rose-500 mt-1">{errors.fullName}</p>}
               </div>
@@ -182,23 +185,23 @@ export default function AgentEnquiryModal({
               {/* Phone & Email */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="caption-1 font-semibold text-brand-navy block mb-1">
+                  <label className="wizard-field-label text-brand-navy block mb-1">
                     Phone number *
                   </label>
-                  <input
-                    type="tel"
+                  <PhoneInput
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    placeholder="+91 98765 43210"
-                    className={`w-full p-2.5 rounded-xl border ${
+                    aria-invalid={Boolean(errors.phoneNumber)}
+                    className={`rounded-xl ${
                       errors.phoneNumber ? 'border-rose-500' : 'border-slate-200'
-                    } bg-slate-50 text-xs text-brand-navy focus:bg-white focus:outline-none focus:border-brand-blue`}
+                    } bg-slate-50`}
+                    inputClassName="rounded-xl border-0 bg-slate-50 focus:bg-white"
                   />
                   {errors.phoneNumber && <p className="caption-3 text-rose-500 mt-1">{errors.phoneNumber}</p>}
                 </div>
 
                 <div>
-                  <label className="caption-1 font-semibold text-brand-navy block mb-1">
+                  <label className="wizard-field-label text-brand-navy block mb-1">
                     Email address *
                   </label>
                   <input
@@ -208,7 +211,7 @@ export default function AgentEnquiryModal({
                     placeholder="name@example.com"
                     className={`w-full p-2.5 rounded-xl border ${
                       errors.emailAddress ? 'border-rose-500' : 'border-slate-200'
-                    } bg-slate-50 text-xs text-brand-navy focus:bg-white focus:outline-none focus:border-brand-blue`}
+                    } bg-slate-50 text-brand-navy listing-wizard-field-control focus:bg-white focus:outline-none focus:border-brand-blue`}
                   />
                   {errors.emailAddress && <p className="caption-3 text-rose-500 mt-1">{errors.emailAddress}</p>}
                 </div>
@@ -216,7 +219,7 @@ export default function AgentEnquiryModal({
 
               {/* Preferred Callback Time */}
               <div>
-                <label className="caption-1 font-semibold text-brand-navy block mb-1">
+                <label className="wizard-field-label text-brand-navy block mb-1">
                   Preferred callback window
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -229,7 +232,7 @@ export default function AgentEnquiryModal({
                       key={slot.id}
                       type="button"
                       onClick={() => setCallbackTime(slot.id)}
-                      className={`p-2 rounded-xl text-center text-xs font-semibold border transition-all cursor-pointer ${
+                      className={`p-2 rounded-xl text-center button-sm font-semibold min-h-10 border transition-all cursor-pointer ${
                         callbackTime === slot.id
                           ? 'bg-brand-navy text-white border-brand-navy shadow-xs'
                           : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
@@ -243,7 +246,7 @@ export default function AgentEnquiryModal({
 
               {/* Message */}
               <div>
-                <label className="caption-1 font-semibold text-brand-navy block mb-1">
+                <label className="wizard-field-label text-brand-navy block mb-1">
                   Message or questions (optional)
                 </label>
                 <textarea
@@ -251,13 +254,13 @@ export default function AgentEnquiryModal({
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Share details on your budget, property preferences, or questions..."
-                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-brand-navy focus:bg-white focus:outline-none focus:border-brand-blue resize-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-brand-navy listing-wizard-field-control focus:bg-white focus:outline-none focus:border-brand-blue resize-none"
                 />
               </div>
 
               {/* Privacy Consent Checkbox */}
               <div>
-                <label className="flex items-start gap-2 cursor-pointer text-xs text-slate-600">
+                <label className="flex items-start gap-2 cursor-pointer text-small text-slate-600">
                   <input
                     type="checkbox"
                     checked={privacyConsent}
@@ -273,21 +276,16 @@ export default function AgentEnquiryModal({
 
               {/* Submit Button */}
               <div className="pt-2 flex items-center justify-end gap-3">
-                <Button
+                <Button size="sm"
                   type="button"
                   variant="ghost"
                   onClick={onClose}
-                  className="text-xs font-semibold text-slate-500 hover:text-brand-navy cursor-pointer"
+                  className="font-semibold min-h-10 text-slate-500 hover:text-brand-navy cursor-pointer"
                 >
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-5 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold shadow-xs flex items-center gap-2 cursor-pointer transition-colors"
-                >
-                  <ChatCircleText size={15} weight="bold" />
-                  <span>{isSubmitting ? 'Sending enquiry...' : 'Submit enquiry'}</span>
+                <Button type="submit" size="sm" disabled={isSubmitting} className="w-full sm:w-auto sm:min-w-[11rem] rounded-2xl shadow-xs">
+                  {isSubmitting ? 'Sending enquiry...' : 'Submit enquiry'}
                 </Button>
               </div>
             </form>

@@ -1,7 +1,11 @@
-import React from 'react';
+﻿import React from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { CaretRight, Check } from '@phosphor-icons/react';
 import { cn } from '../../lib/utils';
+
+/** Nav menus — match header pills (`text-small`); explicit tokens for portal rendering. */
+const menuType =
+  'text-[length:var(--text-small)] leading-[var(--text-small--line-height)] tracking-[var(--text-small--letter-spacing)]';
 
 export const DropdownMenu = DropdownMenuPrimitive.Root;
 export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
@@ -14,14 +18,15 @@ export const DropdownMenuSubTrigger = React.forwardRef(({ className, inset, chil
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      'flex cursor-default select-none items-center rounded-lg px-2.5 py-1.5 text-xs outline-none focus:bg-slate-100 data-[state=open]:bg-slate-100 text-brand-navy',
+      'flex cursor-default select-none items-center rounded-lg px-2 py-1 font-medium outline-none focus:bg-slate-100 data-[state=open]:bg-slate-100 text-brand-navy',
+      menuType,
       inset && 'pl-8',
       className
     )}
     {...props}
   >
     {children}
-    <CaretRight size={14} className="ml-auto" />
+    <CaretRight size={12} className="ml-auto" />
   </DropdownMenuPrimitive.SubTrigger>
 ));
 DropdownMenuSubTrigger.displayName = DropdownMenuPrimitive.SubTrigger.displayName;
@@ -44,7 +49,8 @@ export const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 8
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        'z-50 min-w-[12rem] overflow-hidden rounded-2xl bg-white/95 backdrop-blur-2xl p-2 text-brand-navy shadow-[0_15px_40px_rgba(0,0,0,0.12)] border-0 animate-in fade-in-80 data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2',
+        'estate-nav-dropdown z-50 flex min-w-[12rem] flex-col items-stretch overflow-hidden rounded-xl bg-white/95 backdrop-blur-2xl p-1 text-brand-navy shadow-[0_15px_40px_rgba(0,0,0,0.12)] border-0 animate-in fade-in-80 data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2 [&_a]:flex [&_a]:w-full [&_a]:items-center [&_a]:gap-2 [&_a]:text-inherit [&_a]:font-medium',
+        menuType,
         className
       )}
       {...props}
@@ -57,7 +63,8 @@ export const DropdownMenuItem = React.forwardRef(({ className, inset, ...props }
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex cursor-pointer select-none items-center rounded-xl px-3 py-2 text-xs font-medium outline-none transition-colors focus:bg-slate-100 focus:text-brand-navy data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-slate-700 hover:text-brand-navy',
+      'relative flex cursor-pointer select-none items-center rounded-md px-2 py-1 font-medium outline-none transition-colors focus:bg-slate-100 focus:text-brand-navy data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-slate-700 hover:text-brand-navy',
+      menuType,
       inset && 'pl-8',
       className
     )}
@@ -69,7 +76,11 @@ DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
 export const DropdownMenuLabel = React.forwardRef(({ className, inset, ...props }, ref) => (
   <DropdownMenuPrimitive.Label
     ref={ref}
-    className={cn('px-3 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider', inset && 'pl-8', className)}
+    className={cn(
+      'dropdown-menu-section-label px-2 pt-0.5 pb-1.5 text-small font-semibold text-slate-600 normal-case tracking-normal',
+      inset && 'pl-8',
+      className
+    )}
     {...props}
   />
 ));

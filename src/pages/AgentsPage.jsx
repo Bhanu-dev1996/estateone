@@ -1,17 +1,6 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { 
-  ShieldCheck, 
-  MagnifyingGlass, 
-  MapPin, 
-  X, 
-  Buildings, 
-  User, 
-  SlidersHorizontal,
-  Star,
-  CheckCircle,
-  Phone
-} from '@phosphor-icons/react';
+import { ShieldCheck, MagnifyingGlass, X, Buildings, User } from '@phosphor-icons/react';
 import { SAMPLE_AGENTS, SAMPLE_BUILDERS, getRealAgentListings, getRealBuilderListings } from '../data/agents';
 import { SAMPLE_PROPERTIES, CITIES } from '../data/properties';
 import Breadcrumbs from '../components/shared/Breadcrumbs';
@@ -20,8 +9,6 @@ import BuilderCard from '../components/shared/BuilderCard';
 import EmptyState from '../components/shared/EmptyState';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
-
 export default function AgentsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -115,106 +102,100 @@ export default function AgentsPage() {
   };
 
   return (
-    <div className="pt-28 pb-24 px-4 max-w-7xl mx-auto text-left">
-      <Breadcrumbs 
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'Verified directory' }
-        ]} 
-        className="mb-4" 
-      />
+    <div className="pt-28 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-left w-full">
+      <Breadcrumbs items={[{ label: 'Verified directory' }]} className="mb-2" />
 
-      {/* Header Banner */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8">
-        <div>
-          <div className="flex items-center gap-2 flex-wrap mb-3">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-semibold">
-              <ShieldCheck size={15} weight="fill" />
+      <header className="listing-page-header mb-8">
+        <div className="listing-page-header__row">
+          <div className="listing-page-header__copy">
+            <Badge variant="default" className="gap-1.5 text-caption font-semibold">
+              <ShieldCheck size={14} weight="fill" className="text-brand-blue" aria-hidden />
               <span>RERA verified professional directory</span>
-            </span>
+            </Badge>
+            <h1 className="listing-page-header__title">Verified agents and builders.</h1>
+            <p className="listing-page-header__desc">
+              Connect directly with verified luxury advisors, licensed consultants, and premier real estate developers with verified active listing counts and transparent RERA disclosures.
+            </p>
           </div>
-          <h1 className="heading-1 text-brand-navy tracking-tight">
-            Verified agents and builders.
-          </h1>
-          <p className="body-4 text-slate-500 mt-2 max-w-2xl leading-relaxed">
-            Connect directly with verified luxury advisors, licensed consultants, and premier real estate developers with verified active listing counts and transparent RERA disclosures.
-          </p>
-        </div>
 
-        {/* Directory Segment Switcher Tabs */}
-        <div className="flex items-center gap-1 p-1 bg-white rounded-2xl border border-slate-200 shadow-xs self-start lg:self-auto">
+          <div className="directory-segment self-start" role="tablist" aria-label="Directory segment">
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'agents'}
+            aria-label={`Verified advisors, ${filteredAgents.length} results`}
             onClick={() => handleTabChange('agents')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 ${
-              activeTab === 'agents'
-                ? 'bg-brand-navy text-white shadow-xs'
-                : 'text-slate-600 hover:text-brand-navy hover:bg-slate-50'
-            }`}
+            className={`directory-segment__btn ${activeTab === 'agents' ? 'is-active' : ''}`}
           >
-            <User size={15} weight={activeTab === 'agents' ? 'bold' : 'regular'} />
-            <span>Verified advisors ({filteredAgents.length})</span>
+            <User size={16} weight={activeTab === 'agents' ? 'bold' : 'regular'} aria-hidden />
+            <span className="directory-segment__label directory-segment__label-short">
+              Advisors ({filteredAgents.length})
+            </span>
+            <span className="directory-segment__label directory-segment__label-long">
+              Verified advisors ({filteredAgents.length})
+            </span>
           </button>
 
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'builders'}
+            aria-label={`Master developers, ${filteredBuilders.length} results`}
             onClick={() => handleTabChange('builders')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 ${
-              activeTab === 'builders'
-                ? 'bg-brand-navy text-white shadow-xs'
-                : 'text-slate-600 hover:text-brand-navy hover:bg-slate-50'
-            }`}
+            className={`directory-segment__btn ${activeTab === 'builders' ? 'is-active' : ''}`}
           >
-            <Buildings size={15} weight={activeTab === 'builders' ? 'bold' : 'regular'} />
-            <span>Master developers ({filteredBuilders.length})</span>
+            <Buildings size={16} weight={activeTab === 'builders' ? 'bold' : 'regular'} aria-hidden />
+            <span className="directory-segment__label directory-segment__label-short">
+              Developers ({filteredBuilders.length})
+            </span>
+            <span className="directory-segment__label directory-segment__label-long">
+              Master developers ({filteredBuilders.length})
+            </span>
           </button>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Filters & Search Control Bar */}
-      <div className="p-4 rounded-3xl bg-white shadow-xs border-0 mb-8 space-y-4">
-        
-        {/* Top Bar: Search Input and City Selector */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          
-          {/* Search Input */}
-          <div className="relative flex-1 max-w-md">
-            <MagnifyingGlass size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+      <div className="listing-toolbar">
+        <div className="listing-toolbar-search-wrap min-w-0 w-full lg:flex-1">
+          <div className="listing-toolbar-search relative min-w-0 w-full">
+            <MagnifyingGlass size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden />
             <input
-              type="text"
+              type="search"
               placeholder={
-                activeTab === 'agents' 
+                activeTab === 'agents'
                   ? 'Search advisor by name, company, or locality...'
                   : 'Search builder or master developer by name...'
               }
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-9 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-medium text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue focus:bg-white transition-all"
+              className="listing-toolbar-input w-full pl-9 pr-9"
+              aria-label={activeTab === 'agents' ? 'Search advisors' : 'Search developers'}
             />
-            {searchQuery && (
+            {searchQuery ? (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
                 aria-label="Clear search input"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-navy cursor-pointer transition-colors"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-navy cursor-pointer transition-colors p-0.5"
               >
-                <X size={13} weight="bold" />
+                <X size={14} weight="bold" />
               </button>
-            )}
+            ) : null}
           </div>
+        </div>
 
-          {/* Quick Filter Selectors Cluster */}
-          <div className="flex items-center gap-2 flex-wrap">
-            {/* City Dropdown */}
+        <div className="listing-toolbar-controls">
             <div className="w-40">
               <Select value={selectedCity} onValueChange={setSelectedCity}>
-                <SelectTrigger className="h-10 rounded-2xl text-xs font-medium border-slate-200">
+                <SelectTrigger className="listing-toolbar-select">
                   <SelectValue placeholder="All cities" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="All cities">All cities</SelectItem>
                   {CITIES.map((c) => (
-                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -224,7 +205,7 @@ export default function AgentsPage() {
             {activeTab === 'agents' && (
               <div className="w-44">
                 <Select value={selectedSpecialization} onValueChange={setSelectedSpecialization}>
-                  <SelectTrigger className="h-10 rounded-2xl text-xs font-medium border-slate-200">
+                  <SelectTrigger className="listing-toolbar-select">
                     <SelectValue placeholder="All specializations" />
                   </SelectTrigger>
                   <SelectContent>
@@ -240,7 +221,7 @@ export default function AgentsPage() {
             {/* Property Category Dropdown */}
             <div className="w-40">
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="h-10 rounded-2xl text-xs font-medium border-slate-200">
+                <SelectTrigger className="listing-toolbar-select">
                   <SelectValue placeholder="All categories" />
                 </SelectTrigger>
                 <SelectContent>
@@ -253,18 +234,11 @@ export default function AgentsPage() {
             </div>
 
             {activeFiltersCount > 0 && (
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="text-xs text-brand-blue font-semibold hover:underline cursor-pointer ml-1"
-              >
+              <button type="button" onClick={resetFilters} className="directory-filter-reset">
                 Reset filters
               </button>
             )}
-          </div>
-
         </div>
-
       </div>
 
       {/* Directory Results */}

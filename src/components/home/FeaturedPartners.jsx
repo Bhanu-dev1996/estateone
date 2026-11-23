@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Buildings, ArrowRight } from '@phosphor-icons/react';
 import { SAMPLE_AGENTS, SAMPLE_BUILDERS } from '../../data/agents';
@@ -14,13 +14,13 @@ export default function FeaturedPartners() {
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
         <div>
-          <span className="caption-2 font-bold tracking-wider uppercase text-[#C5A46D] mb-2 block">
+          <span className="text-label text-[#C5A46D] mb-2 block">
             Accredited network
           </span>
-          <h2 className="heading-2 text-brand-navy font-bold tracking-tight">
+          <h2 className="text-h2 text-brand-navy">
             Featured agents and builders
           </h2>
-          <p className="body-4 text-slate-500 mt-2 max-w-xl">
+          <p className="mkt-section-desc">
             Collaborate directly with state RERA accredited luxury advisors and India premier corporate real estate developers.
           </p>
         </div>
@@ -31,7 +31,7 @@ export default function FeaturedPartners() {
             <button
               type="button"
               onClick={() => setActiveTab('agents')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-small font-semibold min-h-9 transition-all cursor-pointer ${
                 activeTab === 'agents'
                   ? 'bg-brand-navy text-white shadow-xs'
                   : 'text-slate-600 hover:text-brand-navy'
@@ -42,7 +42,7 @@ export default function FeaturedPartners() {
             <button
               type="button"
               onClick={() => setActiveTab('builders')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-small font-semibold min-h-9 transition-all cursor-pointer ${
                 activeTab === 'builders'
                   ? 'bg-brand-navy text-white shadow-xs'
                   : 'text-slate-600 hover:text-brand-navy'
@@ -54,7 +54,7 @@ export default function FeaturedPartners() {
 
           <Link
             to={activeTab === 'agents' ? '/agents' : '/builders'}
-            className="flex items-center gap-1.5 text-xs font-semibold text-brand-blue hover:text-brand-navy transition-colors group"
+            className="mkt-section-link text-brand-blue hover:text-brand-navy transition-colors group flex items-center gap-1.5"
           >
             <span>{activeTab === 'agents' ? 'View all advisors' : 'View all developers'}</span>
             <ArrowRight size={14} weight="bold" className="group-hover:translate-x-0.5 transition-transform" />

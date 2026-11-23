@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -19,6 +19,8 @@ import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import { PhoneInput } from '../components/ui/phone-input';
+import { isValidPhone } from '../lib/phone';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { Checkbox } from '../components/ui/checkbox';
@@ -27,6 +29,8 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '..
 import Breadcrumbs from '../components/shared/Breadcrumbs';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
+
+const PropertyLocationMap = lazy(() => import('../components/shared/PropertyLocationMap'));
 
 const ENQUIRY_CATEGORIES = [
   'General enquiry',
@@ -88,9 +92,8 @@ export default function ContactPage() {
     if (!formData.email.trim() || !formData.email.includes('@')) {
       errs.email = 'Please enter a valid email address.';
     }
-    const cleanPhone = (formData.phone || '').replace(/\D/g, '');
-    if (!cleanPhone || cleanPhone.length < 8) {
-      errs.phone = 'Please enter a valid phone number.';
+    if (!isValidPhone(formData.phone)) {
+      errs.phone = 'Please enter a valid mobile number for the selected country.';
     }
     if (!formData.subject.trim()) {
       errs.subject = 'Please enter an enquiry subject.';
@@ -166,7 +169,7 @@ export default function ContactPage() {
 
         <div className="flex items-center gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-semibold">
-            <ChatCircleDots size={15} weight="fill" />
+            <ChatCircleDots size={16} weight="fill" />
             <span>Dedicated client advisory and support</span>
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold">
@@ -221,18 +224,14 @@ export default function ContactPage() {
                 </div>
 
                 <div className="pt-2">
-                  <Button
-                    type="button"
-                    onClick={handleReset}
-                    className="px-6 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold cursor-pointer shadow-xs"
-                  >
+                  <Button size="sm" type="button" onClick={handleReset} className="min-h-10 px-6 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white cursor-pointer shadow-xs" >
                     Send another message
                   </Button>
                 </div>
               </div>
             ) : (
               /* Contact Form */
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="estate-form-surface space-y-5">
                 <div>
                   <h2 className="title-1 text-brand-navy font-bold mb-1">
                     Send an enquiry
@@ -245,7 +244,7 @@ export default function ContactPage() {
                 {/* Name & Email */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <Label htmlFor="contact-fullName" className="caption-1 font-semibold text-brand-navy block">
+                    <Label htmlFor="contact-fullName" className="block">
                       Full name *
                     </Label>
                     <Input
@@ -254,7 +253,7 @@ export default function ContactPage() {
                       placeholder="e.g. Rahul Sharma"
                       value={formData.fullName}
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                      className={`h-11 rounded-xl bg-slate-50 text-xs text-brand-navy border ${
+                      className={`h-11 rounded-xl bg-slate-50 text-brand-navy border ${
                         errors.fullName ? 'border-rose-500 focus-visible:ring-rose-500' : 'border-slate-200 focus-visible:ring-brand-blue'
                       }`}
                     />
@@ -262,7 +261,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label htmlFor="contact-email" className="caption-1 font-semibold text-brand-navy block">
+                    <Label htmlFor="contact-email" className="block">
                       Email address *
                     </Label>
                     <Input
@@ -271,7 +270,7 @@ export default function ContactPage() {
                       placeholder="name@example.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className={`h-11 rounded-xl bg-slate-50 text-xs text-brand-navy border ${
+                      className={`h-11 rounded-xl bg-slate-50 text-brand-navy border ${
                         errors.email ? 'border-rose-500 focus-visible:ring-rose-500' : 'border-slate-200 focus-visible:ring-brand-blue'
                       }`}
                     />
@@ -282,31 +281,31 @@ export default function ContactPage() {
                 {/* Phone & Category */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <Label htmlFor="contact-phone" className="caption-1 font-semibold text-brand-navy block">
+                    <Label htmlFor="contact-phone" className="block">
                       Phone number *
                     </Label>
-                    <Input
+                    <PhoneInput
                       id="contact-phone"
-                      type="tel"
-                      placeholder="+91 98765 43210"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className={`h-11 rounded-xl bg-slate-50 text-xs text-brand-navy border ${
-                        errors.phone ? 'border-rose-500' : 'border-slate-200 focus-visible:ring-brand-blue'
+                      aria-invalid={Boolean(errors.phone)}
+                      className={`h-11 rounded-xl bg-slate-50 ${
+                        errors.phone ? 'border-rose-500' : 'border-slate-200'
                       }`}
+                      inputClassName="h-11 rounded-xl border-0 bg-slate-50"
                     />
                     {errors.phone && <p className="caption-3 text-rose-500 mt-1">{errors.phone}</p>}
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label htmlFor="contact-category" className="caption-1 font-semibold text-brand-navy block">
+                    <Label htmlFor="contact-category" className="block">
                       Enquiry category *
                     </Label>
                     <Select
                       value={formData.category}
                       onValueChange={(val) => setFormData({ ...formData, category: val })}
                     >
-                      <SelectTrigger id="contact-category" className="h-11 rounded-xl bg-slate-50 border-slate-200 text-xs text-brand-navy">
+                      <SelectTrigger id="contact-category" className="h-11 rounded-xl bg-slate-50 border-slate-200 text-brand-navy">
                         <SelectValue placeholder="Select enquiry category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -322,7 +321,7 @@ export default function ContactPage() {
 
                 {/* Subject */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="contact-subject" className="caption-1 font-semibold text-brand-navy block">
+                  <Label htmlFor="contact-subject" className="block">
                     Subject *
                   </Label>
                   <Input
@@ -331,7 +330,7 @@ export default function ContactPage() {
                     placeholder="e.g. Schedule visit for 4 BHK Worli penthouse"
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className={`h-11 rounded-xl bg-slate-50 text-xs text-brand-navy border ${
+                    className={`h-11 rounded-xl bg-slate-50 text-brand-navy border ${
                       errors.subject ? 'border-rose-500' : 'border-slate-200 focus-visible:ring-brand-blue'
                     }`}
                   />
@@ -340,7 +339,7 @@ export default function ContactPage() {
 
                 {/* Message */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="contact-message" className="caption-1 font-semibold text-brand-navy block">
+                  <Label htmlFor="contact-message" className="block">
                     Message *
                   </Label>
                   <Textarea
@@ -349,7 +348,7 @@ export default function ContactPage() {
                     placeholder="Share your specific requirements, preferred dates for site visits, or partnership details..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className={`min-h-[110px] rounded-2xl bg-slate-50 text-xs text-brand-navy border ${
+                    className={`min-h-[110px] rounded-2xl bg-slate-50 text-brand-navy border ${
                       errors.message ? 'border-rose-500' : 'border-slate-200 focus-visible:ring-brand-blue'
                     } resize-none`}
                   />
@@ -377,12 +376,8 @@ export default function ContactPage() {
 
                 {/* Submit Action */}
                 <div className="pt-2">
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full sm:w-auto px-8 py-3 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
-                  >
-                    <PaperPlaneTilt size={15} weight="bold" />
+                  <Button type="submit" size="sm" disabled={isSubmitting} className="w-full sm:w-auto sm:min-w-[12rem] rounded-2xl shadow-xs">
+                    <PaperPlaneTilt size={16} weight="bold" />
                     <span>{isSubmitting ? 'Sending enquiry...' : 'Submit enquiry'}</span>
                   </Button>
                 </div>
@@ -408,7 +403,7 @@ export default function ContactPage() {
             <div className="space-y-4 text-xs">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center shrink-0">
-                  <Phone size={18} weight="bold" />
+                  <Phone size={20} weight="bold" />
                 </div>
                 <div>
                   <span className="caption-3 text-slate-400 block mb-0.5">Corporate advisory line</span>
@@ -421,7 +416,7 @@ export default function ContactPage() {
 
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center shrink-0">
-                  <Envelope size={18} weight="bold" />
+                  <Envelope size={20} weight="bold" />
                 </div>
                 <div>
                   <span className="caption-3 text-slate-400 block mb-0.5">Client correspondence</span>
@@ -436,7 +431,7 @@ export default function ContactPage() {
 
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
-                  <ChatCircleDots size={18} weight="bold" />
+                  <ChatCircleDots size={20} weight="bold" />
                 </div>
                 <div>
                   <span className="caption-3 text-slate-400 block mb-0.5">Direct chat support</span>
@@ -464,46 +459,29 @@ export default function ContactPage() {
               </p>
             </div>
 
-            {/* Map Card Preview for BKC Office */}
-            <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 group">
-              {/* Architectural Map Background Image */}
-              <img
-                src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80"
-                alt="BKC Mumbai map location"
-                className="w-full h-full object-cover filter saturate-50 contrast-125"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-brand-navy/30" />
-
-              {/* Pin Marker */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-                <div className="w-9 h-9 rounded-full bg-brand-navy text-[#C5A46D] flex items-center justify-center shadow-lg ring-4 ring-white/80 animate-pulse">
-                  <MapPin size={20} weight="fill" />
+            <Suspense
+              fallback={
+                <div
+                  className="flex aspect-[16/9] min-h-[12rem] items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 text-caption text-slate-500"
+                  aria-hidden
+                >
+                  Loading map…
                 </div>
-                <span className="mt-1 px-2.5 py-0.5 rounded-full bg-brand-navy/95 text-white font-semibold text-[10px] shadow-xs">
-                  EstateOne BKC Hub
-                </span>
-              </div>
+              }
+            >
+              <PropertyLocationMap
+                lat={19.066}
+                lng={72.8687}
+                zoom={15}
+                label="EstateOne BKC Hub"
+                aspectClassName="aspect-[16/9]"
+              />
+            </Suspense>
 
-              {/* Coordinates Pill */}
-              <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded-xl bg-white/90 backdrop-blur-md text-[10px] font-mono font-bold text-brand-navy shadow-xs">
-                19.0660° N, 72.8687° E
-              </div>
-            </div>
-
-            <div className="pt-2 flex items-center justify-between">
+            <div className="pt-2">
               <span className="caption-3 text-slate-400">
                 Near BKC Metro and Jio World Centre
               </span>
-              <a
-                href="https://maps.google.com/?q=Bandra+Kurla+Complex+Mumbai"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-blue hover:underline cursor-pointer"
-              >
-                <span>Open in Google Maps</span>
-                <ArrowSquareOut size={13} weight="bold" />
-              </a>
             </div>
           </Card>
 

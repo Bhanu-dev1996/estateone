@@ -43,14 +43,14 @@ export default function GuestSavePromptModal() {
     <Dialog open={savePromptOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-md p-6 sm:p-8 bg-white rounded-3xl border-0 shadow-2xl text-left">
         <DialogHeader className="text-left mb-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-600 text-xs font-semibold mb-2 self-start">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-600 text-small font-semibold mb-2 self-start">
             <Heart size={14} weight="fill" />
             <span>Shortlist property</span>
           </div>
-          <DialogTitle className="heading-3 text-brand-navy font-bold">
+          <DialogTitle className="text-h4 text-brand-navy font-semibold">
             Save to your collection
           </DialogTitle>
-          <DialogDescription className="body-4 text-slate-500 mt-1">
+          <DialogDescription className="text-small text-slate-500 mt-1">
             Sign in to synchronize your saved properties across all devices, or save for this browsing session.
           </DialogDescription>
         </DialogHeader>
@@ -79,21 +79,21 @@ export default function GuestSavePromptModal() {
 
         {/* Primary and Guest Action Buttons */}
         <div className="space-y-2.5">
-          <Button
+          <Button size="sm"
             type="button"
             onClick={handleSignIn}
-            className="w-full py-2.5 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+            className="w-full py-2.5 rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white font-semibold min-h-10 shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
           >
-            <User size={15} weight="bold" />
+            <User size={16} weight="bold" />
             <span>Sign in to save and sync</span>
             <ArrowRight size={14} weight="bold" />
           </Button>
 
-          <Button
+          <Button size="sm"
             type="button"
             variant="outline"
             onClick={handleSaveAsGuest}
-            className="w-full py-2.5 rounded-xl border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+            className="w-full py-2.5 rounded-xl border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold min-h-10 flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <span>Save to guest session only</span>
           </Button>

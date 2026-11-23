@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { MagnifyingGlass, FileText, CalendarCheck, ArrowRight } from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from './ui/card';
 import { Button } from './ui/button';
@@ -30,14 +30,14 @@ export default function HowItWorks({ onExploreClick }) {
     <section id="how-it-works" className="py-20 px-4 max-w-7xl mx-auto scroll-mt-24">
       
       {/* Section Header */}
-      <div className="text-center max-w-[680px] mx-auto mb-16">
+      <div className="text-center max-w-[65ch] mx-auto mb-16">
         <Badge variant="default" className="mb-3">
           Simple and transparent
         </Badge>
-        <h2 className="heading-2 text-brand-navy mb-4 tracking-tight text-balance">
+        <h2 className="text-h2 text-brand-navy mb-4 tracking-tight text-balance">
           How EstateOne works
         </h2>
-        <p className="body-2 text-brand-muted text-pretty">
+        <p className="mkt-section-desc text-brand-muted mx-auto">
           Three simple steps to move from discovery to your private site visit without friction or unnecessary paperwork.
         </p>
       </div>
@@ -53,7 +53,7 @@ export default function HowItWorks({ onExploreClick }) {
             >
               <CardHeader>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="font-heading font-extrabold text-3xl text-brand-blue/20">
+                  <span className="mkt-step-index" aria-hidden>
                     {step.number}
                   </span>
                   <div className="w-12 h-12 rounded-2xl bg-white/80 backdrop-blur-md border-0 flex items-center justify-center text-brand-navy shadow-xs">
@@ -65,10 +65,10 @@ export default function HowItWorks({ onExploreClick }) {
                 <CardDescription>{step.description}</CardDescription>
               </CardHeader>
 
-              <CardFooter className="border-t border-black/5 pt-4 flex items-center justify-between text-xs text-brand-navy">
+              <CardFooter className="border-t border-black/5 pt-4 flex items-center justify-between mkt-inline-stat text-brand-navy">
                 <span className="font-semibold">Step {idx + 1} of 3</span>
                 <div className="w-6 h-6 rounded-full bg-slate-200/50 flex items-center justify-center text-brand-muted">
-                  <ArrowRight size={13} />
+                  <ArrowRight size={14} />
                 </div>
               </CardFooter>
             </Card>
@@ -82,7 +82,7 @@ export default function HowItWorks({ onExploreClick }) {
           type="button"
           onClick={onExploreClick}
           size="md"
-          className="inline-flex items-center gap-2 rounded-xl shadow-[0_4px_16px_rgba(20,43,74,0.25)]"
+          className="min-h-11 inline-flex items-center gap-2 rounded-xl shadow-[0_4px_16px_rgba(20,43,74,0.25)]"
         >
           <span>Explore properties now</span>
           <ArrowRight size={16} weight="bold" />

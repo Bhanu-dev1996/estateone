@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Lock, 
@@ -66,7 +66,7 @@ export default function ResetPasswordPage() {
           <h1 className="heading-2 text-brand-navy font-bold tracking-tight">
             Create new password
           </h1>
-          <p className="caption-1 text-slate-500">
+          <p className="text-caption text-slate-500 leading-snug">
             Set a new, strong password to secure your verified real estate account
           </p>
         </div>
@@ -81,27 +81,27 @@ export default function ResetPasswordPage() {
               <h2 className="title-2 font-bold text-brand-navy">
                 Password successfully updated
               </h2>
-              <p className="caption-1 text-slate-500 leading-relaxed max-w-md mx-auto">
+              <p className="text-caption text-slate-500 leading-relaxed max-w-md mx-auto">
                 Your new password has been securely registered. You can now sign in using your updated credentials.
               </p>
             </div>
 
             <div className="pt-3">
               <Link to="/login" className="block">
-                <Button className="w-full rounded-2xl py-3 text-xs font-semibold bg-brand-navy hover:bg-slate-900 text-white cursor-pointer">
+                <Button size="sm" className="w-full rounded-2xl shadow-xs">
                   Sign in now
                 </Button>
               </Link>
             </div>
           </div>
         ) : (
-          <form onSubmit={handleReset} className="space-y-4">
+          <form onSubmit={handleReset} className="estate-form-surface space-y-4">
             {errorMsg && (
               <div 
                 role="alert" 
-                className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5 animate-fadeIn"
+                className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-caption leading-snug flex items-start gap-2.5 animate-fadeIn"
               >
-                <WarningCircle size={18} className="text-rose-600 shrink-0 mt-0.5" weight="fill" />
+                <WarningCircle size={20} className="text-rose-600 shrink-0 mt-0.5" weight="fill" />
                 <div className="flex-1">
                   <span className="font-semibold block">Password validation</span>
                   <span>{errorMsg}</span>
@@ -111,9 +111,7 @@ export default function ResetPasswordPage() {
 
             {/* Rule 1: Configured Password Requirements & Strength */}
             <div className="space-y-1.5">
-              <Label htmlFor="new-password" className="caption-1 font-semibold text-brand-navy">
-                New password
-              </Label>
+              <Label htmlFor="new-password">New password</Label>
               <div className="relative">
                 <Input
                   id="new-password"
@@ -127,7 +125,7 @@ export default function ResetPasswordPage() {
                     setHasInteracted(true);
                     setErrorMsg('');
                   }}
-                  className="rounded-2xl border-slate-200 bg-slate-50 text-xs text-brand-navy py-3 px-3.5 pr-11 focus:bg-white focus:border-brand-blue"
+                  className="rounded-2xl border-slate-200 bg-slate-50 text-brand-navy py-3 px-3.5 pr-11 focus:bg-white focus:border-brand-blue"
                 />
                 {/* Rule 2: Show/Hide Toggle */}
                 <button
@@ -143,7 +141,7 @@ export default function ResetPasswordPage() {
               {/* Password Strength Indicator */}
               {password.length > 0 && (
                 <div className="space-y-2 pt-1">
-                  <div className="flex items-center justify-between text-[11px]">
+                  <div className="flex items-center justify-between text-small">
                     <span className="text-slate-500 font-medium">Password strength</span>
                     <span className={`font-semibold ${
                       passwordStatus.strength === 'strong' ? 'text-emerald-600' :
@@ -166,14 +164,14 @@ export default function ResetPasswordPage() {
                   <span className="caption-3 font-semibold text-slate-500 block uppercase tracking-wider">
                     Required security checks
                   </span>
-                  <ul className="space-y-1 text-xs">
+                  <ul className="space-y-1 text-caption leading-snug">
                     {PASSWORD_REQUIREMENTS.map((req) => {
                       const isMet = req.regex.test(password);
                       return (
                         <li key={req.id} className="flex items-center gap-2">
                           {isMet ? (
                             <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                              <Check size={11} weight="bold" />
+                              <Check size={12} weight="bold" />
                             </span>
                           ) : (
                             <span className="w-4 h-4 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center shrink-0">
@@ -193,9 +191,7 @@ export default function ResetPasswordPage() {
 
             {/* Confirm New Password */}
             <div className="space-y-1.5">
-              <Label htmlFor="confirm-new-password" className="caption-1 font-semibold text-brand-navy">
-                Confirm new password
-              </Label>
+              <Label htmlFor="confirm-new-password">Confirm new password</Label>
               <div className="relative">
                 <Input
                   id="confirm-new-password"
@@ -208,7 +204,7 @@ export default function ResetPasswordPage() {
                     setConfirmPassword(e.target.value);
                     setErrorMsg('');
                   }}
-                  className={`rounded-2xl border-slate-200 bg-slate-50 text-xs text-brand-navy py-3 px-3.5 pr-11 focus:bg-white focus:border-brand-blue ${
+                  className={`rounded-2xl border-slate-200 bg-slate-50 text-brand-navy py-3 px-3.5 pr-11 focus:bg-white focus:border-brand-blue ${
                     confirmPassword && !passwordsMatch ? 'border-rose-300 focus:border-rose-500' : ''
                   }`}
                 />
@@ -223,17 +219,13 @@ export default function ResetPasswordPage() {
                 </button>
               </div>
               {confirmPassword && !passwordsMatch && (
-                <span className="caption-3 text-rose-500 font-medium block">
+                <span className="wizard-field-error block">
                   Passwords do not match
                 </span>
               )}
             </div>
 
-            <Button 
-              type="submit" 
-              disabled={!passwordStatus.isValid || !passwordsMatch || !confirmPassword}
-              className="w-full rounded-2xl py-3 text-xs font-semibold bg-brand-navy hover:bg-slate-900 text-white cursor-pointer transition-all shadow-xs"
-            >
+            <Button type="submit" size="sm" disabled={!passwordStatus.isValid || !passwordsMatch || !confirmPassword} className="w-full rounded-2xl shadow-xs">
               Update and secure account
             </Button>
           </form>
@@ -242,7 +234,7 @@ export default function ResetPasswordPage() {
         <div className="text-center pt-2 border-t border-slate-100">
           <Link 
             to="/login" 
-            className="text-xs font-semibold text-slate-600 flex items-center justify-center gap-1.5 hover:text-brand-navy cursor-pointer"
+            className="text-caption font-semibold text-slate-600 flex items-center justify-center gap-1.5 hover:text-brand-navy cursor-pointer"
           >
             <ArrowLeft size={14} />
             <span>Return to sign in</span>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Heart, 
@@ -12,9 +12,14 @@ import {
   ChatCircleText,
   ImageBroken,
   Buildings,
-  Car
+  Car,
+  CaretLeft,
+  CaretRight
 } from '@phosphor-icons/react';
 import { useProperty } from '../../context/PropertyContext';
+import { getRentalPriceDisplay } from '../../lib/rentalPrice';
+import { getPropertyStatusBadgeClassOnMedia } from '../../lib/propertyStatusBadge';
+import { MKT_ICON } from '../../lib/iconScale';
 
 export default function PropertyCard({ property, layout = 'grid', className = '' }) {
   const { 
@@ -28,44 +33,103 @@ export default function PropertyCard({ property, layout = 'grid', className = ''
 
   const [imageError, setImageError] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const touchStartX = useRef(null);
+
+  const images = property?.images?.length ? property.images : [];
+  const slideCount = Math.min(images.length, 5);
+  const safeIndex = slideCount > 0 ? Math.min(currentImageIndex, slideCount - 1) : 0;
+
+  useEffect(() => {
+    setCurrentImageIndex(0);
+    setImageError(false);
+  }, [property?.id]);
+
+  useEffect(() => {
+    if (currentImageIndex >= slideCount && slideCount > 0) {
+      setCurrentImageIndex(slideCount - 1);
+    }
+  }, [currentImageIndex, slideCount]);
+
+  const goToSlide = useCallback(
+    (index, e) => {
+      e?.preventDefault();
+      e?.stopPropagation();
+      if (slideCount < 2) return;
+      setCurrentImageIndex(((index % slideCount) + slideCount) % slideCount);
+    },
+    [slideCount]
+  );
+
+  const goPrev = useCallback(
+    (e) => {
+      e?.preventDefault();
+      e?.stopPropagation();
+      const idx = slideCount > 0 ? Math.min(currentImageIndex, slideCount - 1) : 0;
+      goToSlide(idx - 1, e);
+    },
+    [goToSlide, slideCount, currentImageIndex]
+  );
+
+  const goNext = useCallback(
+    (e) => {
+      e?.preventDefault();
+      e?.stopPropagation();
+      const idx = slideCount > 0 ? Math.min(currentImageIndex, slideCount - 1) : 0;
+      goToSlide(idx + 1, e);
+    },
+    [goToSlide, slideCount, currentImageIndex]
+  );
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current == null || slideCount < 2) return;
+    const endX = e.changedTouches[0]?.clientX;
+    if (endX == null) return;
+    const delta = endX - touchStartX.current;
+    if (Math.abs(delta) > 48) {
+      if (delta < 0) goNext(e);
+      else goPrev(e);
+    }
+    touchStartX.current = null;
+  };
 
   if (!property) return null;
 
   const saved = isSaved(property.id);
   const compared = isCompared(property.id);
-
-  const images = property.images && property.images.length > 0 ? property.images : [];
   const hasImages = images.length > 0 && !imageError;
-  const currentImage = hasImages ? images[currentImageIndex] : null;
+  const currentImage = hasImages ? images[safeIndex] : null;
 
   // Clear distinction between sale price, monthly rent, and deposit (PRD 4.2.13 & 5.4)
   const isRental = property.intent === 'rent';
   const isCommercial = property.intent === 'commercial' || property.type === 'Commercial' || property.category === 'commercial';
+  const rentalPrice = isRental ? getRentalPriceDisplay(property) : null;
 
   return (
-    <article 
-      className={`group relative flex ${
-        layout === 'list' ? 'flex-col md:flex-row' : 'flex-col'
-      } bg-white rounded-3xl overflow-hidden border-0 shadow-xs hover:shadow-lg transition-all duration-300 text-left ${className}`}
+    <article
+      className={`property-card property-card--${layout} group relative overflow-hidden rounded-2xl bg-white shadow-xs ${className}`}
     >
-      {/* Media Container with Fallback Placeholder */}
-      <div 
-        className={`relative ${
-          layout === 'list' ? 'aspect-[16/10] md:aspect-auto md:w-80 shrink-0 min-h-[220px]' : 'aspect-[16/10] w-full'
-        } overflow-hidden bg-slate-100`}
+      <div
+        className="property-card__media"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {hasImages ? (
           <img
             src={currentImage}
-            alt={property.title}
+            alt={`${property.title} — photo ${safeIndex + 1} of ${images.length}`}
             onError={() => setImageError(true)}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
             loading="lazy"
+            draggable={false}
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400 p-4 text-center">
             <ImageBroken size={36} weight="duotone" className="mb-2 text-slate-300" />
-            <span className="caption-2 font-medium">Verified listing photograph updating</span>
+            <span className="text-caption">Verified listing photograph updating</span>
           </div>
         )}
 
@@ -74,34 +138,36 @@ export default function PropertyCard({ property, layout = 'grid', className = ''
           {/* PRD 4.2.12: Avoid showing verification badge unless formally verified */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {property.availabilityStatus === 'leased' ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-700/90 backdrop-blur-md text-white text-[11px] font-semibold shadow-xs pointer-events-auto">
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-amber-700/90 backdrop-blur-md text-white text-caption font-semibold shadow-xs pointer-events-auto">
                 <span>Leased out</span>
               </span>
             ) : (
               property.verified && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-600/90 backdrop-blur-md text-white text-[11px] font-semibold shadow-xs pointer-events-auto">
-                  <ShieldCheck size={13} weight="fill" />
+                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-emerald-600/90 backdrop-blur-md text-white text-caption font-semibold leading-tight shadow-xs pointer-events-auto">
+                  <ShieldCheck size={11} weight="fill" className="shrink-0" />
                   <span>Verified</span>
                 </span>
               )
             )}
             {isCommercial && property.transactionType && (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-brand-navy/90 backdrop-blur-md text-brand-gold text-[10px] font-bold uppercase tracking-wider shadow-xs pointer-events-auto">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-brand-navy/90 backdrop-blur-md text-brand-gold text-label font-bold shadow-xs pointer-events-auto">
                 {property.transactionType}
               </span>
             )}
             {isCommercial && property.commercialCategory && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-medium pointer-events-auto">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-caption font-medium pointer-events-auto">
                 {property.commercialCategory}
               </span>
             )}
             {property.status && property.availabilityStatus !== 'leased' && !isCommercial && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-medium pointer-events-auto">
+              <span
+                className={`inline-flex items-center px-2 py-0.5 rounded-full backdrop-blur-md text-caption font-semibold shadow-xs pointer-events-auto ${getPropertyStatusBadgeClassOnMedia(property.status)}`}
+              >
                 {property.status}
               </span>
             )}
             {isRental && property.furnishing && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-md text-brand-navy text-[10px] font-semibold shadow-xs pointer-events-auto">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-md text-brand-navy text-caption font-semibold shadow-xs pointer-events-auto">
                 {property.furnishing}
               </span>
             )}
@@ -124,7 +190,7 @@ export default function PropertyCard({ property, layout = 'grid', className = ''
                   : 'bg-white/80 hover:bg-white text-slate-600 hover:text-brand-navy shadow-xs'
               }`}
             >
-              <Scales size={15} weight={compared ? 'fill' : 'bold'} />
+              <Scales size={16} weight={compared ? 'fill' : 'bold'} />
             </button>
 
             {/* Save / Favorite Button */}
@@ -142,158 +208,129 @@ export default function PropertyCard({ property, layout = 'grid', className = ''
                   : 'bg-white/80 hover:bg-white text-slate-600 hover:text-rose-500 shadow-xs'
               }`}
             >
-              <Heart size={15} weight={saved ? 'fill' : 'bold'} />
+              <Heart size={16} weight={saved ? 'fill' : 'bold'} />
             </button>
           </div>
         </div>
 
-        {/* Thumbnail Dots Indicator if multiple images exist */}
-        {images.length > 1 && (
-          <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full pointer-events-none">
-            {images.slice(0, 5).map((_, idx) => (
-              <span
-                key={idx}
-                className={`w-1.5 h-1.5 rounded-full transition-all ${
-                  idx === currentImageIndex ? 'bg-white w-3' : 'bg-white/50'
-                }`}
-              />
-            ))}
-          </div>
+        {slideCount > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={goPrev}
+              aria-label="Previous photo"
+              className="absolute left-2 top-1/2 z-[2] -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-black/35 text-white opacity-100 backdrop-blur-sm transition-opacity hover:bg-black/50 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+            >
+              <CaretLeft size={16} weight="bold" />
+            </button>
+            <button
+              type="button"
+              onClick={goNext}
+              aria-label="Next photo"
+              className="absolute right-2 top-1/2 z-[2] -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-black/35 text-white opacity-100 backdrop-blur-sm transition-opacity hover:bg-black/50 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+            >
+              <CaretRight size={16} weight="bold" />
+            </button>
+            <div
+              className="absolute bottom-2.5 left-1/2 z-[2] flex -translate-x-1/2 items-center gap-1 rounded-full bg-black/40 px-2 py-1 backdrop-blur-sm"
+              role="tablist"
+              aria-label="Property photos"
+            >
+              {images.slice(0, slideCount).map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  role="tab"
+                  aria-selected={idx === safeIndex}
+                  aria-label={`Photo ${idx + 1}`}
+                  onClick={(e) => goToSlide(idx, e)}
+                  className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                    idx === safeIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/50 hover:bg-white/75'
+                  }`}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
 
-      {/* Content Container */}
-      <div className="p-5 flex flex-col flex-1">
-        
-        {/* Pricing Area per PRD 4.2.13 & 5.4 */}
-        <div className="flex items-baseline justify-between mb-1.5">
-          <div>
+      <div className="property-card__body">
+        <div className="property-card__pricing">
+          <div className="flex min-w-0 flex-wrap items-baseline gap-x-1.5">
             {isCommercial && property.priceLabel && (
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">
+              <span className="mb-0.5 block w-full text-label text-slate-400">
                 {property.priceLabel}
               </span>
             )}
-            <span className="heading-3 text-brand-navy font-bold tracking-tight">
-              {isRental ? (property.monthlyRentDisplay || property.priceDisplay) : property.priceDisplay}
+            <span className="type-card-price whitespace-nowrap">
+              {isRental ? rentalPrice.text : property.priceDisplay}
             </span>
-            {isRental && !property.monthlyRentDisplay && (
-              <span className="caption-2 text-slate-500 ml-1">/ month</span>
+            {rentalPrice?.showMonthSuffix && (
+              <span className="property-card__price-note whitespace-nowrap">/ month</span>
             )}
           </div>
-
-          {property.pricePerSqFt && (
-            <span className="caption-2 text-slate-500">
-              {property.pricePerSqFt}
-            </span>
-          )}
+          <div className="shrink-0 text-right">
+            {isRental ? (
+              <span className="property-card__price-note block">
+                {property.depositDisplay || property.deposit
+                  ? `Deposit ${property.depositDisplay || property.deposit}`
+                  : 'Maintenance incl.'}
+              </span>
+            ) : property.pricePerSqFt ? (
+              <span className="property-card__price-note block">{property.pricePerSqFt}</span>
+            ) : null}
+          </div>
         </div>
 
-        {/* Rental / Commercial extra fee disclosures per PRD 4.2.13 */}
-        {isRental && (property.depositDisplay || property.deposit) && (
-          <div className="flex items-center justify-between text-xs text-slate-600 mb-2">
-            <span>Security deposit:</span>
-            <span className="font-semibold text-brand-navy">{property.depositDisplay || property.deposit}</span>
-          </div>
-        )}
-        {isCommercial && property.maintenance && (
-          <div className="flex items-center justify-between text-xs text-slate-600 mb-2">
-            <span>Maintenance charges:</span>
-            <span className="font-semibold text-brand-navy">{property.maintenance}</span>
-          </div>
-        )}
-
-        {/* Commercial Specifications pill per PRD 5.4 */}
-        {isCommercial && (property.buildingType || property.floorNumber) && (
-          <div className="text-[11px] text-slate-600 mb-2 bg-slate-50 p-2 rounded-xl flex items-center justify-between">
-            <span className="font-medium">{property.buildingType || 'Commercial asset'}</span>
-            {property.floorNumber && (
-              <span className="text-[10px] text-slate-500 font-semibold">{property.floorNumber}</span>
-            )}
-          </div>
-        )}
-
-        {/* Rental availability and preferred tenant details per PRD 5.3 */}
-        {isRental && (
-          <div className="text-[11px] text-slate-500 space-y-1 mb-2 bg-slate-50 p-2 rounded-xl">
-            {(property.availabilityDate || property.status) && (
-              <div className="flex items-center justify-between">
-                <span>Availability:</span>
-                <span className={`font-semibold ${property.availabilityStatus === 'leased' ? 'text-amber-700' : 'text-emerald-700'}`}>
-                  {property.availabilityDate || property.status}
-                </span>
-              </div>
-            )}
-            {property.lastUpdatedDate && (
-              <div className="flex items-center justify-between text-[10px] text-slate-400">
-                <span>Verification check:</span>
-                <span>{property.lastUpdatedDate}</span>
-              </div>
-            )}
-            {property.preferredTenant && (
-              <div className="flex items-center justify-between">
-                <span>Preferred tenant:</span>
-                <span className="font-medium text-brand-navy truncate max-w-[170px]">{property.preferredTenant}</span>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Leased Notice per PRD 5.3 */}
-        {property.availabilityStatus === 'leased' && (
-          <div className="mb-2 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200/60 text-amber-900 text-xs">
-            <span className="font-semibold">Notice:</span> This property was leased out and is not accepting visits.
-          </div>
-        )}
-
-        {/* Title linked to route (PRD 4.2.3) */}
-        <h3 className="heading-4 text-brand-navy font-semibold hover:text-brand-blue transition-colors line-clamp-1 mb-1">
-          <Link to={`/property/${property.slug}`}>
-            {property.title}
-          </Link>
+        <h3 className="property-card__title">
+          <Link to={`/property/${property.slug}`}>{property.title}</Link>
         </h3>
 
-        {/* Location */}
-        <div className="flex items-center gap-1 text-slate-500 caption-1 mb-4">
-          <MapPin size={14} className="text-brand-gold shrink-0" />
+        <div className="property-card__location">
+          <MapPin size={MKT_ICON.md} className="shrink-0 text-brand-gold" aria-hidden />
           <span className="truncate">{property.location}</span>
         </div>
 
-        {/* Core Specs Grid - Never show residential-only bedrooms/bathrooms for commercial per PRD 5.4 */}
-        <div className="grid grid-cols-3 gap-2 py-3 border-t border-slate-100 text-slate-600 caption-2 mb-4">
+        <div className="property-card__specs">
           {isCommercial ? (
             <>
               {property.area && (
-                <div className="flex items-center gap-1.5 truncate" title={`Super built up area: ${property.area}`}>
-                  <ArrowsOut size={15} className="text-slate-400 shrink-0" />
+                <div className="property-card__spec" title={`Super built up area: ${property.area}`}>
+                  <ArrowsOut size={MKT_ICON.md} className="shrink-0 text-slate-400" aria-hidden />
                   <span className="truncate">{property.area}</span>
                 </div>
               )}
-              <div className="flex items-center gap-1.5 truncate" title={`Fitout: ${property.furnishing || 'Bare shell'}`}>
-                <Buildings size={15} className="text-slate-400 shrink-0" />
+              <div className="property-card__spec" title={`Fitout: ${property.furnishing || 'Bare shell'}`}>
+                <Buildings size={MKT_ICON.md} className="shrink-0 text-slate-400" aria-hidden />
                 <span className="truncate">{property.furnishing || 'Bare shell'}</span>
               </div>
-              <div className="flex items-center gap-1.5 truncate" title={property.parkingCount || property.parking || 'Parking available'}>
-                <Car size={15} className="text-slate-400 shrink-0" />
-                <span className="truncate">{property.parkingCount ? property.parkingCount.split(' ')[0] + ' Parking' : 'Parking'}</span>
+              <div
+                className="property-card__spec"
+                title={property.parkingCount || property.parking || 'Parking available'}
+              >
+                <Car size={MKT_ICON.md} className="shrink-0 text-slate-400" aria-hidden />
+                <span className="truncate">
+                  {property.parkingCount ? `${property.parkingCount.split(' ')[0]} Parking` : 'Parking'}
+                </span>
               </div>
             </>
           ) : (
             <>
               {property.bedrooms && (
-                <div className="flex items-center gap-1.5 truncate">
-                  <Bed size={15} className="text-slate-400 shrink-0" />
+                <div className="property-card__spec">
+                  <Bed size={MKT_ICON.md} className="shrink-0 text-slate-400" aria-hidden />
                   <span className="truncate">{property.bedrooms}</span>
                 </div>
               )}
               {property.bathrooms && (
-                <div className="flex items-center gap-1.5 truncate">
-                  <Bathtub size={15} className="text-slate-400 shrink-0" />
+                <div className="property-card__spec">
+                  <Bathtub size={MKT_ICON.md} className="shrink-0 text-slate-400" aria-hidden />
                   <span className="truncate">{property.bathrooms}</span>
                 </div>
               )}
               {property.area && (
-                <div className="flex items-center gap-1.5 truncate">
-                  <ArrowsOut size={15} className="text-slate-400 shrink-0" />
+                <div className="property-card__spec">
+                  <ArrowsOut size={MKT_ICON.md} className="shrink-0 text-slate-400" aria-hidden />
                   <span className="truncate">{property.area}</span>
                 </div>
               )}
@@ -301,34 +338,59 @@ export default function PropertyCard({ property, layout = 'grid', className = ''
           )}
         </div>
 
-        {/* Footer CTAs (PRD 4.2.10: avoid inert buttons) */}
-        <div className="mt-auto pt-2 flex items-center gap-2">
-          <Link
-            to={`/property/${property.slug}`}
-            className="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-brand-navy caption-1 font-semibold text-center transition-colors"
-          >
+        <div className="property-card__context">
+          {property.availabilityStatus === 'leased' ? (
+            <div className="property-card__context-inner border-amber-200/60 bg-amber-50 text-amber-900">
+              <span className="type-card-context-key text-amber-900">Leased</span>
+              <span className="type-card-context-val text-amber-700">Not accepting visits</span>
+            </div>
+          ) : isRental ? (
+            <div className="property-card__context-inner">
+              <span className="type-card-context-key text-emerald-700">
+                {property.availabilityDate || property.status || 'Immediate move in'}
+              </span>
+              <span className="type-card-context-val max-w-[9.5rem] truncate">
+                {property.preferredTenant || 'All tenants welcome'}
+              </span>
+            </div>
+          ) : isCommercial ? (
+            <div className="property-card__context-inner">
+              <span className="type-card-context-key">
+                {property.buildingType || 'Commercial asset'}
+              </span>
+              <span className="type-card-context-val">{property.floorNumber || 'Multiple floors'}</span>
+            </div>
+          ) : (
+            <div className="property-card__context-inner">
+              <span className="type-card-context-key">Title certified</span>
+              <span className="type-card-context-val">RERA verified</span>
+            </div>
+          )}
+        </div>
+
+        <div className="property-card__footer">
+          <Link to={`/property/${property.slug}`} className="property-card__cta-primary">
             View details
           </Link>
           <button
             type="button"
             onClick={() => openSiteVisit(property)}
             aria-label="Schedule property inspection visit"
-            className="p-2 rounded-xl bg-brand-navy hover:bg-brand-blue text-white transition-colors cursor-pointer"
             title="Schedule visit"
+            className="property-card__icon-btn property-card__icon-btn--navy"
           >
-            <CalendarCheck size={18} weight="bold" />
+            <CalendarCheck size={MKT_ICON.lg} weight="bold" aria-hidden />
           </button>
           <button
             type="button"
             onClick={() => openEnquiry(property)}
             aria-label="Send property enquiry"
-            className="p-2 rounded-xl bg-[#C5A46D] hover:bg-[#b0915d] text-brand-navy transition-colors cursor-pointer"
-            title="Direct enquiry"
+            title="Enquire with advisor"
+            className="property-card__icon-btn property-card__icon-btn--gold"
           >
-            <ChatCircleText size={18} weight="bold" />
+            <ChatCircleText size={MKT_ICON.lg} weight="bold" aria-hidden />
           </button>
         </div>
-
       </div>
     </article>
   );

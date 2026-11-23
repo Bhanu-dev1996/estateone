@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Scales, X, ArrowRight, ShieldCheck } from '@phosphor-icons/react';
 import { useProperty } from '../../context/PropertyContext';
 import { SAMPLE_PROPERTIES } from '../../data/properties';
@@ -34,14 +34,14 @@ export default function CompareLimitModal() {
     <Dialog open={limitModalOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-xl p-6 sm:p-8 bg-white rounded-3xl border-0 shadow-2xl">
         <DialogHeader className="text-left mb-5">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-semibold mb-2 self-start">
-            <Scales size={15} weight="fill" className="text-amber-600" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-small font-semibold mb-2 self-start">
+            <Scales size={16} weight="fill" className="text-amber-600" />
             <span>Maximum comparison capacity</span>
           </div>
-          <DialogTitle className="heading-3 text-brand-navy font-bold">
+          <DialogTitle className="text-h4 text-brand-navy font-semibold">
             Comparison limit reached
           </DialogTitle>
-          <DialogDescription className="body-4 text-slate-500 mt-1">
+          <DialogDescription className="text-small text-slate-500 mt-1">
             You can compare up to 4 properties simultaneously. Select which property in your current set you would like to replace with the new listing.
           </DialogDescription>
         </DialogHeader>
@@ -54,10 +54,10 @@ export default function CompareLimitModal() {
             className="w-16 h-16 rounded-xl object-cover shrink-0"
           />
           <div className="min-w-0 flex-1">
-            <span className="caption-2 text-brand-blue font-bold uppercase tracking-wider block text-[10px]">
+            <span className="caption-2 text-brand-blue font-bold uppercase tracking-wider block text-caption">
               New property to add
             </span>
-            <h4 className="title-3 text-brand-navy font-bold truncate">
+            <h4 className="text-h4 text-brand-navy font-semibold truncate">
               {pendingReplaceProperty.title}
             </h4>
             <p className="caption-2 text-slate-500 truncate">
@@ -93,14 +93,14 @@ export default function CompareLimitModal() {
                   </div>
                 </div>
 
-                <Button
+                <Button size="sm"
                   type="button"
                   variant="outline"
                   onClick={() => handleSelectReplacement(prop.id)}
-                  className="w-full text-xs font-semibold py-1.5 h-auto rounded-xl border-slate-200 hover:bg-brand-navy hover:text-white transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full text-small font-semibold py-1.5 h-auto rounded-xl border-slate-200 hover:bg-brand-navy hover:text-white transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <span>Replace this property</span>
-                  <ArrowRight size={13} weight="bold" />
+                  <ArrowRight size={14} weight="bold" />
                 </Button>
               </div>
             ))}
@@ -109,11 +109,11 @@ export default function CompareLimitModal() {
 
         {/* Footer Actions */}
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-          <Button
+          <Button size="sm"
             type="button"
             variant="ghost"
             onClick={handleClose}
-            className="text-xs font-semibold text-slate-600 hover:text-brand-navy cursor-pointer"
+            className="font-semibold text-slate-600 min-h-10 hover:text-brand-navy cursor-pointer"
           >
             Keep current comparison set
           </Button>

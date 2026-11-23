@@ -1,5 +1,6 @@
-import React from 'react';
+﻿import React from 'react';
 import { WarningCircle, WifiSlash, ArrowClockwise } from '@phosphor-icons/react';
+import { Button } from '../ui/button';
 
 export default function ErrorState({
   title = 'Unable to load real estate data',
@@ -27,14 +28,10 @@ export default function ErrorState({
       </p>
 
       {onRetry && (
-        <button
-          type="button"
-          onClick={onRetry}
-          className="py-2.5 px-5 rounded-2xl bg-rose-900 hover:bg-rose-950 text-white text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer shadow-sm"
-        >
-          <ArrowClockwise size={15} weight="bold" />
-          <span>Retry connection</span>
-        </button>
+        <Button type="button" size="sm" variant="destructive" onClick={onRetry} className="rounded-2xl shadow-xs">
+          <ArrowClockwise size={16} weight="bold" />
+          Retry connection
+        </Button>
       )}
     </div>
   );

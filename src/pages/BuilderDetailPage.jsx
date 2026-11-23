@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -47,7 +47,6 @@ export default function BuilderDetailPage() {
     <div className="pt-28 pb-24 px-4 max-w-7xl mx-auto text-left">
       <Breadcrumbs 
         items={[
-          { label: 'Home', href: '/' },
           { label: 'Builders and developers', href: '/builders' },
           { label: builder.name }
         ]} 
@@ -78,7 +77,7 @@ export default function BuilderDetailPage() {
               </h1>
               {builder.verified && (
                 <Badge variant="default" className="text-xs px-2.5 py-0.5 font-semibold gap-1">
-                  <ShieldCheck size={13} weight="fill" className="text-brand-blue" />
+                  <ShieldCheck size={14} weight="fill" className="text-brand-blue" />
                   <span>RERA developer</span>
                 </Badge>
               )}
@@ -117,33 +116,33 @@ export default function BuilderDetailPage() {
             <>
               <a
                 href={`tel:${builder.phone.replace(/[^0-9+]/g, '')}`}
-                className="py-2.5 px-5 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 text-brand-navy text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
+                className="min-h-10 button-sm py-2.5 px-5 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 text-brand-navy flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
               >
-                <Phone size={15} weight="bold" />
+                <Phone size={16} weight="bold" />
                 <span>Call developer desk</span>
               </a>
 
-              <Button
+              <Button size="sm"
                 type="button"
                 onClick={() => handleOpenEnquiry()}
-                className="py-2.5 px-6 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                className="min-h-10 py-2.5 px-6 rounded-2xl bg-brand-navy hover:bg-brand-navy-hover text-white shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
               >
-                <ChatCircleText size={15} weight="bold" />
+                <ChatCircleText size={16} weight="bold" />
                 <span>Send enquiry</span>
               </Button>
             </>
           ) : (
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <span className="caption-3 text-slate-400 flex items-center gap-1">
-                <Lock size={13} />
+                <Lock size={14} />
                 <span>Private developer desk</span>
               </span>
-              <Button
+              <Button size="sm"
                 type="button"
                 onClick={() => handleOpenEnquiry()}
-                className="w-full sm:w-auto py-2.5 px-6 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                className="min-h-10 w-full sm:w-auto py-2.5 px-6 rounded-2xl bg-brand-navy hover:bg-brand-navy-hover text-white shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
               >
-                <ChatCircleText size={15} weight="bold" />
+                <ChatCircleText size={16} weight="bold" />
                 <span>Send project enquiry</span>
               </Button>
             </div>
@@ -209,14 +208,15 @@ export default function BuilderDetailPage() {
 
             <Button
               type="button"
+              size="sm"
               onClick={() => handleOpenEnquiry()}
-              className="w-full py-3 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors mb-3"
+              className="w-full rounded-2xl shadow-xs mb-3"
             >
               <ChatCircleText size={16} weight="bold" />
               <span>Contact sales office</span>
             </Button>
 
-            <div className="space-y-2 pt-3 border-t border-slate-100 text-[11px] text-slate-400 text-left">
+            <div className="space-y-2 pt-3 border-t border-slate-100 text-small text-slate-400 text-left">
               <div className="flex items-center gap-2">
                 <CheckCircle size={14} className="text-emerald-600 shrink-0" weight="fill" />
                 <span>Zero brokerage on builder direct inventory</span>
@@ -262,12 +262,12 @@ export default function BuilderDetailPage() {
                 />
                 <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap pointer-events-none">
                   {property.verified && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-semibold shadow-xs">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-600 text-white text-small font-semibold shadow-xs">
                       <ShieldCheck size={12} weight="fill" />
                       <span>Verified</span>
                     </span>
                   )}
-                  <span className="inline-flex px-2.5 py-0.5 rounded-full bg-brand-navy/90 text-brand-gold text-[10px] font-bold uppercase tracking-wider shadow-xs">
+                  <span className="inline-flex px-2.5 py-0.5 rounded-full bg-brand-navy/90 text-brand-gold text-label font-bold shadow-xs">
                     {property.status}
                   </span>
                 </div>
@@ -316,7 +316,7 @@ export default function BuilderDetailPage() {
                   <button
                     type="button"
                     onClick={() => handleOpenEnquiry(property)}
-                    className="py-2 px-3 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    className="min-h-10 button-sm py-2 px-3 rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <ChatCircleText size={14} weight="bold" />
                     <span>Enquire</span>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+﻿import React, { createContext, useContext, useState, useCallback } from 'react';
 import { CheckCircle, WarningCircle, Info, X } from '@phosphor-icons/react';
 
 const ToastContext = createContext(null);
@@ -60,7 +60,7 @@ export function ToastProvider({ children }) {
                 </p>
               )}
               {toast.message && (
-                <p className="text-[11px] text-slate-300 mt-0.5 leading-relaxed">
+                <p className="text-small text-slate-300 mt-0.5 leading-relaxed">
                   {toast.message}
                 </p>
               )}

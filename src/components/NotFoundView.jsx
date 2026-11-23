@@ -1,5 +1,6 @@
-import React from 'react';
-import { House, MagnifyingGlass } from '@phosphor-icons/react';
+﻿import React from 'react';
+import { House } from '@phosphor-icons/react';
+import { Button } from './ui/button';
 
 export default function NotFoundView({ onBackHome }) {
   return (
@@ -17,14 +18,10 @@ export default function NotFoundView({ onBackHome }) {
         The property address or page URL you requested might have been removed, archived, or is temporarily unavailable.
       </p>
       <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={onBackHome}
-          className="button-md py-2 px-4 rounded-lg bg-brand-navy text-white hover:bg-slate-800 transition-brand-fast flex items-center gap-2"
-        >
-          <House size={18} />
-          <span>Return home</span>
-        </button>
+        <Button type="button" size="sm" onClick={onBackHome} className="rounded-2xl shadow-xs">
+          <House size={16} weight="bold" />
+          Return home
+        </Button>
       </div>
     </div>
   );

@@ -54,13 +54,13 @@ export default function TaglineReveal() {
       {/* Subtle Apple Ambient Light Ring */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-brand-blue/15 blur-[120px] rounded-full pointer-events-none"></div>
 
-      <div className="max-w-[680px] mx-auto relative z-10">
+      <div className="max-w-[65ch] mx-auto relative z-10">
         <span className="caption-3 uppercase tracking-widest text-brand-gold mb-4 inline-block px-3.5 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
           The EstateOne Promise
         </span>
 
         {/* Heading 2 with word-by-word reveal */}
-        <h2 className="heading-3 md:heading-2 tracking-tight text-balance leading-snug">
+        <h2 className="text-h3 md:text-h2 tracking-tight text-balance leading-snug">
           {words.map((word, index) => {
             const wordThreshold = (index + 0.5) / words.length;
             const isRevealed = prefersReducedMotion || scrollProgress >= wordThreshold;
@@ -82,7 +82,7 @@ export default function TaglineReveal() {
         </h2>
 
         {/* Floating Glass Pills */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4 text-xs">
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-4 mkt-inline-stat">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 backdrop-blur-md text-slate-200 shadow-xs">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-gold"></span>
             <span>RERA verified documentation</span>

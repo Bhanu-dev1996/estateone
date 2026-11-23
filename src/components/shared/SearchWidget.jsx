@@ -5,6 +5,7 @@ import LocationAutocomplete from './LocationAutocomplete';
 import PropertyTypeSelector from './PropertyTypeSelector';
 import PriceRangeSelector from './PriceRangeSelector';
 import { useProperty } from '../../context/PropertyContext';
+import { Button } from '../ui/button';
 
 export default function SearchWidget({ 
   initialIntent = 'buy',
@@ -79,11 +80,7 @@ export default function SearchWidget({
             key={tab.id}
             type="button"
             onClick={() => handleIntentChange(tab.id)}
-            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-              activeIntent === tab.id
-                ? 'bg-brand-navy text-white shadow-xs'
-                : 'text-slate-600 hover:text-brand-navy hover:bg-slate-100'
-            }`}
+            className={`min-h-10 button-sm px-4 py-2 rounded-full transition-all cursor-pointer ${ activeIntent === tab.id ? 'bg-brand-navy text-white shadow-xs' : 'text-slate-600 hover:text-brand-navy hover:bg-slate-100' }`}
           >
             {tab.label}
           </button>
@@ -152,13 +149,10 @@ export default function SearchWidget({
           ) : null}
 
           {/* Search CTA */}
-          <button
-            type="submit"
-            className="flex-1 py-2.5 px-4 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer shrink-0 min-h-[42px]"
-          >
+          <Button type="submit" size="sm" className="flex-1 shrink-0 rounded-2xl shadow-xs">
             <MagnifyingGlass size={16} weight="bold" />
-            <span>Search</span>
-          </button>
+            Search
+          </Button>
         </div>
 
       </form>

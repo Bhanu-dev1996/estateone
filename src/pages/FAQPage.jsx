@@ -189,7 +189,7 @@ export default function FAQPage() {
 
         <div className="flex items-center gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-semibold">
-            <Question size={15} weight="bold" />
+            <Question size={16} weight="bold" />
             <span>Support and knowledge base</span>
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold">
@@ -225,7 +225,7 @@ export default function FAQPage() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-navy cursor-pointer"
                 title="Clear search"
               >
-                <X size={13} weight="bold" />
+                <X size={14} weight="bold" />
               </button>
             )}
           </div>
@@ -259,11 +259,7 @@ export default function FAQPage() {
                 key={cat}
                 type="button"
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-brand-navy text-white shadow-xs'
-                    : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-200'
-                }`}
+                className={`min-h-10 button-sm px-4 py-2 rounded-full whitespace-nowrap transition-all cursor-pointer ${ isSelected ? 'bg-brand-navy text-white shadow-xs' : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-200' }`}
               >
                 {cat}
               </button>
@@ -292,7 +288,7 @@ export default function FAQPage() {
               >
                 <AccordionTrigger className="px-6 py-4 text-xs sm:text-sm font-bold text-brand-navy hover:no-underline">
                   <div className="flex items-center gap-2.5 text-left">
-                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-[10px] font-semibold text-slate-600 shrink-0">
+                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-caption font-semibold text-slate-600 shrink-0">
                       {faq.category}
                     </span>
                     <span>{faq.question}</span>
@@ -313,11 +309,7 @@ export default function FAQPage() {
             <p className="caption-1 text-slate-500 max-w-md mx-auto">
               We couldn't find any questions matching your query. Try searching for different keywords or explore other categories.
             </p>
-            <Button
-              type="button"
-              onClick={handleResetFilters}
-              className="mt-2 px-6 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold cursor-pointer"
-            >
+            <Button size="sm" type="button" onClick={handleResetFilters} className="min-h-10 mt-2 px-6 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white cursor-pointer" >
               Reset filters
             </Button>
           </div>
@@ -443,7 +435,7 @@ export default function FAQPage() {
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
           <Link to="/contact">
-            <Button className="w-full sm:w-auto px-6 py-3 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold cursor-pointer shadow-xs">
+            <Button type="button" size="sm" className="w-full sm:w-auto sm:min-w-[10rem] rounded-2xl shadow-xs">
               Contact support desk
             </Button>
           </Link>
@@ -452,7 +444,7 @@ export default function FAQPage() {
             href="tel:+912261204400"
             className="w-full sm:w-auto px-5 py-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-brand-navy text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
           >
-            <Phone size={15} weight="bold" />
+            <Phone size={16} weight="bold" />
             <span>Call +91 22 6120 4400</span>
           </a>
         </div>

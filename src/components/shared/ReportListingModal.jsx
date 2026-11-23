@@ -65,7 +65,7 @@ export default function ReportListingModal({ isOpen, onClose, property }) {
               <Flag size={16} weight="bold" />
             </div>
             <div>
-              <DialogTitle className="heading-4 text-brand-navy font-bold">
+              <DialogTitle className="text-h4 text-brand-navy font-semibold">
                 Report this listing
               </DialogTitle>
               <p className="caption-2 text-slate-500">
@@ -81,30 +81,30 @@ export default function ReportListingModal({ isOpen, onClose, property }) {
               <CheckCircle size={36} weight="fill" />
             </div>
             <div className="space-y-1">
-              <h3 className="heading-4 text-brand-navy font-bold">
+              <h3 className="text-h4 text-brand-navy font-semibold">
                 Report logged successfully
               </h3>
               <p className="body-4 text-slate-600 max-w-sm mx-auto leading-relaxed">
                 Thank you for helping protect platform integrity. Reference ticket <span className="font-mono font-bold text-brand-navy">REP-{Math.floor(10000 + Math.random() * 90000)}</span> has been queued for our compliance desk.
               </p>
             </div>
-            <div className="p-4 rounded-2xl bg-slate-50 text-xs text-slate-500 leading-relaxed max-w-md mx-auto">
+            <div className="p-4 rounded-2xl bg-slate-50 text-small text-slate-500 leading-relaxed max-w-md mx-auto">
               Our moderation team reviews reported listings against official RERA registry data within 24 business hours.
             </div>
             <div className="pt-2">
-              <Button
+              <Button size="sm"
                 type="button"
                 onClick={handleClose}
-                className="w-full py-3 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold"
+                className="w-full rounded-2xl shadow-xs"
               >
                 Done
               </Button>
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5 pt-3">
+          <form onSubmit={handleSubmit} className="estate-form-surface space-y-5 pt-3">
             {error && (
-              <div className="p-3 rounded-2xl bg-rose-50 border border-rose-100 text-rose-700 text-xs flex items-center gap-2">
+              <div className="p-3 rounded-2xl bg-rose-50 border border-rose-100 text-rose-700 text-small flex items-center gap-2">
                 <WarningCircle size={16} weight="fill" className="shrink-0" />
                 <span>{error}</span>
               </div>
@@ -136,7 +136,7 @@ export default function ReportListingModal({ isOpen, onClose, property }) {
                       <span className="caption-1 font-semibold text-brand-navy block">
                         {r.label}
                       </span>
-                      <span className="caption-2 text-slate-500 text-[11px] block mt-0.5 leading-snug">
+                      <span className="caption-2 text-slate-500 text-small block mt-0.5 leading-snug">
                         {r.description}
                       </span>
                     </div>
@@ -146,7 +146,7 @@ export default function ReportListingModal({ isOpen, onClose, property }) {
             </div>
 
             <div>
-              <label htmlFor="report-details" className="caption-1 font-bold text-brand-navy block mb-1">
+              <label htmlFor="report-details" className="wizard-field-label text-brand-navy block mb-1">
                 Additional information (optional)
               </label>
               <textarea
@@ -155,23 +155,23 @@ export default function ReportListingModal({ isOpen, onClose, property }) {
                 onChange={(e) => setDetails(e.target.value)}
                 placeholder="Provide any additional context, links, or discrepancy details..."
                 rows={3}
-                className="w-full p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue focus:bg-white transition-all font-medium"
+                className="w-full p-3 rounded-2xl bg-slate-50 border border-slate-200 text-small text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue focus:bg-white transition-all font-medium"
               />
             </div>
 
             <div className="flex items-center gap-3 pt-2 border-t border-slate-100">
-              <Button
+              <Button size="sm"
                 type="button"
                 variant="outline"
                 onClick={handleClose}
-                className="flex-1 py-3 rounded-2xl text-xs font-semibold border border-slate-200 hover:bg-slate-100"
+                className="flex-1 rounded-2xl shadow-xs"
               >
                 Cancel
               </Button>
-              <Button
+              <Button size="sm"
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 py-3 rounded-2xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold"
+                className="flex-1 rounded-2xl shadow-xs"
               >
                 {isSubmitting ? 'Submitting report...' : 'Submit report'}
               </Button>

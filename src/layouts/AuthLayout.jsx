@@ -16,7 +16,7 @@ import Logo from '../components/Logo';
  */
 export default function AuthLayout() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F7F8FA] text-brand-text relative overflow-x-hidden selection:bg-brand-blue selection:text-white">
+    <div className="density-comfortable min-h-screen flex flex-col bg-[#F7F8FA] text-brand-text relative overflow-x-hidden selection:bg-brand-blue selection:text-white font-body">
       
       {/* Soft Apple Ambient Glow Orbs for Glass Diffusion */}
       <div className="fixed top-[-5%] left-[-5%] w-[450px] h-[450px] bg-blue-100/40 rounded-full blur-[140px] pointer-events-none z-0" />
@@ -34,7 +34,7 @@ export default function AuthLayout() {
           {/* Back to Website Action */}
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-brand-navy hover:bg-slate-100/80 transition-all cursor-pointer"
+            className="button-sm inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-slate-600 hover:text-brand-navy hover:bg-slate-100/80 transition-all cursor-pointer"
           >
             <ArrowLeft size={14} weight="bold" />
             <span className="hidden sm:inline">Back to website</span>
@@ -49,17 +49,17 @@ export default function AuthLayout() {
           <Outlet />
 
           {/* Trust Guarantees beneath form */}
-          <div className="mt-6 pt-6 border-t border-slate-200/60 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] text-slate-500">
+          <div className="mt-6 pt-6 border-t border-slate-200/60 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-caption font-medium leading-snug text-slate-500">
             <span className="inline-flex items-center gap-1.5">
-              <CheckCircle size={14} weight="fill" className="text-brand-blue" />
+              <CheckCircle size={12} weight="fill" className="text-brand-blue shrink-0" aria-hidden />
               <span>RERA verified marketplace</span>
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <LockSimple size={14} weight="fill" className="text-brand-blue" />
+              <LockSimple size={12} weight="fill" className="text-brand-blue shrink-0" aria-hidden />
               <span>Privacy protected credentials</span>
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <ShieldCheck size={14} weight="fill" className="text-brand-blue" />
+              <ShieldCheck size={12} weight="fill" className="text-brand-blue shrink-0" aria-hidden />
               <span>Zero spam policy</span>
             </span>
           </div>

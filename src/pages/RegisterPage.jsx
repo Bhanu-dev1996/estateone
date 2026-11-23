@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -16,7 +16,9 @@ import {
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import { PhoneInput } from '../components/ui/phone-input';
 import { Label } from '../components/ui/label';
+import { isValidPhone } from '../lib/phone';
 import { Badge } from '../components/ui/badge';
 import Logo from '../components/Logo';
 import { useAuth } from '../context/AuthContext';
@@ -26,7 +28,6 @@ import {
 } from '../lib/authSecurity';
 
 export default function RegisterPage() {
-  const [role, setRole] = useState('Buyer');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -61,9 +62,8 @@ export default function RegisterPage() {
       return;
     }
 
-    const cleanPhone = phone.replace(/\D/g, '');
-    if (cleanPhone.length < 10) {
-      setErrorMsg('Please enter a valid 10 digit mobile number.');
+    if (!isValidPhone(phone)) {
+      setErrorMsg('Please enter a valid mobile number for the selected country.');
       return;
     }
 
@@ -71,7 +71,6 @@ export default function RegisterPage() {
       name,
       email,
       phone,
-      role,
       password
     });
 
@@ -94,7 +93,7 @@ export default function RegisterPage() {
           <h1 className="heading-2 text-brand-navy font-bold tracking-tight">
             Create your account
           </h1>
-          <p className="caption-1 text-slate-500">
+          <p className="text-caption text-slate-500 leading-snug">
             Join India premier verified real estate network
           </p>
         </div>
@@ -115,7 +114,7 @@ export default function RegisterPage() {
             role="alert" 
             className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5 animate-fadeIn"
           >
-            <WarningCircle size={18} className="text-rose-600 shrink-0 mt-0.5" weight="fill" />
+            <WarningCircle size={20} className="text-rose-600 shrink-0 mt-0.5" weight="fill" />
             <div className="flex-1">
               <span className="font-semibold block">Incomplete details</span>
               <span>{errorMsg}</span>
@@ -123,33 +122,10 @@ export default function RegisterPage() {
           </div>
         )}
 
-        {/* Role Selector */}
-        <div className="space-y-1.5">
-          <Label className="caption-1 font-semibold text-brand-navy block">
-            I am joining as a
-          </Label>
-          <div className="grid grid-cols-3 gap-2">
-            {['Buyer', 'Tenant', 'Owner / Agent'].map((r) => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setRole(r)}
-                className={`py-2 px-1 text-xs rounded-xl font-semibold border cursor-pointer transition-all ${
-                  role === r
-                    ? 'border-brand-navy bg-brand-navy text-white shadow-xs'
-                    : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-brand-navy'
-                }`}
-              >
-                {r}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Registration Form */}
+        <div className="estate-form-surface space-y-4">
         <form onSubmit={handleRegister} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="reg-name" className="caption-1 font-semibold text-brand-navy">
+            <Label htmlFor="reg-name" className="">
               Full name
             </Label>
             <Input
@@ -159,12 +135,12 @@ export default function RegisterPage() {
               placeholder="e.g. Ananya Rao"
               value={name}
               onChange={(e) => { setName(e.target.value); setErrorMsg(''); }}
-              className="rounded-2xl border-slate-200 bg-slate-50 text-xs text-brand-navy py-3 px-3.5 focus:bg-white focus:border-brand-blue"
+              className="rounded-2xl border-slate-200 bg-slate-50 text-brand-navy py-3 px-3.5 focus:bg-white focus:border-brand-blue"
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="reg-email" className="caption-1 font-semibold text-brand-navy">
+            <Label htmlFor="reg-email" className="">
               Email address
             </Label>
             <Input
@@ -174,28 +150,30 @@ export default function RegisterPage() {
               placeholder="e.g. ananya@example.com"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setErrorMsg(''); }}
-              className="rounded-2xl border-slate-200 bg-slate-50 text-xs text-brand-navy py-3 px-3.5 focus:bg-white focus:border-brand-blue"
+              className="rounded-2xl border-slate-200 bg-slate-50 text-brand-navy py-3 px-3.5 focus:bg-white focus:border-brand-blue"
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="reg-phone" className="caption-1 font-semibold text-brand-navy">
+            <Label htmlFor="reg-phone" className="">
               Mobile number (for SMS verification)
             </Label>
-            <Input
+            <PhoneInput
               id="reg-phone"
-              type="tel"
               required
-              placeholder="+91 98000 00000"
               value={phone}
-              onChange={(e) => { setPhone(e.target.value); setErrorMsg(''); }}
-              className="rounded-2xl border-slate-200 bg-slate-50 text-xs text-brand-navy py-3 px-3.5 focus:bg-white focus:border-brand-blue"
+              onChange={(e) => {
+                setPhone(e.target.value);
+                setErrorMsg('');
+              }}
+              className="rounded-2xl border-slate-200 bg-slate-50"
+              inputClassName="rounded-2xl border-0 bg-slate-50 py-3 focus:bg-white"
             />
           </div>
 
           {/* Rule 1: Configured Password Security & Strength */}
           <div className="space-y-1.5">
-            <Label htmlFor="reg-pass" className="caption-1 font-semibold text-brand-navy">
+            <Label htmlFor="reg-pass" className="">
               Create password
             </Label>
             <div className="relative">
@@ -211,7 +189,7 @@ export default function RegisterPage() {
                   setHasInteractedWithPassword(true);
                   setErrorMsg('');
                 }}
-                className="rounded-2xl border-slate-200 bg-slate-50 text-xs text-brand-navy py-3 px-3.5 pr-11 focus:bg-white focus:border-brand-blue"
+                className="rounded-2xl border-slate-200 bg-slate-50 text-brand-navy py-3 px-3.5 pr-11 focus:bg-white focus:border-brand-blue"
               />
               <button
                 type="button"
@@ -226,7 +204,7 @@ export default function RegisterPage() {
             {/* Password Strength Meter */}
             {password.length > 0 && (
               <div className="space-y-2 pt-1">
-                <div className="flex items-center justify-between text-[11px]">
+                <div className="flex items-center justify-between text-small">
                   <span className="text-slate-500 font-medium">Password strength</span>
                   <span className={`font-semibold ${
                     passwordStatus.strength === 'strong' ? 'text-emerald-600' :
@@ -256,7 +234,7 @@ export default function RegisterPage() {
                       <li key={req.id} className="flex items-center gap-2">
                         {isMet ? (
                           <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                            <Check size={11} weight="bold" />
+                            <Check size={12} weight="bold" />
                           </span>
                         ) : (
                           <span className="w-4 h-4 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center shrink-0">
@@ -276,7 +254,7 @@ export default function RegisterPage() {
 
           {/* Confirm Password */}
           <div className="space-y-1.5">
-            <Label htmlFor="reg-confirm-pass" className="caption-1 font-semibold text-brand-navy">
+            <Label htmlFor="reg-confirm-pass" className="">
               Confirm password
             </Label>
             <div className="relative">
@@ -288,7 +266,7 @@ export default function RegisterPage() {
                 placeholder="Re-enter your password"
                 value={confirmPassword}
                 onChange={(e) => { setConfirmPassword(e.target.value); setErrorMsg(''); }}
-                className={`rounded-2xl border-slate-200 bg-slate-50 text-xs text-brand-navy py-3 px-3.5 pr-11 focus:bg-white focus:border-brand-blue ${
+                className={`rounded-2xl border-slate-200 bg-slate-50 text-brand-navy py-3 px-3.5 pr-11 focus:bg-white focus:border-brand-blue ${
                   confirmPassword && !passwordsMatch ? 'border-rose-300 focus:border-rose-500' : ''
                 }`}
               />
@@ -308,16 +286,15 @@ export default function RegisterPage() {
             )}
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full rounded-2xl py-3 text-xs font-semibold bg-brand-navy hover:bg-slate-900 text-white cursor-pointer transition-all shadow-xs"
-          >
+          <Button type="submit" size="sm" className="w-full rounded-2xl shadow-xs">
             Continue with OTP verification
+            <ArrowRight size={16} weight="bold" aria-hidden />
           </Button>
         </form>
+        </div>
 
         {/* Existing Account Redirection */}
-        <div className="text-center pt-2 border-t border-slate-100 text-xs text-slate-500">
+        <div className="text-center pt-2 border-t border-slate-100 text-caption text-slate-500">
           <span>Already have an account? </span>
           <Link to="/login" className="font-semibold text-brand-blue hover:underline cursor-pointer">
             Sign in

@@ -5,55 +5,80 @@ import {
   AUTH_SECURITY_CONFIG,
   MASKED_AUTH_MESSAGES
 } from '../lib/authSecurity';
+import { resolvePostAuthDestination } from '../lib/postAuthDestination';
 
 const AuthContext = createContext(null);
 
-// Initial pre-seeded demonstration accounts (Pass: EstateOne@2025)
+// Sample accounts for demos (password: Password@123). All users share one member type.
 const SEEDED_USERS = [
   {
-    id: 'usr-buyer-01',
+    id: 'usr-demo-01',
     name: 'Ananya Rao',
-    email: 'buyer@estateone.in',
+    email: 'demo1@estateone.in',
     phone: '+91 98201 11223',
     password: 'Password@123',
-    role: 'Buyer',
+    role: 'Member',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
   },
   {
-    id: 'usr-owner-02',
+    id: 'usr-demo-02',
     name: 'Rajesh Kumar',
-    email: 'owner@estateone.in',
+    email: 'demo2@estateone.in',
     phone: '+91 98450 33445',
     password: 'Password@123',
-    role: 'Owner',
+    role: 'Member',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80'
   },
   {
-    id: 'usr-agent-03',
+    id: 'usr-demo-03',
     name: 'Vikram Malhotra',
-    email: 'agent@estateone.in',
+    email: 'demo3@estateone.in',
     phone: '+91 98110 55667',
     password: 'Password@123',
-    role: 'Licensed Agent',
-    company: 'Malhotra Luxury Realty',
+    role: 'Member',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80'
   }
 ];
+
+const LEGACY_DEMO_ACCOUNTS = [
+  { ...SEEDED_USERS[0], id: 'usr-buyer-01', email: 'buyer@estateone.in' },
+  { ...SEEDED_USERS[1], id: 'usr-owner-02', email: 'owner@estateone.in' },
+  { ...SEEDED_USERS[2], id: 'usr-agent-03', email: 'agent@estateone.in' }
+];
+
+function loadRegisteredUsers() {
+  const seedPool = [...SEEDED_USERS, ...LEGACY_DEMO_ACCOUNTS];
+  try {
+    const stored = localStorage.getItem('estateone_registered_users');
+    if (!stored) {
+      localStorage.setItem('estateone_registered_users', JSON.stringify(seedPool));
+      return seedPool;
+    }
+    const parsed = JSON.parse(stored);
+    if (!Array.isArray(parsed)) return seedPool;
+
+    const normalized = parsed.map((user) => ({
+      ...user,
+      role: 'Member'
+    }));
+
+    seedPool.forEach((seed) => {
+      const email = seed.email?.toLowerCase();
+      const exists = normalized.some((u) => u.email?.toLowerCase() === email);
+      if (!exists) normalized.push(seed);
+    });
+
+    return normalized;
+  } catch {
+    return seedPool;
+  }
+}
 
 export function AuthProvider({ children }) {
   const { toastSuccess, toastInfo, toastWarning, toastError } = useToast();
 
   // 1. Registered Users Database (Persistent in localStorage)
-  const [registeredUsers, setRegisteredUsers] = useState(() => {
-    try {
-      const stored = localStorage.getItem('estateone_registered_users');
-      if (stored) return JSON.parse(stored);
-      localStorage.setItem('estateone_registered_users', JSON.stringify(SEEDED_USERS));
-      return SEEDED_USERS;
-    } catch {
-      return SEEDED_USERS;
-    }
-  });
+  const [registeredUsers, setRegisteredUsers] = useState(loadRegisteredUsers);
 
   // 2. Active Authenticated User & Session Expiry
   const [user, setUser] = useState(() => {
@@ -127,10 +152,11 @@ export function AuthProvider({ children }) {
 
   // Save / Clear Intended Destination (PRD Acceptance Rule 6)
   const saveIntendedDestination = useCallback((path) => {
-    setIntendedDestination(path);
+    const normalized = path ? resolvePostAuthDestination(path) : null;
+    setIntendedDestination(normalized);
     try {
-      if (path) {
-        sessionStorage.setItem('estateone_intended_destination', path);
+      if (normalized) {
+        sessionStorage.setItem('estateone_intended_destination', normalized);
       } else {
         sessionStorage.removeItem('estateone_intended_destination');
       }
@@ -174,48 +200,34 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Authenticate & Validate Credentials (PRD Acceptance Rule 1, 3, 6)
-  const login = useCallback((emailOrPhone, password, roleOverride) => {
+  const login = useCallback((emailOrPhone, password) => {
     const cleanId = (emailOrPhone || '').trim().toLowerCase();
+    const cleanPhone = cleanId.replace(/\s+/g, '');
 
     // Check credentials against registered users
     const matchedUser = registeredUsers.find((u) => {
       const emailMatches = u.email?.toLowerCase() === cleanId;
-      const phoneMatches = u.phone?.replace(/\s+/g, '') === cleanId.replace(/\s+/g, '');
+      const phoneMatches = u.phone?.replace(/\s+/g, '') === cleanPhone;
       return emailMatches || phoneMatches;
     });
 
-    if (!cleanId) {
+    if (!cleanId || !password) {
       return {
         success: false,
         error: MASKED_AUTH_MESSAGES.INVALID_CREDENTIALS
       };
     }
 
-    // Direct demo programmatic calls (e.g., login('owner.rajesh@estateone.in', 'owner'))
-    const isProgrammaticDemo = password === 'owner' || password === 'buyer' || password === 'agent';
-
-    if (!matchedUser && !isProgrammaticDemo && !password) {
+    if (!matchedUser || matchedUser.password !== password) {
       return {
         success: false,
         error: MASKED_AUTH_MESSAGES.INVALID_CREDENTIALS
       };
-    }
-
-    // If password supplied in normal login flow, check validity
-    if (password && !isProgrammaticDemo) {
-      const isTestPassword = password === 'Password@123' || password === 'EstateOne@2025';
-      const isUserPasswordMatch = matchedUser && matchedUser.password === password;
-      if (!isTestPassword && !isUserPasswordMatch) {
-        return {
-          success: false,
-          error: MASKED_AUTH_MESSAGES.INVALID_CREDENTIALS
-        };
-      }
     }
 
     // Session creation with configured duration (Rule 7: 2 hours lifetime)
     const sessionExpiry = Date.now() + AUTH_SECURITY_CONFIG.SESSION_DURATION_MS;
-    const detectedRole = roleOverride || (isProgrammaticDemo ? password : (matchedUser?.role || 'Buyer'));
+    const detectedRole = matchedUser.role || 'Member';
 
     const sessionUser = {
       id: matchedUser?.id || `usr-${Date.now().toString(36)}`,
@@ -234,7 +246,7 @@ export function AuthProvider({ children }) {
     toastSuccess('Signed in successfully', `Welcome back, ${sessionUser.name}.`);
 
     // Preserve Intended Destination (Rule 6)
-    const destination = intendedDestination || '/';
+    const destination = resolvePostAuthDestination(intendedDestination || '/');
     saveIntendedDestination(null);
 
     return {
@@ -246,7 +258,9 @@ export function AuthProvider({ children }) {
 
   // Start Registration Flow (PRD Acceptance Rule 1, 4: Validate password & issue OTP)
   const startRegistration = useCallback((registrationData) => {
-    const { name, email, phone, role, password } = registrationData;
+    const { name, email, phone, password } = registrationData;
+    const normalizedEmail = (email || '').trim().toLowerCase();
+    const normalizedPhone = (phone || '').trim().replace(/\s+/g, '');
 
     // Validate password meets all 5 configured security criteria (Rule 1)
     const passCheck = checkPasswordSecurity(password);
@@ -257,6 +271,17 @@ export function AuthProvider({ children }) {
       };
     }
 
+    const emailTaken = registeredUsers.some((u) => u.email?.toLowerCase() === normalizedEmail);
+    const phoneTaken = registeredUsers.some(
+      (u) => u.phone?.replace(/\s+/g, '') === normalizedPhone
+    );
+    if (emailTaken || phoneTaken) {
+      return {
+        success: false,
+        error: 'An account with this email or mobile number already exists. Please sign in instead.'
+      };
+    }
+
     // Generate OTP and configure lifespan & resend cooldown (Rule 4)
     const otp = AUTH_SECURITY_CONFIG.DEMO_OTP; // '123456' for reliable demonstration
     const otpExpiresAt = Date.now() + AUTH_SECURITY_CONFIG.OTP_EXPIRATION_MS;
@@ -264,9 +289,9 @@ export function AuthProvider({ children }) {
 
     const pending = {
       name: name.trim(),
-      email: email.trim().toLowerCase(),
+      email: normalizedEmail,
       phone: phone.trim(),
-      role: role || 'Buyer',
+      role: 'Member',
       password,
       otp,
       otpExpiresAt,
@@ -281,7 +306,7 @@ export function AuthProvider({ children }) {
       success: true,
       pending
     };
-  }, [toastInfo]);
+  }, [registeredUsers, toastInfo]);
 
   // Verify OTP & Create Account (PRD Flowchart Step: Verify OTP -> Create Account -> Open Destination)
   const verifyOtp = useCallback((enteredOtp) => {
@@ -339,7 +364,7 @@ export function AuthProvider({ children }) {
     toastSuccess('Account verified & created', `Welcome to EstateOne, ${sessionUser.name}.`);
 
     // Return intended destination (Rule 6)
-    const destination = intendedDestination || '/';
+    const destination = resolvePostAuthDestination(intendedDestination || '/');
     saveIntendedDestination(null);
 
     return {

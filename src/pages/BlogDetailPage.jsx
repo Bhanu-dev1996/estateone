@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   BookOpen, 
@@ -115,7 +115,7 @@ export default function BlogDetailPage() {
               <button
                 type="button"
                 onClick={handleCopyLink}
-                className="p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-semibold shadow-xs"
+                className="button-sm p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs"
                 title="Copy article link"
               >
                 {copied ? <Check size={14} className="text-emerald-600" weight="bold" /> : <Copy size={14} />}
@@ -228,14 +228,14 @@ export default function BlogDetailPage() {
               to="/blog"
               className="text-xs font-semibold text-brand-navy hover:text-brand-blue flex items-center gap-2 transition-colors"
             >
-              <ArrowLeft size={15} />
+              <ArrowLeft size={16} />
               <span>Back to all property guides</span>
             </Link>
 
             <button
               type="button"
               onClick={handleCopyLink}
-              className="text-xs font-semibold text-brand-blue hover:underline cursor-pointer flex items-center gap-1"
+              className="button-sm  text-brand-blue hover:underline cursor-pointer flex items-center gap-1"
             >
               <ShareNetwork size={14} />
               <span>Share this guide</span>
@@ -261,7 +261,7 @@ export default function BlogDetailPage() {
               </p>
             </div>
             <Link to="/contact">
-              <Button className="w-full py-2.5 rounded-xl bg-brand-navy hover:bg-brand-blue text-white text-xs font-semibold cursor-pointer shadow-xs">
+              <Button size="sm" className="min-h-10 w-full py-2.5 rounded-xl bg-brand-navy hover:bg-brand-navy-hover text-white cursor-pointer shadow-xs">
                 Request private consultation
               </Button>
             </Link>
@@ -284,7 +284,7 @@ export default function BlogDetailPage() {
 
           {/* Verification Protocol Badge */}
           <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 text-emerald-900 text-xs flex items-start gap-2.5">
-            <ShieldCheck size={18} weight="fill" className="text-emerald-700 shrink-0 mt-0.5" />
+            <ShieldCheck size={20} weight="fill" className="text-emerald-700 shrink-0 mt-0.5" />
             <p className="leading-relaxed text-emerald-800">
               Every guide on EstateOne is authored in accordance with state real estate regulatory authority regulations and Indian stamp act provisions.
             </p>
@@ -323,7 +323,7 @@ export default function BlogDetailPage() {
                       loading="lazy"
                     />
                     <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-1 rounded-full bg-brand-navy/90 text-white text-[10px] font-bold tracking-wide shadow-xs">
+                      <span className="px-2.5 py-1 rounded-full bg-brand-navy/90 text-white text-caption font-bold tracking-wide shadow-xs">
                         {rel.category}
                       </span>
                     </div>

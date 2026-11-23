@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   CaretDown, 
@@ -13,7 +13,10 @@ import {
   HouseLine,
   Scales,
   Heart,
-  SignOut
+  SignOut,
+  SquaresFour,
+  ChatCircleText,
+  CalendarCheck
 } from '@phosphor-icons/react';
 import { useProperty } from '../context/PropertyContext';
 import { useAuth } from '../context/AuthContext';
@@ -31,9 +34,13 @@ import {
 } from './ui/dropdown-menu';
 import { SAMPLE_PROPERTIES, CITIES } from '../data/properties';
 import Logo from './Logo';
+import NavUserMenuHeader from './shared/NavUserMenuHeader';
+import { cn } from '../lib/utils';
+import { ENABLE_CUSTOMER_DASHBOARD } from '../config/productScope';
 
 export default function Navbar({ onExploreClick }) {
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
@@ -42,6 +49,15 @@ export default function Navbar({ onExploreClick }) {
   const { user, isAuthenticated, logout } = useAuth();
 
   const isHome = location.pathname === '/';
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 16);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [location.pathname]);
+
+  const heroAtTop = isHome && !isScrolled;
   const isBuyActive = location.pathname === '/buy';
   const isRentActive = location.pathname === '/rent';
   const isCommercialActive = location.pathname === '/commercial';
@@ -72,7 +88,12 @@ export default function Navbar({ onExploreClick }) {
       <header className="fixed top-4 left-0 right-0 z-40 px-4 flex justify-center pointer-events-none">
         <nav 
           aria-label="Main navigation" 
-          className="pointer-events-auto w-full max-w-7xl bg-white/85 backdrop-blur-2xl backdrop-saturate-200 border border-white/70 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.08)] ring-1 ring-white/50 px-4 sm:px-6 py-2.5 flex items-center justify-between transition-brand"
+          className={cn(
+            'pointer-events-auto w-full max-w-7xl backdrop-blur-2xl backdrop-saturate-200 rounded-full px-4 sm:px-6 py-2.5 flex items-center justify-between transition-brand',
+            heroAtTop
+              ? 'bg-white/80 border border-transparent shadow-[0_12px_40px_rgba(0,0,0,0.18)]'
+              : 'bg-white/90 border border-slate-200/70 shadow-[0_8px_32px_rgba(0,0,0,0.08)] ring-1 ring-black/[0.04]',
+          )}
         >
           {/* 1. EstateOne Logo (Interaction 1: Clicking navigates to Home) */}
           <Link 
@@ -94,17 +115,17 @@ export default function Navbar({ onExploreClick }) {
                 <DropdownMenuTrigger asChild>
                   <button
                     type="button"
-                    className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all duration-300 focus-visible:outline-none flex items-center gap-1 cursor-pointer ${
+                    className={`px-3 py-1 text-small font-semibold min-h-8 rounded-full transition-all duration-300 focus-visible:outline-none flex items-center gap-1 cursor-pointer ${
                       isBuyActive
                         ? 'bg-brand-navy text-white shadow-xs'
                         : 'text-brand-navy/75 hover:text-brand-navy hover:bg-white/80'
                     }`}
                   >
                     <span>Buy</span>
-                    <CaretDown size={11} weight="bold" />
+                    <CaretDown size={11} weight="bold" aria-hidden />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuContent align="start" className="w-[12.5rem]">
                   <DropdownMenuLabel>Residential for sale</DropdownMenuLabel>
                   <DropdownMenuItem asChild>
                     <Link to="/buy" className="w-full">All properties for sale</Link>
@@ -128,17 +149,17 @@ export default function Navbar({ onExploreClick }) {
                 <DropdownMenuTrigger asChild>
                   <button
                     type="button"
-                    className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all duration-300 focus-visible:outline-none flex items-center gap-1 cursor-pointer ${
+                    className={`px-3 py-1 text-small font-semibold min-h-8 rounded-full transition-all duration-300 focus-visible:outline-none flex items-center gap-1 cursor-pointer ${
                       isRentActive
                         ? 'bg-brand-navy text-white shadow-xs'
                         : 'text-brand-navy/75 hover:text-brand-navy hover:bg-white/80'
                     }`}
                   >
                     <span>Rent</span>
-                    <CaretDown size={11} weight="bold" />
+                    <CaretDown size={11} weight="bold" aria-hidden />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuContent align="start" className="w-[12.5rem]">
                   <DropdownMenuLabel>Rental properties</DropdownMenuLabel>
                   <DropdownMenuItem asChild>
                     <Link to="/rent" className="w-full">All rental properties</Link>
@@ -157,7 +178,7 @@ export default function Navbar({ onExploreClick }) {
             <li>
               <Link
                 to="/commercial"
-                className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all duration-300 focus-visible:outline-none cursor-pointer ${
+                className={`px-3 py-1 text-small font-semibold min-h-8 rounded-full transition-all duration-300 focus-visible:outline-none cursor-pointer ${
                   isCommercialActive
                     ? 'bg-brand-navy text-white shadow-xs'
                     : 'text-brand-navy/75 hover:text-brand-navy hover:bg-white/80'
@@ -171,7 +192,7 @@ export default function Navbar({ onExploreClick }) {
             <li>
               <Link
                 to="/agents"
-                className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all duration-300 focus-visible:outline-none cursor-pointer ${
+                className={`px-3 py-1 text-small font-semibold min-h-8 rounded-full transition-all duration-300 focus-visible:outline-none cursor-pointer ${
                   isAgentsActive
                     ? 'bg-brand-navy text-white shadow-xs'
                     : 'text-brand-navy/75 hover:text-brand-navy hover:bg-white/80'
@@ -185,13 +206,13 @@ export default function Navbar({ onExploreClick }) {
             <li>
               <Link
                 to="/list-property"
-                className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all duration-300 focus-visible:outline-none flex items-center gap-1 cursor-pointer ${
+                className={`px-3 py-1 text-small font-semibold min-h-8 rounded-full transition-all duration-300 focus-visible:outline-none flex items-center gap-1 cursor-pointer ${
                   isListPropertyActive
                     ? 'bg-brand-navy text-white shadow-xs'
                     : 'text-brand-blue hover:text-brand-navy hover:bg-white/80'
                 }`}
               >
-                <PlusCircle size={14} weight="bold" />
+                <PlusCircle size={13} weight="bold" aria-hidden />
                 <span>List Property</span>
               </Link>
             </li>
@@ -208,7 +229,7 @@ export default function Navbar({ onExploreClick }) {
               aria-label="Search properties by city or keyword"
               className="p-2 rounded-full text-brand-navy hover:bg-slate-100 transition-all cursor-pointer flex items-center justify-center"
             >
-              <MagnifyingGlass size={18} weight="bold" />
+              <MagnifyingGlass size={20} weight="bold" />
             </button>
 
             {/* Compare Shortcut with Badge Counter (PRD 5.6) */}
@@ -218,9 +239,9 @@ export default function Navbar({ onExploreClick }) {
               title="Compare properties"
               className="relative p-2 rounded-full text-brand-navy hover:bg-slate-100 transition-all cursor-pointer flex items-center justify-center"
             >
-              <Scales size={18} weight="bold" />
+              <Scales size={20} weight="bold" />
               {comparePropertyIds.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-brand-gold text-brand-navy text-[10px] font-bold rounded-full flex items-center justify-center shadow-xs">
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-brand-gold text-brand-navy text-caption font-bold rounded-full flex items-center justify-center shadow-xs">
                   {comparePropertyIds.length}
                 </span>
               )}
@@ -233,9 +254,9 @@ export default function Navbar({ onExploreClick }) {
               title="Saved properties"
               className="relative p-2 rounded-full text-brand-navy hover:bg-slate-100 transition-all cursor-pointer flex items-center justify-center"
             >
-              <Heart size={18} weight="bold" />
+              <Heart size={20} weight="bold" />
               {savedPropertyIds.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-xs">
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose-500 text-white text-caption font-bold rounded-full flex items-center justify-center shadow-xs">
                   {savedPropertyIds.length}
                 </span>
               )}
@@ -248,7 +269,7 @@ export default function Navbar({ onExploreClick }) {
                   <button
                     type="button"
                     aria-label="User account menu"
-                    className="text-xs font-semibold text-brand-navy hover:text-brand-blue pl-1.5 pr-2.5 py-1 rounded-full hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-1.5"
+                    className="button-sm  text-brand-navy hover:text-brand-blue pl-1.5 pr-2.5 py-1 rounded-full hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-1.5"
                   >
                     <img 
                       src={user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'} 
@@ -256,42 +277,62 @@ export default function Navbar({ onExploreClick }) {
                       className="w-6 h-6 rounded-full object-cover ring-1 ring-brand-blue/30"
                     />
                     <span className="hidden sm:inline max-w-[90px] truncate">{user?.name?.split(' ')[0] || 'Account'}</span>
-                    <CaretDown size={11} weight="bold" className="text-slate-400" />
+                    <CaretDown size={12} weight="bold" className="text-slate-400" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl bg-white shadow-xl border border-slate-100 text-left">
-                  <div className="px-2 py-1.5">
-                    <p className="text-xs font-bold text-brand-navy truncate">{user?.name}</p>
-                    <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
-                    <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-blue-50 text-brand-blue text-[10px] font-semibold capitalize">
-                      {user?.role || 'Member'}
-                    </span>
-                  </div>
-                  <DropdownMenuSeparator />
+                <DropdownMenuContent align="end" className="w-[13.5rem] min-w-[13.5rem] max-w-[13.5rem] gap-0.5 p-2 rounded-2xl bg-white shadow-xl border border-slate-100 text-left">
+                  <NavUserMenuHeader user={user} />
+                  <DropdownMenuSeparator className="my-1.5" />
                   <DropdownMenuItem asChild>
-                    <Link to="/account" className="text-xs font-medium text-slate-700 hover:text-brand-navy cursor-pointer flex items-center gap-2 py-2 rounded-xl">
-                      <User size={15} />
-                      <span>Account and session</span>
+                    <Link
+                      to="/account"
+                      className="text-small font-medium text-slate-700 hover:text-brand-navy cursor-pointer flex items-center gap-2 py-2 rounded-xl"
+                    >
+                      <User size={16} className="text-slate-500" />
+                      <span>Account overview</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/list-property" className="text-xs font-medium text-slate-700 hover:text-brand-navy cursor-pointer flex items-center gap-2 py-2 rounded-xl">
-                      <PlusCircle size={15} />
-                      <span>List your property</span>
+                    <Link to="/saved-properties" className="text-small font-medium text-slate-700 hover:text-brand-navy cursor-pointer flex items-center gap-2 py-2 rounded-xl">
+                      <Heart size={16} />
+                      <span>Saved properties</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/saved-properties" className="text-xs font-medium text-slate-700 hover:text-brand-navy cursor-pointer flex items-center gap-2 py-2 rounded-xl">
-                      <Heart size={15} />
-                      <span>Saved shortlists</span>
+                    <Link to="/list-property" className="text-small font-medium text-slate-700 hover:text-brand-navy cursor-pointer flex items-center gap-2 py-2 rounded-xl">
+                      <PlusCircle size={16} />
+                      <span>List a property</span>
                     </Link>
                   </DropdownMenuItem>
+                  {ENABLE_CUSTOMER_DASHBOARD && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link to="/dashboard" className="text-small font-medium text-slate-700 hover:text-brand-navy cursor-pointer flex items-center gap-2 py-2 rounded-xl">
+                          <SquaresFour size={16} />
+                          <span>Customer dashboard</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/dashboard/enquiries" className="text-small font-medium text-slate-700 hover:text-brand-navy cursor-pointer flex items-center gap-2 py-2 rounded-xl">
+                          <ChatCircleText size={16} />
+                          <span>My enquiries</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/dashboard/site-visits" className="text-small font-medium text-slate-700 hover:text-brand-navy cursor-pointer flex items-center gap-2 py-2 rounded-xl">
+                          <CalendarCheck size={16} />
+                          <span>Site visits</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={logout}
-                    className="text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 cursor-pointer flex items-center gap-2 py-2 rounded-xl"
+                    className="text-caption font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 cursor-pointer flex items-center gap-2 py-1.5 rounded-xl"
                   >
-                    <SignOut size={15} />
+                    <SignOut size={16} />
                     <span>Sign out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -299,9 +340,9 @@ export default function Navbar({ onExploreClick }) {
             ) : (
               <Link
                 to="/login"
-                className="text-xs font-semibold text-brand-navy hover:text-brand-blue px-3 py-1.5 rounded-full hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-1.5"
+                className="button-sm text-brand-navy hover:text-brand-blue px-3 py-1.5 rounded-full hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-1.5"
               >
-                <User size={15} />
+                <User size={16} />
                 <span className="hidden sm:inline">Login / Sign Up</span>
                 <span className="sm:hidden">Login</span>
               </Link>
@@ -312,9 +353,9 @@ export default function Navbar({ onExploreClick }) {
               type="button"
               onClick={handleExplore}
               size="sm"
-              className="rounded-full px-4 sm:px-5 py-2 bg-brand-navy hover:bg-slate-900 text-white font-semibold shadow-[0_4px_14px_rgba(20,43,74,0.25)] flex items-center gap-1.5 cursor-pointer text-xs"
+              className="rounded-full px-4 sm:px-5 shadow-[0_4px_14px_rgba(20,43,74,0.2)] cursor-pointer"
             >
-              <ShieldCheck size={15} weight="bold" className="text-brand-gold" />
+              <ShieldCheck size={16} weight="bold" className="text-brand-gold" />
               <span className="hidden sm:inline">Explore Properties</span>
               <span className="sm:hidden">Explore</span>
             </Button>
@@ -327,7 +368,7 @@ export default function Navbar({ onExploreClick }) {
                   aria-label="Open navigation menu"
                   className="lg:hidden p-2 rounded-full text-brand-navy hover:bg-slate-100 transition-all cursor-pointer"
                 >
-                  <List size={22} weight="bold" />
+                  <List size={20} weight="bold" />
                 </button>
               </SheetTrigger>
               
@@ -354,8 +395,18 @@ export default function Navbar({ onExploreClick }) {
                       { label: 'Blog and guides', href: '/blog' },
                       { label: 'Help and FAQ', href: '/faq' },
                       { label: 'Contact us', href: '/contact' },
-                      ...(isAuthenticated 
-                        ? [{ label: 'Account & session', href: '/account' }]
+                      ...(isAuthenticated
+                        ? [
+                            { label: 'My account', href: '/account' },
+                            { label: 'List a property', href: '/list-property' },
+                            ...(ENABLE_CUSTOMER_DASHBOARD
+                              ? [
+                                  { label: 'Customer dashboard', href: '/dashboard' },
+                                  { label: 'My enquiries', href: '/dashboard/enquiries' },
+                                  { label: 'Site visits', href: '/dashboard/site-visits' }
+                                ]
+                              : [])
+                          ]
                         : [{ label: 'Login or register', href: '/login' }]
                       ),
                     ].map((item) => {
@@ -381,7 +432,7 @@ export default function Navbar({ onExploreClick }) {
                 {/* Mobile Drawer Bottom Prominent CTA */}
                 <div className="p-6 pt-4 border-t border-black/5 flex flex-col gap-2 shrink-0">
                   <Link to="/list-property" onClick={() => setSheetOpen(false)}>
-                    <Button className="w-full text-xs font-semibold rounded-xl py-3 flex items-center justify-center gap-1.5 shadow-sm">
+                    <Button type="button" size="sm" className="w-full rounded-2xl shadow-xs">
                       <PlusCircle size={16} weight="bold" className="text-brand-gold" />
                       <span>List Property</span>
                     </Button>
@@ -403,7 +454,7 @@ export default function Navbar({ onExploreClick }) {
       <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
         <DialogContent className="max-w-xl p-6 bg-white/95 backdrop-blur-2xl rounded-3xl text-left border-0">
           <DialogHeader>
-            <DialogTitle className="title-2 text-brand-navy font-bold flex items-center gap-2">
+            <DialogTitle className="text-h4 text-brand-navy font-semibold flex items-center gap-2">
               <MagnifyingGlass size={20} className="text-brand-blue" />
               <span>Search verified properties</span>
             </DialogTitle>
@@ -414,14 +465,14 @@ export default function Navbar({ onExploreClick }) {
 
           {/* Search Box Input */}
           <div className="relative my-4">
-            <MagnifyingGlass size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <MagnifyingGlass size={20} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               autoFocus
               placeholder="e.g. Worli, Penthouse, Villa, Gurugram..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue focus:bg-white transition-all"
+              className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-body text-brand-navy placeholder:text-slate-400 focus:outline-none focus:border-brand-blue focus:bg-white transition-all"
             />
           </div>
 
@@ -433,7 +484,7 @@ export default function Navbar({ onExploreClick }) {
                 key={city}
                 type="button"
                 onClick={() => setSearchQuery(city)}
-                className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-100 hover:bg-slate-200 text-brand-navy transition-all cursor-pointer"
+                className="px-2.5 py-1 rounded-full text-small font-medium bg-slate-100 hover:bg-slate-200 text-brand-navy transition-all cursor-pointer"
               >
                 {city}
               </button>
@@ -456,7 +507,7 @@ export default function Navbar({ onExploreClick }) {
                       <img src={prop.images[0]} alt={prop.title} className="w-14 h-14 rounded-xl object-cover shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="title-3 text-brand-navy font-semibold truncate">{prop.title}</p>
-                        <p className="caption-2 text-brand-muted truncate">{prop.location} • {prop.bedrooms}</p>
+                        <p className="text-small text-brand-muted truncate">{prop.location} • {prop.bedrooms}</p>
                       </div>
                       <span className="caption-1 font-bold text-brand-blue shrink-0">{prop.priceDisplay}</span>
                     </Link>
@@ -465,7 +516,7 @@ export default function Navbar({ onExploreClick }) {
               </ScrollArea>
             </div>
           ) : searchQuery ? (
-            <div className="py-8 text-center text-xs text-brand-muted">
+            <div className="py-8 text-center text-small text-brand-muted">
               No verified properties match "{searchQuery}". Try searching another locality or city.
             </div>
           ) : (
