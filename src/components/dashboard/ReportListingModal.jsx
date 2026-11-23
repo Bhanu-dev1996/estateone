@@ -5,7 +5,7 @@ import {
   DialogHeader, 
   DialogTitle, 
   DialogDescription, 
-  DialogFooter 
+  DialogFooter,
 } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { ShieldCheck, Flag, CheckCircle } from '@phosphor-icons/react';

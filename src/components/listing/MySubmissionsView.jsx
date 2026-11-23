@@ -16,8 +16,8 @@ import {
 } from '@phosphor-icons/react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 import { getStatusBadge } from './ListingStatusTracker';
+import ListingSubmissionDetailDialog from './ListingSubmissionDetailDialog';
 
 // Sample demonstration submissions illustrating all moderation decision states (PRD 6.4)
 const DEMO_SUBMISSIONS = [
@@ -239,120 +239,16 @@ export default function MySubmissionsView({
         })}
       </div>
 
-      {/* Submission Detail Modal */}
-      {selectedSubmission && (
-        <Dialog open={!!selectedSubmission} onOpenChange={() => setSelectedSubmission(null)}>
-          <DialogContent className="submission-detail-dialog">
-            <DialogHeader>
-              <div className="submission-detail-dialog__meta">
-                <span className="submission-detail-dialog__ref">{selectedSubmission.referenceId}</span>
-                {getStatusBadge(selectedSubmission.status || 'Pending verification')}
-              </div>
-              <DialogTitle>{selectedSubmission.title || 'Untitled listing'}</DialogTitle>
-              <DialogDescription>
-                Submitted on{' '}
-                {new Date(selectedSubmission.submittedAt || Date.now()).toLocaleString('en-IN', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric',
-                  hour: 'numeric',
-                  minute: '2-digit',
-                })}
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="wizard-review">
-              {selectedSubmission.status === 'Changes required' && (
-                <div className="wizard-review-feedback wizard-review-feedback--warning">
-                  <p className="wizard-review-feedback__title">
-                    <WarningCircle size={18} weight="fill" aria-hidden />
-                    <span>Moderation feedback (action required)</span>
-                  </p>
-                  <p className="wizard-review-feedback__body">{selectedSubmission.moderationNotes}</p>
-                </div>
-              )}
-
-              {selectedSubmission.status === 'Rejected' && (
-                <div className="wizard-review-feedback wizard-review-feedback--danger">
-                  <p className="wizard-review-feedback__title">
-                    <XCircle size={18} weight="fill" aria-hidden />
-                    <span>Rejection reason</span>
-                  </p>
-                  <p className="wizard-review-feedback__body">{selectedSubmission.rejectionReason}</p>
-                </div>
-              )}
-
-              <div className="submission-detail-stats">
-                <div className="submission-detail-stat">
-                  <span className="wizard-review-label">Purpose</span>
-                  <p className="wizard-review-value capitalize">{selectedSubmission.purpose}</p>
-                </div>
-                <div className="submission-detail-stat">
-                  <span className="wizard-review-label">Type</span>
-                  <p className="wizard-review-value">{selectedSubmission.propertyType}</p>
-                </div>
-                <div className="submission-detail-stat">
-                  <span className="wizard-review-label">Area</span>
-                  <p className="wizard-review-value">
-                    {selectedSubmission.carpetArea || selectedSubmission.builtUpArea || '2,400'} sq ft
-                  </p>
-                </div>
-                <div className="submission-detail-stat">
-                  <span className="wizard-review-label">City</span>
-                  <p className="wizard-review-value">{selectedSubmission.city}</p>
-                </div>
-              </div>
-
-              <div className="wizard-review-card">
-                <div className="wizard-review-card__body wizard-review-card__body--stack">
-                  <span className="wizard-review-label">Full address</span>
-                  <p className="wizard-review-meta wizard-review-meta--muted">
-                    {selectedSubmission.fullAddress ||
-                      `${selectedSubmission.locality}, ${selectedSubmission.city}, ${selectedSubmission.state || 'India'}`}
-                  </p>
-                </div>
-              </div>
-
-              <div className="wizard-review-card">
-                <div className="wizard-review-card__body wizard-review-card__body--stack">
-                  <span className="wizard-review-label">Submitter information</span>
-                  <p className="wizard-review-value">
-                    {selectedSubmission.submitterName} ({selectedSubmission.submitterRole})
-                  </p>
-                  <p className="wizard-review-meta wizard-review-meta--muted">
-                    {selectedSubmission.submitterPhone} • {selectedSubmission.submitterEmail}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <DialogFooter className="gap-2 sm:gap-2">
-              {selectedSubmission.status === 'Changes required' && (
-                <Button
-                  size="sm"
-                  type="button"
-                  onClick={() => {
-                    setSelectedSubmission(null);
-                    onEditSubmission?.(selectedSubmission);
-                  }}
-                  className="min-h-10 rounded-xl bg-orange-600 hover:bg-orange-700 text-white"
-                >
-                  Update listing now
-                </Button>
-              )}
-              <Button
-                size="sm"
-                type="button"
-                variant="outline"
-                onClick={() => setSelectedSubmission(null)}
-                className="min-h-10 rounded-xl"
-              >
-                Close
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
+      {selectedSubmission ? (
+        <ListingSubmissionDetailDialog
+          submission={selectedSubmission}
+          open
+          onOpenChange={(nextOpen) => {
+            if (!nextOpen) setSelectedSubmission(null);
+          }}
+          onEditSubmission={onEditSubmission}
+        />
+      ) : null}
     </div>
   );
 }
